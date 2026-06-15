@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>his_ai_widget — minimal</title>
+</head>
+<body>
+
+  <!-- Tombol-tombol pemicu -->
+  <button onclick="his_ai_widget.open()">Buka AI Assistant</button>
+  <button onclick="his_ai_widget.navigateTo('speech-to-soap')">Buat SOAP</button>
+  <button onclick="his_ai_widget.navigateTo('clinical-pathway')">Clinical Pathway</button>
+  <button onclick="his_ai_widget.navigateTo('eclaim')">E-Claim</button>
+
+  <!-- Contoh buka widget langsung ke fitur + set konteks pasien -->
+  <button onclick="openAI('P-2024-001','V-001','Budi Santoso','speech-to-soap')">Buat SOAP (Budi)</button>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       INTEGRASI his_ai_widget:
+       1. Load 1 file JS
+       2. Panggil init()
+       ═══════════════════════════════════════════════════════════════════ -->
+  <script src="./dist/his_ai_widget.js"></script>
+  <script>
+    his_ai_widget.init({
+      userName:  'dr. Budi Santoso',
+      theme:     'light',
+
+      // Konteks awal (bisa di-update per pasien)
+      patientId:    'P-2024-001',
+      visitId:      'V-20260604-001',
+      doctorId:     'DR-BS-001',
+      departmentId: 'DEPT-UMUM',
+
+      // Dipanggil saat dokter klik "Simpan ke HIS" di dalam widget
+      onResult: (type, data) => {
+        console.log('[HIS] Simpan ke rekam medis:', type, data)
+        // TODO: POST ke backend HIS kamu
+        // fetch('/api/medical-records', { method: 'POST', body: JSON.stringify({ type, data }) })
+      },
+
+      onError: (err) => {
+        console.error('[HIS] Error:', err)
+      },
+    })
+
+    // Helper: buka widget langsung ke fitur + set konteks pasien
+    function openAI(patientId, visitId, name, feature) {
+      his_ai_widget.setPatient({ patientId, visitId })
+      his_ai_widget.navigateTo(feature)
+    }
+  </script>
+
+</body>
+</html>

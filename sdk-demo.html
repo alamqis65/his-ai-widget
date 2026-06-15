@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SimRS Demo — his_ai_widget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #0d9488; --teal-dark: #0f766e; --teal-light: #f0fdfa;
+      --sl50: #f8fafc; --sl100: #f1f5f9; --sl200: #e2e8f0;
+      --sl400: #94a3b8; --sl500: #64748b; --sl700: #334155; --sl800: #1e293b; --sl900: #0f172a;
+      --font: 'DM Sans', system-ui, sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+    body { font-family: var(--font); background: var(--sl50); color: var(--sl800); min-height: 100vh; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 50; height: 54px; padding: 0 32px;
+      background: rgba(255,255,255,.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--sl200);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--teal-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 700; font-family: var(--mono); }
+    .logo-name { font-size: 14px; font-weight: 600; color: var(--sl800); }
+    .logo-ver { font-size: 10px; color: var(--sl400); font-family: var(--mono); }
+    .topbar-nav { display: flex; gap: 2px; }
+    .topbar-nav a { padding: 5px 11px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--sl500); text-decoration: none; transition: all 100ms; }
+    .topbar-nav a:hover { background: var(--sl100); color: var(--sl800); }
+    .topbar-nav a.active { color: var(--teal); background: var(--teal-light); }
+    .user-chip { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--sl500); }
+    .user-av { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--teal-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600; }
+
+    .page { max-width: 960px; margin: 0 auto; padding: 32px 32px 120px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, var(--teal-dark), #134e4a); border-radius: 18px; padding: 38px 42px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 75% 50%, rgba(45,212,191,.14), transparent 60%); }
+    .hero-dot { width: 6px; height: 6px; background: #2dd4bf; border-radius: 50%; animation: pulse 2s ease-in-out infinite; display: inline-block; margin-right: 5px; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+    .hero-badge { font-size: 11px; color: #99f6e4; font-weight: 500; letter-spacing: .04em; margin-bottom: 12px; }
+    .hero h1 { font-size: 30px; font-weight: 600; color: white; margin-bottom: 8px; letter-spacing: -.4px; position: relative; }
+    .hero p { font-size: 14px; color: rgba(255,255,255,.6); line-height: 1.7; max-width: 420px; margin-bottom: 24px; position: relative; }
+    .hero-btns { display: flex; gap: 9px; flex-wrap: wrap; position: relative; }
+    .btn-h { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all 130ms; }
+    .btn-h-p { background: #2dd4bf; color: #0f172a; box-shadow: 0 4px 14px rgba(45,212,191,.4); }
+    .btn-h-p:hover { background: #5eead4; transform: translateY(-1px); }
+    .btn-h-s { background: rgba(255,255,255,.1); color: rgba(255,255,255,.8); border: 1px solid rgba(255,255,255,.15); }
+    .btn-h-s:hover { background: rgba(255,255,255,.17); color: white; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    .stat { background: white; border: 1px solid var(--sl200); border-radius: 11px; padding: 14px 16px; }
+    .stat-l { font-size: 10px; font-weight: 600; color: var(--sl400); text-transform: uppercase; letter-spacing: .06em; }
+    .stat-v { font-size: 24px; font-weight: 600; color: var(--sl800); margin-top: 5px; letter-spacing: -.5px; }
+    .stat-d { font-size: 11px; color: var(--sl400); margin-top: 2px; }
+    .up { color: #16a34a; }
+
+    /* Table */
+    .sec-label { font-size: 11px; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+    .sec-title { font-size: 19px; font-weight: 600; color: var(--sl800); letter-spacing: -.3px; margin-bottom: 12px; }
+    .card { background: white; border: 1px solid var(--sl200); border-radius: 13px; overflow: hidden; }
+    .card-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; border-bottom: 1px solid var(--sl100); }
+    .card-head-l { display: flex; align-items: center; gap: 9px; }
+    .card-icon { width: 30px; height: 30px; border-radius: 7px; background: var(--teal-light); color: var(--teal); display: flex; align-items: center; justify-content: center; }
+    .card-t { font-size: 13px; font-weight: 600; color: var(--sl800); }
+    .card-s { font-size: 11px; color: var(--sl400); margin-top: 1px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: 9px 18px; text-align: left; font-size: 10px; font-weight: 600; color: var(--sl400); text-transform: uppercase; letter-spacing: .05em; background: var(--sl50); border-bottom: 1px solid var(--sl100); }
+    td { padding: 11px 18px; font-size: 13px; color: var(--sl700); border-bottom: 1px solid var(--sl50); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .pname { font-weight: 600; color: var(--sl800); }
+    .pid { font-family: var(--mono); font-size: 10px; color: var(--sl400); margin-top: 1px; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 99px; font-size: 11px; font-weight: 500; }
+    .bg { background: #f0fdf4; color: #15803d; }
+    .bo { background: #fff7ed; color: #c2410c; }
+    .bb { background: #eff6ff; color: #1d4ed8; }
+
+    .btn-ai { display: inline-flex; align-items: center; gap: 5px; background: var(--teal); color: white; padding: 5px 11px; border-radius: 7px; border: none; font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font); transition: all 100ms; white-space: nowrap; }
+    .btn-ai:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(13,148,136,.3); }
+    .btn-ai-o { display: inline-flex; align-items: center; gap: 5px; background: white; color: var(--sl500); padding: 5px 11px; border-radius: 7px; border: 1px solid var(--sl200); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font); transition: all 100ms; }
+    .btn-ai-o:hover { background: var(--teal-light); border-color: #99f6e4; color: var(--teal-dark); }
+
+    /* SDK Log */
+    .sdk-log { background: var(--sl900); border-radius: 11px; padding: 14px 16px; font-family: var(--mono); font-size: 12px; }
+    .sdk-log-title { color: #475569; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+    .log-line { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+    .log-line:last-child { border-bottom: none; }
+    .log-t { color: #475569; }
+    .log-e { color: #2dd4bf; }
+    .log-d { color: #64748b; }
+    .log-empty { color: #334155; font-style: italic; }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 0 16px; }
+      .topbar-nav { display: none; }
+      .page { padding: 16px 16px 100px; }
+      .hero { padding: 22px; }
+      .hero h1 { font-size: 22px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="#" class="logo">
+    <div class="logo-mark">RS</div>
+    <div>
+      <div class="logo-name">SimRS Nusantara</div>
+      <div class="logo-ver">his_ai_widget v0.2</div>
+    </div>
+  </a>
+  <nav class="topbar-nav">
+    <a href="#" class="active">Dashboard</a>
+    <a href="#">Antrian</a>
+    <a href="#">Rekam Medis</a>
+    <a href="#">Farmasi</a>
+  </nav>
+  <div class="user-chip">
+    <div class="user-av">dr</div>
+    <div>
+      <div style="font-weight:600;font-size:13px">dr. Budi Santoso</div>
+      <div style="font-size:11px;color:var(--sl400)">Poli Umum</div>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <div class="hero">
+    <div class="hero-badge"><span class="hero-dot"></span>Rabu, 4 Juni 2026 · Shift Pagi</div>
+    <h1>Selamat datang, dr. Budi</h1>
+    <p>Anda memiliki 12 pasien hari ini. AI Assistant siap membantu dokumentasi klinis, clinical pathway, dan verifikasi e-claim.</p>
+    <div class="hero-btns">
+      <button class="btn-h btn-h-p" onclick="his_ai_widget.open()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Buka AI Assistant
+      </button>
+      <button class="btn-h btn-h-s" onclick="his_ai_widget.navigateTo('speech-to-soap')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
+        Buat SOAP
+      </button>
+      <button class="btn-h btn-h-s" onclick="his_ai_widget.navigateTo('clinical-pathway')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Clinical Pathway
+      </button>
+      <button class="btn-h btn-h-s" onclick="his_ai_widget.navigateTo('eclaim')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        E-Claim
+      </button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Antrian Aktif</div><div class="stat-v">8</div><div class="stat-d">dari 12 hari ini</div></div>
+    <div class="stat"><div class="stat-l">Avg. Periksa</div><div class="stat-v">14<span style="font-size:14px;color:var(--sl400)">m</span></div><div class="stat-d up">↓ 3m lebih cepat</div></div>
+    <div class="stat"><div class="stat-l">SOAP Selesai</div><div class="stat-v">4</div><div class="stat-d">8 belum dibuat</div></div>
+    <div class="stat"><div class="stat-l">E-Claim Pending</div><div class="stat-v">3</div><div class="stat-d">perlu verifikasi</div></div>
+  </div>
+
+  <div>
+    <div class="sec-label">Antrian Pasien</div>
+    <div class="sec-title">Daftar Kunjungan Hari Ini</div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-l">
+          <div class="card-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div><div class="card-t">Poli Umum</div><div class="card-s">Rabu, 4 Juni 2026</div></div>
+        </div>
+        <span class="badge bb">12 Pasien</span>
+      </div>
+      <table>
+        <thead><tr><th>No</th><th>Pasien</th><th>Keluhan</th><th>Status</th><th>AI Action</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="font-family:var(--mono);color:var(--sl400);font-size:11px">001</td>
+            <td><div class="pname">Budi Santoso</div><div class="pid">P-2024-001 · 45th · L</div></td>
+            <td>Nyeri dada, sesak napas</td>
+            <td><span class="badge bg">✓ Selesai</span></td>
+            <td><button class="btn-ai" onclick="openAI('P-2024-001','V-001','Budi Santoso','speech-to-soap')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>Buat SOAP</button></td>
+          </tr>
+          <tr>
+            <td style="font-family:var(--mono);color:var(--sl400);font-size:11px">002</td>
+            <td><div class="pname">Siti Rahayu</div><div class="pid">P-2024-015 · 38th · P</div></td>
+            <td>Demam Tifoid</td>
+            <td><span class="badge bg">✓ Selesai</span></td>
+            <td><button class="btn-ai" onclick="openAI('P-2024-015','V-002','Siti Rahayu','clinical-pathway')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Pathway</button></td>
+          </tr>
+          <tr style="background:#fffbeb">
+            <td style="font-family:var(--mono);color:var(--sl400);font-size:11px">003</td>
+            <td><div class="pname">Ahmad Fauzi</div><div class="pid">P-2024-042 · 52th · L</div></td>
+            <td>Kontrol DM tipe 2</td>
+            <td><span class="badge bo">⏳ Pemeriksaan</span></td>
+            <td><button class="btn-ai" onclick="openAI('P-2024-042','V-003','Ahmad Fauzi','eclaim')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>E-Claim</button></td>
+          </tr>
+          <tr>
+            <td style="font-family:var(--mono);color:var(--sl400);font-size:11px">004</td>
+            <td><div class="pname">Dewi Kusuma</div><div class="pid">P-2024-078 · 29th · P</div></td>
+            <td>Sakit kepala, mual</td>
+            <td><span class="badge bb">→ Menunggu</span></td>
+            <td><button class="btn-ai-o" onclick="openAI('P-2024-078','V-004','Dewi Kusuma','chat')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>AI Chat</button></td>
+          </tr>
+          <tr>
+            <td style="font-family:var(--mono);color:var(--sl400);font-size:11px">005</td>
+            <td><div class="pname">Rudi Hermawan</div><div class="pid">P-2024-091 · 61th · L</div></td>
+            <td>Nyeri lutut, OA</td>
+            <td><span class="badge bb">→ Menunggu</span></td>
+            <td><button class="btn-ai-o" onclick="openAI('P-2024-091','V-005','Rudi Hermawan','clinical-pathway')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Pathway</button></td>
+          </tr>
+          <tr><td colspan="5" style="text-align:center;padding:12px;color:var(--sl400);font-size:12px">+ 7 pasien lainnya · <a href="#" style="color:var(--teal);text-decoration:none;font-weight:500">Lihat semua →</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <div class="sec-label">SDK Events</div>
+    <div class="sdk-log">
+      <div class="sdk-log-title">his_ai_widget — live event log</div>
+      <div id="log-body"><div class="log-empty">Belum ada event. Klik tombol AI di atas.</div></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     INTEGRASI his_ai_widget — semudah ini:
+
+     1. Load 1 file JS
+     2. Panggil init()
+     Tidak perlu server, tidak perlu iframe, tidak perlu config path.
+     ═══════════════════════════════════════════════════════════════════ -->
+<script src="./dist/his_ai_widget.js"></script>
+<script>
+  his_ai_widget.init({
+    userName:  'dr. Budi Santoso',
+    theme:     'light',
+
+    // Konteks awal (bisa di-update per pasien)
+    patientId:    'P-2024-001',
+    visitId:      'V-20260604-001',
+    doctorId:     'DR-BS-001',
+    departmentId: 'DEPT-UMUM',
+
+    // Dipanggil saat dokter klik "Simpan ke HIS" di dalam widget
+    onResult: (type, data) => {
+      addLog('onResult', `${type} → diterima`)
+      console.log('[HIS] Simpan ke rekam medis:', type, data)
+      // TODO: POST ke backend HIS kamu
+      // fetch('/api/medical-records', { method: 'POST', body: JSON.stringify({ type, data }) })
+    },
+
+    onError: (err) => {
+      addLog('onError', err.message)
+      console.error('[HIS] Error:', err)
+    },
+  })
+
+  // ── Helper: buka widget langsung ke fitur + set konteks pasien ────────────
+  function openAI(patientId, visitId, name, feature) {
+    his_ai_widget.setPatient({ patientId, visitId })
+    his_ai_widget.navigateTo(feature)
+    addLog('setPatient + navigateTo', `${name} → ${feature}`)
+  }
+
+  // ── SDK Event Log ─────────────────────────────────────────────────────────
+  const logs = []
+  function addLog(event, data) {
+    const t = new Date().toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit' })
+    logs.unshift({ t, event, data })
+    if (logs.length > 6) logs.pop()
+    document.getElementById('log-body').innerHTML = logs.map(l =>
+      `<div class="log-line"><span class="log-t">${l.t}</span><span class="log-e"> .${l.event}()</span><span class="log-d"> → ${l.data}</span></div>`
+    ).join('')
+  }
+
+  // Listen semua event dari widget
+  ;['open','close','result','error'].forEach(type =>
+    window.addEventListener(`his_ai:${type}`, e => addLog(type, JSON.stringify(e.detail||'').slice(0,50)))
+  )
+</script>
+
+</body>
+</html>

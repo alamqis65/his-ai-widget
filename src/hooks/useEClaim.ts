@@ -1,20 +1,17 @@
 import { useState, useCallback } from 'preact/hooks'
-import type { EClaimState, EClaimCheckResult } from '@/types'
-import { MockEClaimService } from '@/services/eclaim/MockEClaimService'
-import { IS_MOCK } from '@/utils'
-
-// TODO: swap to ProductionEClaimService
-const service = IS_MOCK ? new MockEClaimService() : new MockEClaimService()
+import type { EClaimState, EClaimCheckResult, SDKCallbacks } from '@/types'
+import { getEClaimService } from '@/services/registry'
 
 interface UseEClaimReturn {
   state: EClaimState
   result: EClaimCheckResult | null
   error: string | null
   check: (patientId: string, icdCode: string, diagnosis: string) => Promise<void>
+  save: () => void
   reset: () => void
 }
 
-export function useEClaim(): UseEClaimReturn {
+export function useEClaim(callbacks?: Pick<SDKCallbacks, 'onResultEClaim'>): UseEClaimReturn {
   const [state, setState] = useState<EClaimState>('IDLE')
   const [result, setResult] = useState<EClaimCheckResult | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -23,7 +20,7 @@ export function useEClaim(): UseEClaimReturn {
     setState('CHECKING')
     setError(null)
 
-    const res = await service.check(patientId, icdCode, diagnosis)
+    const res = await getEClaimService().check(patientId, icdCode, diagnosis)
     if (res.ok) {
       setResult(res.data)
       setState('DONE')
@@ -33,11 +30,19 @@ export function useEClaim(): UseEClaimReturn {
     }
   }, [])
 
+  const save = useCallback(() => {
+    if (!result) return
+    callbacks?.onResultEClaim?.(result)
+    window.dispatchEvent(new CustomEvent('his_ai:result', {
+      detail: { type: 'ECLAIM', data: result }
+    }))
+  }, [result, callbacks])
+
   const reset = useCallback(() => {
     setState('IDLE')
     setResult(null)
     setError(null)
   }, [])
 
-  return { state, result, error, check, reset }
+  return { state, result, error, check, save, reset }
 }

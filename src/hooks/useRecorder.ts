@@ -1,19 +1,6 @@
 import { useState, useRef, useCallback } from 'preact/hooks'
-import type { RecorderState, SOAPResult } from '@/types'
-import type { STTService } from '@/services/stt/STTService'
-import type { SOAPService } from '@/services/soap/SOAPService'
-import { MockSTTService } from '@/services/stt/MockSTTService'
-import { MockSOAPService } from '@/services/soap/MockSOAPService'
-import { IS_MOCK } from '@/utils'
-
-// TODO: Swap Mock services for Production services based on env
-const sttService: STTService = IS_MOCK
-  ? new MockSTTService()
-  : new MockSTTService() // Replace with: new ProductionSTTService()
-
-const soapService: SOAPService = IS_MOCK
-  ? new MockSOAPService()
-  : new MockSOAPService() // Replace with: new ProductionSOAPService()
+import type { RecorderState, SOAPResult, SDKCallbacks } from '@/types'
+import { getSTTService, getSOAPService } from '@/services/registry'
 
 interface UseRecorderReturn {
   state: RecorderState
@@ -28,7 +15,7 @@ interface UseRecorderReturn {
   reset: () => void
 }
 
-export function useRecorder(): UseRecorderReturn {
+export function useRecorder(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>): UseRecorderReturn {
   const [state, setState] = useState<RecorderState>('IDLE')
   const [transcript, setTranscript] = useState('')
   const [soapResult, setSoapResult] = useState<SOAPResult | null>(null)
@@ -51,15 +38,14 @@ export function useRecorder(): UseRecorderReturn {
         if (e.data.size > 0) chunksRef.current.push(e.data)
       }
 
-      mediaRecorder.start(250) // Collect chunks every 250ms
+      mediaRecorder.start(250)
       setState('RECORDING')
       setRecordingDuration(0)
 
-      // Start duration timer
       timerRef.current = window.setInterval(() => {
         setRecordingDuration((d) => d + 1)
       }, 1000)
-    } catch (err) {
+    } catch {
       setError('Tidak dapat mengakses mikrofon. Periksa izin browser Anda.')
       setState('ERROR')
     }
@@ -69,19 +55,15 @@ export function useRecorder(): UseRecorderReturn {
     const mediaRecorder = mediaRecorderRef.current
     if (!mediaRecorder) return
 
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null }
 
     setState('PROCESSING_STT')
 
     mediaRecorder.onstop = async () => {
-      // Stop all tracks to release microphone
       mediaRecorder.stream.getTracks().forEach((t) => t.stop())
 
       const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
-      const result = await sttService.transcribe(audioBlob)
+      const result = await getSTTService().transcribe(audioBlob)
 
       if (result.ok) {
         setTranscript(result.data.transcript)
@@ -95,15 +77,13 @@ export function useRecorder(): UseRecorderReturn {
     mediaRecorder.stop()
   }, [])
 
-  const updateTranscript = useCallback((text: string) => {
-    setTranscript(text)
-  }, [])
+  const updateTranscript = useCallback((text: string) => setTranscript(text), [])
 
   const confirmAndGenerateSOAP = useCallback(async () => {
     setState('PROCESSING_LLM')
     setError(null)
 
-    const result = await soapService.generate(transcript)
+    const result = await getSOAPService().generate(transcript)
 
     if (result.ok) {
       setSoapResult(result.data)
@@ -114,6 +94,14 @@ export function useRecorder(): UseRecorderReturn {
     }
   }, [transcript])
 
+  const handleSaveSOAP = useCallback(() => {
+    if (!soapResult) return
+    callbacks?.onResultSOAP?.(soapResult)
+    window.dispatchEvent(new CustomEvent('his_ai:result', {
+      detail: { type: 'SOAP', data: soapResult }
+    }))
+  }, [soapResult, callbacks])
+
   const reset = useCallback(() => {
     setState('IDLE')
     setTranscript('')
@@ -121,22 +109,15 @@ export function useRecorder(): UseRecorderReturn {
     setError(null)
     setRecordingDuration(0)
     chunksRef.current = []
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null }
   }, [])
 
   return {
-    state,
-    transcript,
-    soapResult,
-    error,
-    recordingDuration,
-    startRecording,
-    stopRecording,
-    updateTranscript,
-    confirmAndGenerateSOAP,
+    state, transcript, soapResult, error, recordingDuration,
+    startRecording, stopRecording, updateTranscript,
+    confirmAndGenerateSOAP: confirmAndGenerateSOAP,
     reset,
-  }
+    // expose save handler — feature component akan panggil ini
+    ...(soapResult ? { _onSave: handleSaveSOAP } : {}),
+  } as UseRecorderReturn & { _onSave?: () => void }
 }

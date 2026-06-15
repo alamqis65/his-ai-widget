@@ -2,7 +2,7 @@ import { render } from "preact";
 import { injectStyles } from "./injectStyles";
 import type { SDKConfig, ActiveFeature } from "@/types";
 import { App } from "@/App";
-import logo from '@/assets/MAIA_Head_Transparent.png'
+import logo from "@/assets/MAIA_Head_Transparent.png";
 
 /**
  * his_ai_widget SDK — IIFE Library
@@ -31,11 +31,10 @@ function mountFAB(): void {
   const fab = document.createElement("div");
   fab.id = "his-ai-fab";
   fab.innerHTML = `
-    <div id="his-ai-fab-label" class="sdk-fab-label" style="display: inline">Tanya MAIA</div></div>
+    
     <button id="his-ai-fab-btn" class="sdk-fab-btn" aria-label="Buka AI Medis Widget">
-      <div class="sdk-fab-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <img src=${logo} alt="MAIA Head" width="34" height="34" />
-      </div>
+      <div id="his-ai-fab-label" class="sdk-fab-tooltip">Tanya MAIA</div>
+      <img class="sdk-fab-icon-open" src="${logo}" alt="AI Medis" width="48" height="48" />
       <svg class="sdk-fab-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
@@ -44,6 +43,7 @@ function mountFAB(): void {
   document.body.appendChild(fab);
 
   _fabBtn = document.getElementById("his-ai-fab-btn");
+  //nanti di bikin tooltip
   _fabLabel = document.getElementById("his-ai-fab-label");
   _fabBtn?.addEventListener("click", () => HISWidget.toggle());
 }

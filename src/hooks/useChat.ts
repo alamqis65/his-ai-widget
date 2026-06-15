@@ -1,14 +1,7 @@
 import { useState, useCallback } from 'preact/hooks'
-import type { ChatMessage } from '@/types'
-import type { AIService } from '@/services/ai/AIService'
-import { MockAIService } from '@/services/ai/MockAIService'
+import type { ChatMessage, SDKCallbacks } from '@/types'
+import { getAIService } from '@/services/registry'
 import { generateId } from '@/utils'
-import { IS_MOCK } from '@/utils'
-
-// TODO: Swap MockAIService for ProductionAIService based on env
-const aiService: AIService = IS_MOCK
-  ? new MockAIService()
-  : new MockAIService() // Replace with: new ProductionAIService()
 
 interface UseChatReturn {
   messages: ChatMessage[]
@@ -18,7 +11,7 @@ interface UseChatReturn {
   clearHistory: () => void
 }
 
-export function useChat(): UseChatReturn {
+export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat'>): UseChatReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,24 +20,23 @@ export function useChat(): UseChatReturn {
     if (!content.trim() || isLoading) return
 
     const userMessage: ChatMessage = {
-      id: generateId(),
-      role: 'user',
-      content: content.trim(),
-      timestamp: new Date(),
+      id: generateId(), role: 'user',
+      content: content.trim(), timestamp: new Date(),
     }
 
     setMessages((prev) => [...prev, userMessage])
     setIsLoading(true)
     setError(null)
 
-    const result = await aiService.sendMessage(content, messages)
+    // Service di-resolve saat call — otomatis Mock atau Production
+    // berdasarkan config dari his_ai_widget.init()
+    const service = getAIService()
+    const result = await service.sendMessage(content, messages)
 
     if (result.ok) {
       const assistantMessage: ChatMessage = {
-        id: generateId(),
-        role: 'assistant',
-        content: result.data,
-        timestamp: new Date(),
+        id: generateId(), role: 'assistant',
+        content: result.data, timestamp: new Date(),
       }
       setMessages((prev) => [...prev, assistantMessage])
     } else {
@@ -55,9 +47,16 @@ export function useChat(): UseChatReturn {
   }, [isLoading, messages])
 
   const clearHistory = useCallback(() => {
+    // Emit riwayat chat sebelum di-clear
+    if (messages.length > 0) {
+      callbacks?.onResultChat?.(messages)
+      window.dispatchEvent(new CustomEvent('his_ai:result', {
+        detail: { type: 'CHAT_HISTORY', data: messages }
+      }))
+    }
     setMessages([])
     setError(null)
-  }, [])
+  }, [messages, callbacks])
 
   return { messages, isLoading, error, sendMessage, clearHistory }
 }

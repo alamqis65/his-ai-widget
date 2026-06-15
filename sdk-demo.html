@@ -240,26 +240,70 @@
 <script src="./dist/his_ai_widget.js"></script>
 <script>
   his_ai_widget.init({
-    userName:  'dr. Budi Santoso',
-    theme:     'light',
+    // ── Identity ──────────────────────────────────────────────────────────
+    userName:     'dr. Budi Santoso',
+    theme:        'light',
 
-    // Konteks awal (bisa di-update per pasien)
+    // ── Konteks pasien awal (bisa di-update via setPatient()) ─────────────
     patientId:    'P-2024-001',
     visitId:      'V-20260604-001',
     doctorId:     'DR-BS-001',
     departmentId: 'DEPT-UMUM',
 
-    // Dipanggil saat dokter klik "Simpan ke HIS" di dalam widget
-    onResult: (type, data) => {
-      addLog('onResult', `${type} → diterima`)
-      console.log('[HIS] Simpan ke rekam medis:', type, data)
-      // TODO: POST ke backend HIS kamu
-      // fetch('/api/medical-records', { method: 'POST', body: JSON.stringify({ type, data }) })
+    // ── API Endpoints (opsional — tanpa ini pakai Mock) ────────────────────
+    // Uncomment dan isi URL sesuai backend HIS kamu:
+    // api: {
+    //   chatEndpoint:    'https://api.rs-nusantara.com/ai/chat',
+    //   sttEndpoint:     'https://api.rs-nusantara.com/ai/stt',
+    //   soapEndpoint:    'https://api.rs-nusantara.com/ai/soap',
+    //   pathwayEndpoint: 'https://api.rs-nusantara.com/ai/pathway',
+    //   eclaimEndpoint:  'https://api.rs-nusantara.com/eclaim/check',
+    //   headers: {
+    //     'Authorization': 'Bearer <token>',
+    //     'X-Hospital-Id': 'RS-NUSANTARA-001',
+    //   },
+    // },
+
+    // ── Feature visibility (semua default: true) ───────────────────────────
+    // Set false untuk menyembunyikan fitur tertentu:
+    // features: {
+    //   chat:    true,
+    //   soap:    true,
+    //   pathway: true,
+    //   eclaim:  false,   // ← sembunyikan E-Claim
+    // },
+
+    // ── Callbacks per fitur ────────────────────────────────────────────────
+    onResultChat: (messages) => {
+      addLog('onResultChat', `${messages.length} pesan`)
+      console.log('[HIS] Riwayat chat:', messages)
+      // Simpan ke EMR / session storage
+    },
+
+    onResultSOAP: (result) => {
+      addLog('onResultSOAP', `SOAP untuk: ${result.transcriptUsed.slice(0, 30)}...`)
+      console.log('[HIS] SOAP Result:', result)
+      // POST ke endpoint rekam medis HIS
+      // fetch('/api/emr/soap', { method: 'POST', body: JSON.stringify(result) })
+    },
+
+    onResultPathway: (result) => {
+      addLog('onResultPathway', `${result.diagnosis} · ${result.totalDays} hari`)
+      console.log('[HIS] Clinical Pathway:', result)
+      // POST ke endpoint clinical pathway HIS
+      // fetch('/api/emr/pathway', { method: 'POST', body: JSON.stringify(result) })
+    },
+
+    onResultEClaim: (result) => {
+      addLog('onResultEClaim', `${result.icdCode} · ${result.eligible ? 'Eligible' : 'Ditolak'}`)
+      console.log('[HIS] E-Claim:', result)
+      // Submit ke sistem klaim
+      // fetch('/api/claims/submit', { method: 'POST', body: JSON.stringify(result) })
     },
 
     onError: (err) => {
       addLog('onError', err.message)
-      console.error('[HIS] Error:', err)
+      console.error('[HIS] Widget error:', err)
     },
   })
 

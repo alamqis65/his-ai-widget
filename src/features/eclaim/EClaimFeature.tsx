@@ -1,30 +1,25 @@
 import { useState } from 'preact/hooks'
 import { useEClaim } from '@/hooks/useEClaim'
-import type { EClaimCheckResult } from '@/types'
+import type { EClaimCheckResult, SDKCallbacks } from '@/types'
+
+interface Props { callbacks?: Pick<SDKCallbacks, 'onResultEClaim'> }
 
 function formatRupiah(n: number) {
   return 'Rp ' + n.toLocaleString('id-ID')
 }
 
-function EClaimResult({ result, onReset }: { result: EClaimCheckResult; onReset: () => void }) {
+function EClaimResult({ result, onReset, onSave }: { result: EClaimCheckResult; onReset: () => void; onSave: () => void }) {
   return (
     <div class="feature-result">
       <div class={`eclaim-status ${result.eligible ? 'eclaim-status--eligible' : 'eclaim-status--ineligible'}`}>
         <div class="eclaim-status-icon">
-          {result.eligible ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          )}
+          {result.eligible
+            ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          }
         </div>
         <div>
-          <p class="eclaim-status-title">
-            {result.eligible ? 'Klaim Dapat Diajukan' : 'Tidak Memenuhi Syarat'}
-          </p>
+          <p class="eclaim-status-title">{result.eligible ? 'Klaim Dapat Diajukan' : 'Tidak Memenuhi Syarat'}</p>
           <p class="eclaim-status-sub">{result.diagnosis} · {result.icdCode}</p>
         </div>
       </div>
@@ -63,22 +58,18 @@ function EClaimResult({ result, onReset }: { result: EClaimCheckResult; onReset:
       <div class="feature-actions">
         <button class="btn btn-secondary btn-sm" onClick={onReset}>Cek Baru</button>
         {result.eligible && (
-          <button class="btn btn-primary btn-sm" onClick={() => {
-            window.dispatchEvent(new CustomEvent('his_ai:result', { detail: { type: 'ECLAIM', data: result } }))
-          }}>
-            Ajukan Klaim
-          </button>
+          <button class="btn btn-primary btn-sm" onClick={onSave}>Ajukan Klaim</button>
         )}
       </div>
     </div>
   )
 }
 
-export function EClaimFeature() {
-  const { state, result, error, check, reset } = useEClaim()
+export function EClaimFeature({ callbacks }: Props) {
+  const { state, result, error, check, save, reset } = useEClaim(callbacks)
   const [form, setForm] = useState({ patientId: '', icdCode: '', diagnosis: '' })
 
-  const set = (k: keyof typeof form) => (e: Event) =>
+  const setField = (k: keyof typeof form) => (e: Event) =>
     setForm(f => ({ ...f, [k]: (e.target as HTMLInputElement).value }))
 
   const QUICK = [
@@ -97,46 +88,23 @@ export function EClaimFeature() {
       {state === 'IDLE' && (
         <div class="feature-form">
           <label class="form-label">No. Pasien / BPJS</label>
-          <input
-            class="form-input"
-            placeholder="Contoh: P-2024-001"
-            value={form.patientId}
-            onInput={set('patientId')}
-          />
-
+          <input class="form-input" placeholder="Contoh: P-2024-001" value={form.patientId} onInput={setField('patientId')} />
           <label class="form-label">Diagnosis</label>
-          <input
-            class="form-input"
-            placeholder="Contoh: Demam Tifoid"
-            value={form.diagnosis}
-            onInput={set('diagnosis')}
-          />
-
+          <input class="form-input" placeholder="Contoh: Demam Tifoid" value={form.diagnosis} onInput={setField('diagnosis')} />
           <label class="form-label">Kode ICD-10</label>
-          <input
-            class="form-input"
-            placeholder="Contoh: A01.0"
-            value={form.icdCode}
-            onInput={set('icdCode')}
-          />
-
+          <input class="form-input" placeholder="Contoh: A01.0" value={form.icdCode} onInput={setField('icdCode')} />
           <div class="form-suggestions">
             {QUICK.map((q) => (
               <button key={q.icdCode} class="suggestion-chip" onClick={() => {
                 const next = { ...form, diagnosis: q.diagnosis, icdCode: q.icdCode }
                 setForm(next)
                 check(next.patientId || 'P-DEMO', next.icdCode, next.diagnosis)
-              }}>
-                {q.icdCode} · {q.diagnosis}
-              </button>
+              }}>{q.icdCode} · {q.diagnosis}</button>
             ))}
           </div>
-
-          <button
-            class="btn btn-primary btn-full"
+          <button class="btn btn-primary btn-full"
             onClick={() => check(form.patientId || 'P-DEMO', form.icdCode, form.diagnosis)}
-            disabled={!form.diagnosis.trim()}
-          >
+            disabled={!form.diagnosis.trim()}>
             Cek Eligibilitas
           </button>
         </div>
@@ -151,7 +119,7 @@ export function EClaimFeature() {
       )}
 
       {state === 'DONE' && result && (
-        <EClaimResult result={result} onReset={reset} />
+        <EClaimResult result={result} onReset={reset} onSave={save} />
       )}
 
       {state === 'ERROR' && (

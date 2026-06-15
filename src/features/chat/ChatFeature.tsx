@@ -1,5 +1,10 @@
 import { ChatLayout } from '@/components/chat/ChatLayout'
+import type { SDKCallbacks } from '@/types'
 
-export function ChatFeature() {
-  return <ChatLayout />
+interface Props {
+  callbacks?: Pick<SDKCallbacks, 'onResultChat'>
+}
+
+export function ChatFeature({ callbacks }: Props) {
+  return <ChatLayout callbacks={callbacks} />
 }

@@ -18,6 +18,7 @@ import { App } from '@/App'
 let _config: SDKConfig = {}
 let _isOpen = false
 let _mounted = false
+let _listenersWired = false
 let _container: HTMLElement | null = null
 let _fabBtn: HTMLElement | null = null
 let _fabLabel: HTMLElement | null = null
@@ -47,6 +48,39 @@ function mountFAB(): void {
   _fabBtn?.addEventListener('click', () => HISWidget.toggle())
 }
 
+/**
+ * Menjembatani event internal widget ke callback yang dikonfigurasi host:
+ *   - `his_ai:result` → config.onResult(type, data)
+ *   - `his_ai:error`  → config.onError(error)
+ *
+ * Komponen fitur (SOAP, Clinical Pathway, E-Claim) men-dispatch
+ * `his_ai:result` saat dokter menyimpan hasil. Listener ini meneruskan
+ * payload tersebut ke `onResult` yang dikirim host lewat init().
+ */
+function wireResultListeners(): void {
+  if (_listenersWired) return
+  _listenersWired = true
+
+  window.addEventListener('his_ai:result', (e: Event) => {
+    const detail = (e as CustomEvent).detail as { type?: string; data?: unknown } | undefined
+    if (!detail?.type) return
+
+    try {
+      _config.onResult?.(detail.type, detail.data)
+    } catch (err) {
+      console.error('[his_ai_widget] onResult callback threw:', err)
+      _config.onError?.(err instanceof Error ? err : new Error(String(err)))
+    }
+  })
+
+  window.addEventListener('his_ai:error', (e: Event) => {
+    const detail = (e as CustomEvent).detail as { error?: unknown } | undefined
+    const raw = detail?.error
+    const error = raw instanceof Error ? raw : new Error(String(raw ?? 'Unknown widget error'))
+    _config.onError?.(error)
+  })
+}
+
 function mountWidget(): void {
   if (_mounted) return
 
@@ -66,6 +100,7 @@ const HISWidget = {
     _config = { theme: 'light', ...config }
 
     injectStyles()
+    wireResultListeners()
 
     const doMount = () => {
       mountFAB()

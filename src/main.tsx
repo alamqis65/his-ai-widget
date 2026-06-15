@@ -1,6 +1,6 @@
 import { render } from 'preact'
 import { App } from './App'
-import './styles/index.css'
+// import './styles/index.css'
 import './sdk'
 
 // Dev preview — simulasi SDK init

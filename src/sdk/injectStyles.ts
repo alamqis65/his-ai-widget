@@ -89,7 +89,7 @@ input, textarea { font-family: var(--font); }
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  border: 2px solid var(--brand);
   display: flex;
   align-items: center;
   justify-content: center;

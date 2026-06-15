@@ -4,7 +4,7 @@ import { ChatFeature } from '@/features/chat/ChatFeature'
 import { SpeechToSoapFeature } from '@/features/speech-to-soap/SpeechToSoapFeature'
 import { ClinicalPathwayFeature } from '@/features/clinical-pathway/ClinicalPathwayFeature'
 import { EClaimFeature } from '@/features/eclaim/EClaimFeature'
-
+import logo from '@/assets/MAIA_Head_Transparent.png'
 interface NavItem {
   id: ActiveFeature
   label: string
@@ -15,8 +15,8 @@ interface NavItem {
 const NAV: NavItem[] = [
   {
     id: 'chat',
-    label: 'AI Chat',
-    description: 'Tanya asisten klinis',
+    label: 'MAIA Chat',
+    description: 'Tanya MAIA',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
@@ -90,12 +90,10 @@ export function App() {
       <header class="widget-header">
         <div class="widget-header-left">
           <div class="widget-avatar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-            </svg>
+            <img src={logo}  alt="MAIA Head" width={24} height={24} />
           </div>
           <div>
-            <p class="widget-header-title">AI Medis</p>
+            <p class="widget-header-title">Tanya MAIA</p>
             <p class="widget-header-sub">
               <span class="widget-status-dot"/>
               {cfg.userName ? `Halo, ${cfg.userName}` : 'Siap membantu'}

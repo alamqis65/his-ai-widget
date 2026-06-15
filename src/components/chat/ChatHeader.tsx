@@ -14,7 +14,7 @@ export function ChatHeader({ onClear }: ChatHeaderProps) {
           </svg>
         </div>
         <div>
-          <p class="chat-header-name">AI Assistant</p>
+          <p class="chat-header-name">MAIA Chat</p>
           <p class="chat-header-status">
             <span class="status-dot" />
             Online

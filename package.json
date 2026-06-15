@@ -7,15 +7,15 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "type-check": "tsc --noEmit",
-    "build:lib": "vite build --mode lib",
-    "preview:lib": "python3 -m http.server 8080",
-    "prebuild:lib": "node scripts/generate-styles.cjs"
-  },
+"scripts": {
+  "dev": "npm run generate:styles && vite",
+  "build": "tsc --noEmit && vite build",
+  "preview": "vite preview",
+  "type-check": "tsc --noEmit",
+  "build:lib": "vite build --mode lib",
+  "preview:lib": "python3 -m http.server 8080",
+  "generate:styles": "node scripts/generate-styles.cjs"
+},
   "dependencies": {
     "preact": "^10.23.2"
   },

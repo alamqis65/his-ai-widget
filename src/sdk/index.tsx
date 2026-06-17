@@ -33,7 +33,9 @@ function mountFAB(): void {
   fab.innerHTML = `
     
     <button id="his-ai-fab-btn" class="sdk-fab-btn" aria-label="Buka AI Medis Widget">
+    <div class="sdk-fab-tooltip-wrapper">
       <div id="his-ai-fab-label" class="sdk-fab-tooltip">Tanya MAIA</div>
+      </div>
       <img class="sdk-fab-icon-open" src="${logo}" alt="AI Medis" width="48" height="48" />
       <svg class="sdk-fab-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -82,7 +84,7 @@ const HISWidget = {
 
     console.info("[his_ai_widget] v0.2.0 initialized", {
       user: _config.userName ?? "(anonymous)",
-      mock: !_config.apiBaseUrl,
+      // mock: !_config.apiBaseUrl,
     });
   },
 

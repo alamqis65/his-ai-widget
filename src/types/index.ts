@@ -93,18 +93,14 @@ export interface SDKApiConfig {
   chatEndpoint?: string
 
   /**
-   * Endpoint Speech-to-Text.
-   * Widget akan POST FormData { audio: Blob } dan expect { transcript: string }
-   * @example 'https://api.rs-nusantara.com/ai/stt'
+   * Endpoint Speech-to-SOAP — handle transkripsi DAN generate SOAP sekaligus.
+   *
+   * Request : POST multipart/form-data { audio: Blob }
+   * Response: { transcript: string, soap: { subjective, objective, assessment, plan } }
+   *
+   * @example 'https://api.rs-nusantara.com/ai/speech-to-soap'
    */
-  sttEndpoint?: string
-
-  /**
-   * Endpoint SOAP Generator.
-   * Widget akan POST { transcript, context } dan expect { soap: SOAPNote }
-   * @example 'https://api.rs-nusantara.com/ai/soap'
-   */
-  soapEndpoint?: string
+  soapGeneratorEndpoint?: string
 
   /**
    * Endpoint Clinical Pathway Generator.
@@ -214,7 +210,6 @@ export interface SDKConfig extends SDKCallbacks {
   // ── API Endpoints ─────────────────────────────────────────────────────────
   /** Konfigurasi endpoint per service. Kalau tidak diisi → pakai Mock. */
   api?: SDKApiConfig
-  apiBaseUrl?: string
 
   // ── Feature Visibility ────────────────────────────────────────────────────
   /**

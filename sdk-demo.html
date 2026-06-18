@@ -252,7 +252,9 @@
 
     // ── API Endpoints (opsional — tanpa ini pakai Mock) ────────────────────
     // Uncomment dan isi URL sesuai backend HIS kamu:
-    // api: {
+    api: {
+      // soapGeneratorEndpoint: 'http://192.168.90.98:8000/api/v1/rag/analyze',
+      soapGeneratorEndpoint: 'http://localhost/medinfrasv2.2/dev/EMR/Libs/Service/MedinfrasAPIService.asmx/GenerateSOAPI2',
     //   chatEndpoint:    'https://api.rs-nusantara.com/ai/chat',
     //   sttEndpoint:     'https://api.rs-nusantara.com/ai/stt',
     //   soapEndpoint:    'https://api.rs-nusantara.com/ai/soap',
@@ -262,7 +264,7 @@
     //     'Authorization': 'Bearer <token>',
     //     'X-Hospital-Id': 'RS-NUSANTARA-001',
     //   },
-    // },
+    },
 
     // ── Feature visibility (semua default: true) ───────────────────────────
     // Set false untuk menyembunyikan fitur tertentu:

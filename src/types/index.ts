@@ -27,14 +27,16 @@ export interface STTResult {
 }
 
 export interface SOAPNote {
-  subjective: string
-  objective: string
-  assessment: string
-  plan: string
+  Subjective: any
+  Objective: any
+  Assessment: any
+  Plan: any
+  Interventions: any
 }
 
 export interface SOAPResult {
   soap: SOAPNote
+  anamesa: any
   generatedAt: Date
   transcriptUsed: string
 }
@@ -101,6 +103,12 @@ export interface SDKApiConfig {
    * @example 'https://api.rs-nusantara.com/ai/speech-to-soap'
    */
   soapGeneratorEndpoint?: string
+    /**
+   * pretext tambahan untuk request SOAP Generator (opsional).
+   * Gunakan untuk memberikan konteks tambahan sebelum transkripsi dokter-pasien.
+   * @example { 'pasien berusia 15 tahun dengan riwayat hipertensi tingkat 1' }
+   */
+  pretext?: string
 
   /**
    * Endpoint Clinical Pathway Generator.

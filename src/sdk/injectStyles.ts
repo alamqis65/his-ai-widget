@@ -777,15 +777,18 @@ textarea {
 
 .sts-progress {
   display: flex;
+  justify-content: center;
   align-items: center;
+  gap: 20px; /* jarak antar step lebih rapat */
+  margin-bottom: 16px;
 }
 
 .sts-step {
-  flex: 1;
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   position: relative;
 }
 
@@ -793,8 +796,8 @@ textarea {
   content: "";
   position: absolute;
   top: 10px;
-  left: 55%;
-  right: -5%;
+  left: 50%;
+  width: 40px; /* garis lebih pendek */
   height: 1px;
   background: var(--border);
   z-index: 0;
@@ -805,19 +808,18 @@ textarea {
 }
 
 .sts-step-dot {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--bg-3);
   border: 1.5px solid var(--border-2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-3);
   z-index: 1;
-  position: relative;
   transition: all 150ms ease;
 }
 
@@ -825,7 +827,7 @@ textarea {
   background: var(--brand);
   border-color: var(--brand);
   color: white;
-  box-shadow: 0 0 0 3px rgb(26 158 118/0.2);
+  box-shadow: 0 0 0 3px rgb(26 158 118 / 0.2);
 }
 
 .sts-step--done .sts-step-dot {
@@ -845,15 +847,12 @@ textarea {
   color: var(--brand-dark);
   font-weight: 600;
 }
+
 .sts-step--done .sts-step-label {
   color: var(--brand);
 }
 
-.sts-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+
 
 /* Recorder */
 .recorder-view {
@@ -1534,6 +1533,41 @@ textarea {
   color: var(--text-2);
   line-height: 1.6;
 }
+
+.soap-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.soap-key {
+  font-weight: 600;
+  padding-right: 0.5rem;
+  vertical-align: top;
+}
+.soap-value {
+  color: #444;
+}
+
+.soap-transcript-header {
+  display: flex;
+  justify-content: space-between; /* label di kiri, tombol di kanan */
+  align-items: center;
+}
+
+.btn-copy {
+  font-size: 10px !important;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.btn-copy:hover {
+  background: #eee;
+}
+
 `
 
 let _injected = false

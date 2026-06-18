@@ -14,7 +14,6 @@ const STATES = ['IDLE',  'RECORDING', 'PROCESSING_LLM', 'DONE'] as const
 export function SpeechToSoapFeature({ callbacks }: Props) {
   const {
     state,
-    transcript,
     soapResult,
     error,
     recordingDuration,
@@ -30,7 +29,7 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
     <div class="sts-layout">
       <div>
         <h2 class="feature-title">Speech to SOAP</h2>
-        <p class="feature-subtitle">Rekam percakapan dokter-pasien, SOAP di-generate otomatis</p>
+        <p class="feature-subtitle">Rekam percakapan anda, dan MAIA akan menghasilkan SOAPI berdasarkan transkripsi</p>
       </div>
 
       {/* Progress steps */}
@@ -80,13 +79,6 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
         {/* DONE: tampilkan hasil + transcript */}
         {state === 'DONE' && soapResult && (
           <div class="feature-result">
-            {/* Transcript preview */}
-            {transcript && (
-              <div class="soap-transcript-preview">
-                <p class="soap-transcript-label">Transkripsi</p>
-                <p class="soap-transcript-text">{transcript}</p>
-              </div>
-            )}
             <SoapResultView
               result={soapResult}
               onReset={reset}

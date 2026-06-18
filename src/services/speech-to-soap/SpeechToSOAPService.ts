@@ -1,7 +1,6 @@
 import type { SOAPResult, ServiceResponse } from '@/types'
 
 export interface SpeechToSOAPResult {
-  transcript: string
   soapResult: SOAPResult
 }
 

@@ -1568,6 +1568,37 @@ textarea {
   background: #eee;
 }
 
+/* Markdown Body Styles for AI Assistant Chat */
+.markdown-body {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  color: inherit;
+}
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--his-color-neutral-900);
+}
+.markdown-body ul, .markdown-body ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.2rem;
+}
+.markdown-body li {
+  margin-bottom: 0.25rem;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
 `
 
 let _injected = false

@@ -19,6 +19,38 @@
   <!-- Contoh buka widget langsung ke fitur + set konteks pasien -->
   <button onclick="openAI('P-2024-001','V-001','Budi Santoso','speech-to-soap')">Buat SOAP (Budi)</button>
 
+  <hr style="margin: 20px 0;">
+  
+  <!-- DEBUG UI UNTUK TESTING INPUT JSON DARI .NET -->
+  <div style="background: #f9f9f9; padding: 15px; border: 1px solid #ddd; max-width: 600px;">
+    <h4 style="margin-top:0;">🔧 Debug UI: Simulasi Input JSON dari .NET</h4>
+    <p style="font-size: 12px; color: #666;">Gunakan form ini untuk mensimulasikan data clinical_notes (pretext) dan active_patient tanpa perlu membuka aplikasi .NET.</p>
+    <textarea id="debugJsonInput" rows="6" style="width: 100%; font-family: monospace; padding: 8px;">
+Pasien datang dengan keluhan demam tinggi dan batuk kering selama 3 hari terakhir. Riwayat penyakit sebelumnya tidak ada. Pemeriksaan fisik menunjukkan suhu 38,5°C.
+    </textarea>
+    <br>
+    <button onclick="simulasikanInputJson()" style="margin-top: 10px; padding: 6px 12px; background: #28a745; color: white; border: none; cursor: pointer;">Suntikkan JSON ke Widget</button>
+    <span id="debugStatus" style="font-size: 12px; color: green; margin-left: 10px; display: none;">✅ Data disuntikkan!</span>
+  </div>
+
+  <script>
+    function simulasikanInputJson() {
+      const input = document.getElementById("debugJsonInput").value;
+      const currentConfig = window.his_ai_widget._getConfig();
+      // Update pretext dalam objek api
+      if (!currentConfig.api) currentConfig.api = {};
+      currentConfig.api.pretext = input;
+      
+      // Memberi notifikasi visual bahwa sudah disuntikkan
+      const statusSpan = document.getElementById("debugStatus");
+      statusSpan.style.display = "inline";
+      setTimeout(() => { statusSpan.style.display = "none"; }, 2000);
+      
+      console.log("[DEBUG] Context updated:", currentConfig.api.pretext);
+    }
+  </script>
+  <hr style="margin: 20px 0;">
+
   <!-- ═══════════════════════════════════════════════════════════════════
        INTEGRASI his_ai_widget:
        1. Load 1 file JS

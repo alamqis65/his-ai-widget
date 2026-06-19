@@ -7,20 +7,22 @@
   "engines": {
     "node": ">=22.0.0"
   },
-"scripts": {
-  "dev": "npm run generate:styles && vite",
-  "build": "tsc --noEmit && vite build",
-  "preview": "vite preview",
-  "type-check": "tsc --noEmit",
-  "build:lib": "vite build --mode lib",
-  "preview:lib": "python3 -m http.server 8080",
-  "generate:styles": "node scripts/generate-styles.cjs"
-},
+  "scripts": {
+    "dev": "npm run generate:styles && vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "build:lib": "vite build --mode lib",
+    "preview:lib": "python3 -m http.server 8080",
+    "generate:styles": "node scripts/generate-styles.cjs"
+  },
   "dependencies": {
+    "marked": "^18.0.5",
     "preact": "^10.23.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.5",
+    "@types/marked": "^5.0.2",
     "typescript": "^5.6.3",
     "vite": "^8.0.16",
     "vite-plugin-css-injected-by-js": "^5.0.1"

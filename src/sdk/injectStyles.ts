@@ -1024,6 +1024,42 @@ textarea {
 }
 
 /* SOAP Result */
+
+.soap-list {
+  margin: 4px 0 8px 0;
+  padding-left: 1.2rem;
+  line-height: 1.6;
+}
+
+.soap-list li + li {
+  margin-top: 4px;
+}
+
+.soap-plan > div {
+  margin-bottom: 8px;
+}
+
+.soap-plan strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+.soap-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.soap-key {
+  font-weight: 600;
+  padding-right: 8px;
+  vertical-align: top;
+}
+
+.soap-value {
+  white-space: pre-wrap;
+}
+
 .soap-result {
   display: flex;
   flex-direction: column;
@@ -1772,6 +1808,37 @@ textarea {
   border-color: #22c55e !important;
   color: #fff !important;
   transform: scale(1.08);
+}
+/* Markdown Body Styles for AI Assistant Chat */
+.markdown-body {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  color: inherit;
+}
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--his-color-neutral-900);
+}
+.markdown-body ul, .markdown-body ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.2rem;
+}
+.markdown-body li {
+  margin-bottom: 0.25rem;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 `
 

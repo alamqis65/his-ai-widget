@@ -81,6 +81,7 @@ export function useSpeechToSOAP(
       const result = await getSpeechToSOAPService().process(audioBlob);
 
       if (result.ok) {
+        console.log(result.data.soapResult);
         setSoapResult(result.data.soapResult);
         setState("DONE");
       } else {

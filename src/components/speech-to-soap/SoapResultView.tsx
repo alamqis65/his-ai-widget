@@ -20,11 +20,72 @@ interface Props {
   ) => void;
 }
 
-function normalizeContent(content: any): JSX.Element | string {
+function prettifySOAPText(text: string): JSX.Element {
+  const lines = text
+    .split(/\n+/)
+    .map(l => l.replace(/^[-•]\s*/, "").trim())
+    .filter(Boolean);
+
+  return (
+    <ul class="soap-list">
+      {lines.map((line, idx) => (
+        <li key={idx}>{line}</li>
+      ))}
+    </ul>
+  );
+}
+
+function normalizeContent(content: any, sectionKey?: string): JSX.Element | string {
   if (content == null) return "";
-  if (typeof content === "string") return content;
+  if (typeof content === "string") return prettifySOAPText(content);
 
   if (typeof content === "object") {
+    if (sectionKey === "P") {
+      return (
+        <div class="soap-plan">
+          {Object.entries(content).map(([k, v]) => {
+            if (k === "rekomendasi_resep" && Array.isArray(v)) {
+              return (
+                <div key={k}>
+                  <strong>Rekomendasi Resep:</strong>
+                  <ul class="soap-list">
+                    {v.map((item: any) => (
+                      <li key={item.ItemID}>{item.ItemName}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            }
+            if (k === "rekomendasi_penunjang" && Array.isArray(v)) {
+              return (
+                <div key={k}>
+                  <strong>Rekomendasi Penunjang:</strong>
+                  <ul class="soap-list">
+                    {v.map((item: any) => (
+                      <li key={item.ItemCode}>{item.NamaPemeriksaan}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            }
+            if (typeof v === "string") {
+              return (
+                <div key={k}>
+                  <strong>{k.replace(/_/g, " ")}:</strong>
+                  {prettifySOAPText(v)}
+                </div>
+              );
+            }
+            return (
+              <div key={k}>
+                <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
     return (
       <table class="soap-table">
         <tbody>
@@ -63,25 +124,25 @@ export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
     {
       key: "S",
       label: "Subjective",
-      content: normalizeContent(soap.Subjective),
+      content: normalizeContent(soap.Subjective, "S"),
       color: "blue",
     },
     {
       key: "O",
       label: "Objective",
-      content: normalizeContent(soap.Objective),
+      content: normalizeContent(soap.Objective, "O"),
       color: "green",
     },
     {
       key: "A",
       label: "Assessment",
-      content: normalizeContent(soap.Assessment),
+      content: normalizeContent(soap.Assessment, "A"),
       color: "orange",
     },
     {
       key: "P",
       label: "Plan",
-      content: normalizeContent(soap.Plan),
+      content: normalizeContent(soap.Plan, "P"),
       color: "purple",
     },
   ] as const;
@@ -133,16 +194,21 @@ export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
               <span class="soap-section-icon">{s.key}</span>
               <span class="soap-section-label">{s.label}</span>
             </div>
-            <div class="soap-section-content">{s.content}</div>
+            <div class="soap-section-content">
+              {s.content}
+
+              {/* SuggestionPanel hanya akan muncul jika s.key adalah "P" */}
+              {s.key === "A" && (
+                <SuggestionPanel
+                  diagnoses={sugest_diagnosis ?? []}
+                  procedures={sugest_procedures ?? []}
+                  onSave={onSave}
+                />
+              )}
+            </div>
           </div>
         ))}
       </div>
-      
-      <SuggestionPanel
-        diagnoses={sugest_diagnosis ?? []}
-        procedures={sugest_procedures ?? []}
-        onSave={onSave}
-      />
 
       <div class="soap-actions">
         <button class="btn btn-secondary btn-sm" onClick={onReset}>

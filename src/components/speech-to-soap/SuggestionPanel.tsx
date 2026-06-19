@@ -5,7 +5,10 @@ import type { SaveSOAPType } from "@/hooks/useSpeechToSOAP";
 interface Props {
   diagnoses: SuggestedDiagnosis[];
   procedures: SuggestedProcedure[];
-  onSave: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void;
+  onSave: (
+    type: SaveSOAPType,
+    selected: SuggestedDiagnosis[] | SuggestedProcedure[],
+  ) => void;
 }
 
 // ─── Diagnosis Row ────────────────────────────────────────────────────────────
@@ -25,14 +28,20 @@ function DiagnosisRow({ item, onSave }: DiagnosisRowProps) {
   };
 
   return (
-    <div class={`suggestion-row ${item.IsPrimary ? "suggestion-row--primary" : "suggestion-row--secondary"}`}>
+    <div
+      class={`suggestion-row ${item.IsPrimary ? "suggestion-row--primary" : "suggestion-row--secondary"}`}
+    >
       <div class="suggestion-row-info">
         <div class="suggestion-row-top">
           <span class="suggestion-icd">{item.ICD10}</span>
           {item.IsPrimary ? (
-            <span class="suggestion-badge suggestion-badge--primary">Primer</span>
+            <span class="suggestion-badge suggestion-badge--primary">
+              Primer
+            </span>
           ) : (
-            <span class="suggestion-badge suggestion-badge--secondary">Sekunder</span>
+            <span class="suggestion-badge suggestion-badge--secondary">
+              Sekunder
+            </span>
           )}
         </div>
         <span class="suggestion-name">{item.LabelICD10}</span>
@@ -43,11 +52,25 @@ function DiagnosisRow({ item, onSave }: DiagnosisRowProps) {
         title="Simpan diagnosa ini ke HIS"
       >
         {saved ? (
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         ) : (
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         )}
@@ -86,11 +109,25 @@ function ProcedureRow({ item, onSave }: ProcedureRowProps) {
         title="Simpan prosedur ini ke HIS"
       >
         {saved ? (
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         ) : (
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         )}
@@ -106,20 +143,36 @@ type Tab = "diagnose" | "procedure";
 export function SuggestionPanel({ diagnoses, procedures, onSave }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("diagnose");
 
-  const hasDiagnoses = diagnoses && diagnoses.length > 0;
-  const hasProcedures = procedures && procedures.length > 0;
+  const diagnosesWithId =
+    diagnoses?.filter(
+      (diagnosis) => diagnosis.ICD10 !== null && diagnosis.ICD10 !== "",
+    ) ?? [];
+  const hasDiagnoses = diagnosesWithId.length > 0;
+
+  const proceduresWithId =
+    procedures?.filter(
+      (procedure) =>
+        procedure.ProcedureID !== null && procedure.ProcedureID !== "",
+    ) ?? [];
+  const hasProcedures = proceduresWithId.length > 0;
 
   if (!hasDiagnoses && !hasProcedures) return null;
 
   return (
     <div class="suggestion-panel">
       <div class="suggestion-panel-header">
-        {/* <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <path d="M9 11l3 3L22 4" />
           <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
-        </svg> */}
+        </svg>
         <span class="suggestion-panel-title">Rekomendasi ICD-10 & ICD-9</span>
-        <span class="suggestion-panel-hint">Klik ✓ untuk Automatis Simpan ke HIS</span>
       </div>
 
       {/* Tabs */}
@@ -133,7 +186,8 @@ export function SuggestionPanel({ diagnoses, procedures, onSave }: Props) {
             <span class="suggestion-tab-count">{diagnoses.length}</span>
           </button>
         )}
-        {hasProcedures && (
+
+        {/* {hasProcedures && (
           <button
             class={`suggestion-tab ${activeTab === "procedure" ? "suggestion-tab--active" : ""}`}
             onClick={() => setActiveTab("procedure")}
@@ -141,29 +195,37 @@ export function SuggestionPanel({ diagnoses, procedures, onSave }: Props) {
             Prosedur
             <span class="suggestion-tab-count">{procedures.length}</span>
           </button>
-        )}
+        )} */}
       </div>
 
       {/* List */}
       <div class="suggestion-list">
-        {activeTab === "diagnose" && hasDiagnoses &&
-          diagnoses.map((d) => (
-            <DiagnosisRow
-              key={d.ICD10}
-              item={d}
-              onSave={(item) => onSave("DIAGNOSE", [item])}
-            />
-          ))
-        }
-        {activeTab === "procedure" && hasProcedures &&
-          procedures.map((p) => (
-            <ProcedureRow
-              key={p.ProcedureID}
-              item={p}
-              onSave={(item) => onSave("PROCEDURE", [item])}
-            />
-          ))
-        }
+        {activeTab === "diagnose" &&
+          hasDiagnoses &&
+          diagnoses.map(
+            (d) =>
+              d.ICD10 != null &&
+              d.ICD10 !== "" && (
+                <DiagnosisRow
+                  key={d.ICD10}
+                  item={d}
+                  onSave={(item) => onSave("DIAGNOSE", [item])}
+                />
+              ),
+          )}
+        {activeTab === "procedure" &&
+          hasProcedures &&
+          procedures.map(
+            (p) =>
+              p.ProcedureID != null &&
+              p.ProcedureID !== "" && (
+                <ProcedureRow
+                  key={p.ProcedureID}
+                  item={p}
+                  onSave={(item) => onSave("PROCEDURE", [item])}
+                />
+              ),
+          )}
       </div>
     </div>
   );

@@ -69,7 +69,6 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
       // cek apakah data.d masih string JSON
 
       // cek apakah data.d masih string JSON atau sudah object
-      console.log("DEBUG: data.d type:", typeof data.d);
       let payload: any;
       if (data && typeof data.d === "string") {
         try {
@@ -85,6 +84,8 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
         payload = data;
       }
 
+      console.log("DEBUG: payload:", payload);
+
       return {
         data: {
           soapResult: {
@@ -92,8 +93,8 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
             anamesa: payload.compose?.anamesa,
             generatedAt: new Date(),
             transcriptUsed: payload.compose?.rawTranscript ?? "",
-            sugest_diagnosis: payload.sugest_diagnosis ?? [],
-            sugest_procedures: payload.sugest_procedures ?? [],
+            sugest_diagnosis: payload.compose?.sugest_diagnosis ?? [],
+            sugest_procedures: payload.compose?.sugest_procedures ?? [],
           },
         },
         ok: true,

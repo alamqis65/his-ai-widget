@@ -31,7 +31,18 @@ export interface SOAPNote {
   Objective: any
   Assessment: any
   Plan: any
-  Interventions: any
+  Interventions?: any
+}
+
+export interface SuggestedDiagnosis {
+  ICD10: string
+  LabelICD10: string
+  IsPrimary: 0 | 1
+}
+
+export interface SuggestedProcedure {
+  ProcedureID: string
+  ProcedureName: string
 }
 
 export interface SOAPResult {
@@ -39,6 +50,8 @@ export interface SOAPResult {
   anamesa: any
   generatedAt: Date
   transcriptUsed: string
+  sugest_diagnosis?: SuggestedDiagnosis[]
+  sugest_procedures?: SuggestedProcedure[]
 }
 
 // ─── Clinical Pathway Types ───────────────────────────────────────────────────
@@ -181,7 +194,7 @@ export interface SDKCallbacks {
    * Dipanggil saat dokter klik "Simpan ke HIS" di fitur Speech to SOAP.
    * @example onResultSOAP: (result) => saveToEMR('soap', result)
    */
-  onResultSOAP?: (result: SOAPResult) => void
+  onResultSOAP?: (result: { type: string } & Partial<SOAPResult>) => void;
 
   /**
    * Dipanggil saat dokter klik "Simpan ke HIS" di fitur Clinical Pathway.

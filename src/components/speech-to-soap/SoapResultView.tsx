@@ -1,10 +1,23 @@
-import type { SOAPResult } from "@/types";
+import type {
+  SOAPResult,
+  SuggestedDiagnosis,
+  SuggestedProcedure,
+} from "@/types";
 import { JSX } from "preact/jsx-runtime";
+import { SuggestionPanel } from "./SuggestionPanel";
+import type { SaveSOAPType } from "@/hooks/useSpeechToSOAP";
 
 interface Props {
   result: SOAPResult;
   onReset: () => void;
-  onConfirm: () => void;
+  onConfirm: (
+    type: SaveSOAPType,
+    selected: SuggestedDiagnosis[] | SuggestedProcedure[],
+  ) => void;
+  onSave: (
+    type: SaveSOAPType,
+    selected: SuggestedDiagnosis[] | SuggestedProcedure[],
+  ) => void;
 }
 
 function normalizeContent(content: any): JSX.Element | string {
@@ -43,8 +56,9 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-export function SoapResultView({ result, onReset, onConfirm }: Props) {
-  const { soap, anamesa, transcriptUsed } = result;
+export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
+  const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures } =
+    result;
   const sections = [
     {
       key: "S",
@@ -123,6 +137,12 @@ export function SoapResultView({ result, onReset, onConfirm }: Props) {
           </div>
         ))}
       </div>
+      
+      <SuggestionPanel
+        diagnoses={sugest_diagnosis ?? []}
+        procedures={sugest_procedures ?? []}
+        onSave={onSave}
+      />
 
       <div class="soap-actions">
         <button class="btn btn-secondary btn-sm" onClick={onReset}>
@@ -131,7 +151,10 @@ export function SoapResultView({ result, onReset, onConfirm }: Props) {
         <button
           class="btn btn-primary btn-sm"
           style="display: none"
-          onClick={onConfirm}
+          onClick={() => {
+            onConfirm("DIAGNOSE", result.sugest_diagnosis ?? []);
+            onConfirm("PROCEDURE", result.sugest_procedures ?? []);
+          }}
         >
           Simpan ke HIS
         </button>

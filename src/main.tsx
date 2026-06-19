@@ -19,8 +19,8 @@ window.
     // ── API Endpoints (opsional — tanpa ini pakai Mock) ────────────────────
     // Uncomment dan isi URL sesuai backend HIS kamu:
     api: {
-      soapGeneratorEndpoint: 'http://localhost/medinfrasv2.2/dev/EMR/Libs/Service/MedinfrasAPIService.asmx/GenerateSOAPI2',
-      pretext: 'Pasien datang dengan keluhan demam tinggi dan batuk kering selama 3 hari terakhir. Riwayat penyakit sebelumnya tidak ada. Tidak ada alergi obat yang diketahui. Pemeriksaan fisik menunjukkan suhu 38,5°C, tekanan darah 120/80 mmHg, denyut nadi 90 bpm, dan pernapasan 20 kali per menit. Pemeriksaan paru-paru menunjukkan adanya ronki basah di kedua paru. Pemeriksaan laboratorium menunjukkan leukositosis ringan. Pasien belum menerima pengobatan apapun.',  
+      // soapGeneratorEndpoint: 'http://localhost/medinfrasv2.2/dev/EMR/Libs/Service/MedinfrasAPIService.asmx/GenerateSOAPI2',
+      // pretext: 'Pasien datang dengan keluhan demam tinggi dan batuk kering selama 3 hari terakhir. Riwayat penyakit sebelumnya tidak ada. Tidak ada alergi obat yang diketahui. Pemeriksaan fisik menunjukkan suhu 38,5°C, tekanan darah 120/80 mmHg, denyut nadi 90 bpm, dan pernapasan 20 kali per menit. Pemeriksaan paru-paru menunjukkan adanya ronki basah di kedua paru. Pemeriksaan laboratorium menunjukkan leukositosis ringan. Pasien belum menerima pengobatan apapun.',  
     //   chatEndpoint:    'https://api.rs-nusantara.com/ai/chat',
     //   sttEndpoint:     'https://api.rs-nusantara.com/ai/stt',
     //   soapEndpoint:    'https://api.rs-nusantara.com/ai/soap',

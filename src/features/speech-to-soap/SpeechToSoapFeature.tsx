@@ -83,6 +83,7 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
               result={soapResult}
               onReset={reset}
               onConfirm={saveSOAP}
+              onSave={saveSOAP}
             />
           </div>
         )}

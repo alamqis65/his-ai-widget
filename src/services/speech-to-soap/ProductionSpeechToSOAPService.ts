@@ -92,6 +92,8 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
             anamesa: payload.compose?.anamesa,
             generatedAt: new Date(),
             transcriptUsed: payload.compose?.rawTranscript ?? "",
+            sugest_diagnosis: payload.sugest_diagnosis ?? [],
+            sugest_procedures: payload.sugest_procedures ?? [],
           },
         },
         ok: true,

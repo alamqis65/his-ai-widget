@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback } from "preact/hooks";
-import type { RecorderState, SOAPResult, SDKCallbacks } from "@/types";
+import type { RecorderState, SOAPResult, SDKCallbacks, SuggestedDiagnosis, SuggestedProcedure } from "@/types";
 import { getSpeechToSOAPService } from "@/services/registry";
+
+export type SaveSOAPType = "DIAGNOSE" | "PROCEDURE";
 
 export interface UseSpeechToSOAPReturn {
   state: RecorderState;
@@ -9,7 +11,7 @@ export interface UseSpeechToSOAPReturn {
   recordingDuration: number;
   startRecording: () => Promise<void>;
   stopRecording: () => void;
-  saveSOAP: () => void;
+  saveSOAP: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void;
   reset: () => void;
 }
 
@@ -90,15 +92,25 @@ export function useSpeechToSOAP(
     mediaRecorder.stop();
   }, []);
 
-  const saveSOAP = useCallback(() => {
-    if (!soapResult) return;
-    callbacks?.onResultSOAP?.(soapResult);
-    window.dispatchEvent(
-      new CustomEvent("his_ai:result", {
-        detail: { type: "SOAP", data: soapResult },
-      }),
-    );
-  }, [soapResult, callbacks]);
+  const saveSOAP = useCallback(
+    (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => {
+      if (!soapResult) return;
+      // Callback SDK
+      callbacks?.onResultSOAP?.({
+        type,
+        sugest_diagnosis: type === "DIAGNOSE" ? (selected as SuggestedDiagnosis[]) : undefined,
+        sugest_procedures: type === "PROCEDURE" ? (selected as SuggestedProcedure[]) : undefined,
+      });
+
+      // Dispatch event dengan type custom
+      window.dispatchEvent(
+        new CustomEvent("his_ai:result", {
+          detail: { type, data: selected },
+        }),
+      );
+    },
+    [soapResult, callbacks],
+  );
 
   const reset = useCallback(() => {
     setState("IDLE");

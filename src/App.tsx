@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from 'preact/hooks'
 import type { ActiveFeature, SDKConfig, SDKFeatureFlags } from '@/types'
-import { ChatFeature } from '@/features/chat/ChatFeature'
-import { SpeechToSoapFeature } from '@/features/speech-to-soap/SpeechToSoapFeature'
-import { ClinicalPathwayFeature } from '@/features/clinical-pathway/ClinicalPathwayFeature'
-import { EClaimFeature } from '@/features/eclaim/EClaimFeature'
+import { ChatFeature } from '@/features/ChatFeature'
+import { SpeechToSoapFeature } from '@/features/SpeechToSoapFeature'
+import { ClinicalPathwayFeature } from '@/features/ClinicalPathwayFeature'
+import { EClaimFeature } from '@/features/EClaimFeature'
 import logo from '@/assets/MAIA_Head_Transparent.png'
 
 // Helper: baca config SDK dari window

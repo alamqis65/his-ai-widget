@@ -11,14 +11,7 @@ export interface ChatMessage {
 
 // ─── Speech to SOAP Types ─────────────────────────────────────────────────────
 
-export type RecorderState =
-  | 'IDLE'
-  | 'RECORDING'
-  | 'PROCESSING_STT'
-  | 'REVIEWING'
-  | 'PROCESSING_LLM'
-  | 'DONE'
-  | 'ERROR'
+export type RecorderState = 'IDLE' | 'RECORDING' | 'PROCESSING_STT' | 'REVIEWING' | 'PROCESSING_LLM' | 'DONE' | 'ERROR'
 
 export interface STTResult {
   transcript: string
@@ -116,12 +109,18 @@ export interface SDKApiConfig {
    * @example 'https://api.rs-nusantara.com/ai/speech-to-soap'
    */
   soapGeneratorEndpoint?: string
-    /**
+  /**
    * pretext tambahan untuk request SOAP Generator (opsional).
    * Gunakan untuk memberikan konteks tambahan sebelum transkripsi dokter-pasien.
    * @example { 'pasien berusia 15 tahun dengan riwayat hipertensi tingkat 1' }
    */
   pretext?: string
+  /**
+   * digunakan khusus untuk medin
+   * digunakan untuk memberikan data id dari vital sign yang bisa di mapping oleh AI
+   * @example { 'pasien berusia 15 tahun dengan riwayat hipertensi tingkat 1' }
+   */
+  vitalSignList?: string
 
   /**
    * Endpoint Clinical Pathway Generator.
@@ -194,7 +193,7 @@ export interface SDKCallbacks {
    * Dipanggil saat dokter klik "Simpan ke HIS" di fitur Speech to SOAP.
    * @example onResultSOAP: (result) => saveToEMR('soap', result)
    */
-  onResultSOAP?: (result: { type: string } & Partial<SOAPResult>) => void;
+  onResultSOAP?: (result: { type: string } & Partial<SOAPResult>) => void
 
   /**
    * Dipanggil saat dokter klik "Simpan ke HIS" di fitur Clinical Pathway.
@@ -248,5 +247,8 @@ export interface HISAISDKOptions {
   onError?: (error: Error) => void
 }
 export interface HISContext {
-  patientId?: string; visitId?: string; doctorId?: string; departmentId?: string
+  patientId?: string
+  visitId?: string
+  doctorId?: string
+  departmentId?: string
 }

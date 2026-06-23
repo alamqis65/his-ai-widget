@@ -29,15 +29,15 @@ import { ProductionClinicalPathwayService } from './clinical-pathway/ProductionC
 import { ProductionEClaimService } from './eclaim/ProductionEClaimService'
 
 function getApiConfig(): SDKApiConfig {
-  return (window as unknown as { his_ai_widget?: { _getConfig: () => { api?: SDKApiConfig } } })
-    .his_ai_widget?._getConfig()?.api ?? {}
+  return (
+    (window as unknown as { his_ai_widget?: { _getConfig: () => { api?: SDKApiConfig } } }).his_ai_widget?._getConfig()
+      ?.api ?? {}
+  )
 }
 
 export function getAIService(): AIService {
   const cfg = getApiConfig()
-  return cfg.chatEndpoint
-    ? new ProductionAIService(cfg)
-    : new MockAIService()
+  return cfg.chatEndpoint ? new ProductionAIService(cfg) : new MockAIService()
 }
 
 /**
@@ -47,21 +47,15 @@ export function getAIService(): AIService {
  */
 export function getSpeechToSOAPService(): SpeechToSOAPService {
   const cfg = getApiConfig()
-  return cfg.soapGeneratorEndpoint
-    ? new ProductionSpeechToSOAPService(cfg)
-    : new MockSpeechToSOAPService()
+  return cfg.soapGeneratorEndpoint ? new ProductionSpeechToSOAPService(cfg) : new MockSpeechToSOAPService()
 }
 
 export function getClinicalPathwayService(): ClinicalPathwayService {
   const cfg = getApiConfig()
-  return cfg.pathwayEndpoint
-    ? new ProductionClinicalPathwayService(cfg)
-    : new MockClinicalPathwayService()
+  return cfg.pathwayEndpoint ? new ProductionClinicalPathwayService(cfg) : new MockClinicalPathwayService()
 }
 
 export function getEClaimService(): EClaimService {
   const cfg = getApiConfig()
-  return cfg.eclaimEndpoint
-    ? new ProductionEClaimService(cfg)
-    : new MockEClaimService()
+  return cfg.eclaimEndpoint ? new ProductionEClaimService(cfg) : new MockEClaimService()
 }

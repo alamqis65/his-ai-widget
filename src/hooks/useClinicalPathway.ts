@@ -11,9 +11,7 @@ interface UseClinicalPathwayReturn {
   reset: () => void
 }
 
-export function useClinicalPathway(
-  callbacks?: Pick<SDKCallbacks, 'onResultPathway'>
-): UseClinicalPathwayReturn {
+export function useClinicalPathway(callbacks?: Pick<SDKCallbacks, 'onResultPathway'>): UseClinicalPathwayReturn {
   const [state, setState] = useState<ClinicalPathwayState>('IDLE')
   const [result, setResult] = useState<ClinicalPathwayResult | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -36,9 +34,11 @@ export function useClinicalPathway(
   const save = useCallback(() => {
     if (!result) return
     callbacks?.onResultPathway?.(result)
-    window.dispatchEvent(new CustomEvent('his_ai:result', {
-      detail: { type: 'CLINICAL_PATHWAY', data: result }
-    }))
+    window.dispatchEvent(
+      new CustomEvent('his_ai:result', {
+        detail: { type: 'CLINICAL_PATHWAY', data: result },
+      }),
+    )
   }, [result, callbacks])
 
   const reset = useCallback(() => {

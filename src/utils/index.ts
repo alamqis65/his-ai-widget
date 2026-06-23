@@ -19,7 +19,7 @@ export function formatTime(date: Date): string {
  * Delay helper for simulating async operations
  */
 export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 /**

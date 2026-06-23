@@ -5,38 +5,35 @@ export class ProductionAIService implements AIService {
   constructor(private readonly apiConfig: SDKApiConfig) {}
 
   private getFullConfig(): SDKConfig {
-    return (window as any).his_ai_widget?._getConfig() || {};
+    return (window as any).his_ai_widget?._getConfig() || {}
   }
 
-  async sendMessage(
-    message: string,
-    history: ChatMessage[]
-  ): Promise<ServiceResponse<string>> {
+  async sendMessage(message: string, _history?: ChatMessage[]): Promise<ServiceResponse<string>> {
     const endpoint = this.apiConfig.chatEndpoint
     if (!endpoint) {
       return { data: '', ok: false, error: 'chatEndpoint tidak dikonfigurasi' }
     }
 
-    const config = this.getFullConfig();
-    const pretext = config.api?.pretext || "Tidak ada catatan klinis";
+    const config = this.getFullConfig()
+    const pretext = config.api?.pretext || 'Tidak ada catatan klinis'
     // Untuk demo, kita pakai static mrn, name, age, gender. Nanti bisa diambil dari config bila ada.
     const active_patient = {
-      mrn: config.patientId || "UNKNOWN",
-      name: config.userName || "Pasien",
+      mrn: config.patientId || 'UNKNOWN',
+      name: config.userName || 'Pasien',
       age: 30,
-      gender: "L"
-    };
+      gender: 'L',
+    }
 
     try {
       const payload = {
-        id_chat: "WIDGET-" + (config.visitId || "SESSION"),
-        visit_id: config.visitId || "V-UNKNOWN",
+        id_chat: 'WIDGET-' + (config.visitId || 'SESSION'),
+        visit_id: config.visitId || 'V-UNKNOWN',
         message: message,
         ui_raw_json: {
           active_patient: active_patient,
-          clinical_notes: pretext
-        }
-      };
+          clinical_notes: pretext,
+        },
+      }
 
       const res = await fetch(endpoint, {
         method: 'POST',

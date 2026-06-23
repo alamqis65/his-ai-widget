@@ -32,7 +32,7 @@ export function ChatLayout({ callbacks }: Props) {
             <p class="chat-empty-greeting">Halo! Apa yang bisa saya bantu hari ini?</p>
             <p class="chat-empty-sub">Tanya seputar klinis, farmasi, atau prosedur medis</p>
             <div class="chat-suggestions-grid">
-              {SUGGESTIONS.map((s) => (
+              {SUGGESTIONS.map(s => (
                 <button key={s.label} class="chat-suggestion-card" onClick={() => sendMessage(s.label)}>
                   <span class="chat-suggestion-icon">{s.icon}</span>
                   <span class="chat-suggestion-label">{s.label}</span>
@@ -42,7 +42,7 @@ export function ChatLayout({ callbacks }: Props) {
           </div>
         )}
 
-        {messages.map((msg) => (
+        {messages.map(msg => (
           <ChatMessage key={msg.id} message={msg} />
         ))}
 
@@ -50,11 +50,13 @@ export function ChatLayout({ callbacks }: Props) {
           <div class="chat-message chat-message--assistant">
             <div class="chat-msg-avatar">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
               </svg>
             </div>
             <div class="chat-msg-body">
-              <div class="chat-msg-bubble"><TypingIndicator /></div>
+              <div class="chat-msg-bubble">
+                <TypingIndicator />
+              </div>
             </div>
           </div>
         )}
@@ -62,7 +64,9 @@ export function ChatLayout({ callbacks }: Props) {
         {error && (
           <div class="chat-error-bar">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
             {error}
           </div>

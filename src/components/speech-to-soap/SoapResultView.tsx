@@ -1,30 +1,21 @@
-import type {
-  SOAPResult,
-  SuggestedDiagnosis,
-  SuggestedProcedure,
-} from "@/types";
-import { JSX } from "preact/jsx-runtime";
-import { SuggestionPanel } from "./SuggestionPanel";
-import type { SaveSOAPType } from "@/hooks/useSpeechToSOAP";
+import type { SOAPResult, SuggestedDiagnosis, SuggestedProcedure } from '@/types'
+import { JSX } from 'preact/jsx-runtime'
+import { SuggestionPanel } from './SuggestionPanel'
+import type { SaveSOAPType } from '@/hooks/useSpeechToSOAP'
+import { AccordionSection } from '../common/accordion'
 
 interface Props {
-  result: SOAPResult;
-  onReset: () => void;
-  onConfirm: (
-    type: SaveSOAPType,
-    selected: SuggestedDiagnosis[] | SuggestedProcedure[],
-  ) => void;
-  onSave: (
-    type: SaveSOAPType,
-    selected: SuggestedDiagnosis[] | SuggestedProcedure[],
-  ) => void;
+  result: SOAPResult
+  onReset: () => void
+  onConfirm: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
+  onSave: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
 }
 
 function prettifySOAPText(text: string): JSX.Element {
   const lines = text
     .split(/\n+/)
-    .map(l => l.replace(/^[-•]\s*/, "").trim())
-    .filter(Boolean);
+    .map(l => l.replace(/^[-•]\s*/, '').trim())
+    .filter(Boolean)
 
   return (
     <ul class="soap-list">
@@ -32,19 +23,19 @@ function prettifySOAPText(text: string): JSX.Element {
         <li key={idx}>{line}</li>
       ))}
     </ul>
-  );
+  )
 }
 
 function normalizeContent(content: any, sectionKey?: string): JSX.Element | string {
-  if (content == null) return "";
-  if (typeof content === "string") return prettifySOAPText(content);
+  if (content == null) return ''
+  if (typeof content === 'string') return prettifySOAPText(content)
 
-  if (typeof content === "object") {
-    if (sectionKey === "P") {
+  if (typeof content === 'object') {
+    if (sectionKey === 'P') {
       return (
         <div class="soap-plan">
           {Object.entries(content).map(([k, v]) => {
-            if (k === "rekomendasi_resep" && Array.isArray(v)) {
+            if (k === 'rekomendasi_resep' && Array.isArray(v)) {
               return (
                 <div key={k}>
                   <strong>Rekomendasi Resep:</strong>
@@ -54,9 +45,9 @@ function normalizeContent(content: any, sectionKey?: string): JSX.Element | stri
                     ))}
                   </ul>
                 </div>
-              );
+              )
             }
-            if (k === "rekomendasi_penunjang" && Array.isArray(v)) {
+            if (k === 'rekomendasi_penunjang' && Array.isArray(v)) {
               return (
                 <div key={k}>
                   <strong>Rekomendasi Penunjang:</strong>
@@ -66,24 +57,24 @@ function normalizeContent(content: any, sectionKey?: string): JSX.Element | stri
                     ))}
                   </ul>
                 </div>
-              );
+              )
             }
-            if (typeof v === "string") {
+            if (typeof v === 'string') {
               return (
                 <div key={k}>
-                  <strong>{k.replace(/_/g, " ")}:</strong>
+                  <strong>{k.replace(/_/g, ' ')}:</strong>
                   {prettifySOAPText(v)}
                 </div>
-              );
+              )
             }
             return (
               <div key={k}>
-                <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
+                <strong>{k.replace(/_/g, ' ')}:</strong> {String(v)}
               </div>
-            );
+            )
           })}
         </div>
-      );
+      )
     }
 
     return (
@@ -91,104 +82,69 @@ function normalizeContent(content: any, sectionKey?: string): JSX.Element | stri
         <tbody>
           {Object.entries(content).map(([k, v]) => (
             <tr key={k}>
-              <td class="soap-key">{k.replace(/_/g, " ")}</td>
+              <td class="soap-key">{k.replace(/_/g, ' ')}</td>
               <td class="soap-value">{String(v)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-    );
+    )
   }
 
-  return String(content);
-}
-
-function CopyButton({ text }: { text: string }) {
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {}
-  };
-
-  return (
-    <button class="btn-copy" onClick={handleCopy}>
-      📋 Salin
-    </button>
-  );
+  return String(content)
 }
 
 export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
-  const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures } =
-    result;
+  const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures } = result
   const sections = [
     {
-      key: "S",
-      label: "Subjective",
-      content: normalizeContent(soap.Subjective, "S"),
-      color: "blue",
+      key: 'S',
+      label: 'Subjective',
+      content: normalizeContent(soap.Subjective, 'S'),
+      color: 'blue',
     },
     {
-      key: "O",
-      label: "Objective",
-      content: normalizeContent(soap.Objective, "O"),
-      color: "green",
+      key: 'O',
+      label: 'Objective',
+      content: normalizeContent(soap.Objective, 'O'),
+      color: 'green',
     },
     {
-      key: "A",
-      label: "Assessment",
-      content: normalizeContent(soap.Assessment, "A"),
-      color: "orange",
+      key: 'A',
+      label: 'Assessment',
+      content: normalizeContent(soap.Assessment, 'A'),
+      color: 'orange',
     },
     {
-      key: "P",
-      label: "Plan",
-      content: normalizeContent(soap.Plan, "P"),
-      color: "purple",
+      key: 'P',
+      label: 'Plan',
+      content: normalizeContent(soap.Plan, 'P'),
+      color: 'purple',
     },
-  ] as const;
+  ] as const
 
   return (
     <div class="soap-result">
       <div class="soap-result-header">
         <div class="result-badge result-badge--green">
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-          >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="20 6 9 17 4 12" />
           </svg>
           Generate Selesai
         </div>
         <span class="soap-result-ts">
-          {result.generatedAt.toLocaleTimeString("id-ID", {
-            hour: "2-digit",
-            minute: "2-digit",
+          {result.generatedAt.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
           })}
         </span>
       </div>
 
-      <div class="soap-transcript-preview">
-        <div class="soap-transcript-header">
-          <p class="soap-transcript-label">Transkripsi</p>
-          <CopyButton text={transcriptUsed} />
-        </div>
-        <p class="soap-transcript-text">{transcriptUsed}</p>
-      </div>
-
-      <div class="soap-transcript-preview">
-        <div class="soap-transcript-header">
-          <p class="soap-transcript-label">Anamesa</p>
-          <CopyButton text={anamesa} />
-        </div>
-        <p class="soap-transcript-text">{anamesa}</p>
-      </div>
+      <AccordionSection label="Transkripsi" text={transcriptUsed} defaultOpen={false} />
+      <AccordionSection label="Anamesa" text={anamesa} defaultOpen={true} />
 
       <div class="soap-sections">
-        {sections.map((s) => (
+        {sections.map(s => (
           <div key={s.key} class={`soap-section soap-section--${s.color}`}>
             <div class="soap-section-head">
               <span class="soap-section-icon">{s.key}</span>
@@ -198,7 +154,7 @@ export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
               {s.content}
 
               {/* SuggestionPanel hanya akan muncul jika s.key adalah "P" */}
-              {s.key === "A" && (
+              {s.key === 'A' && (
                 <SuggestionPanel
                   diagnoses={sugest_diagnosis ?? []}
                   procedures={sugest_procedures ?? []}
@@ -218,13 +174,13 @@ export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
           class="btn btn-primary btn-sm"
           style="display: none"
           onClick={() => {
-            onConfirm("DIAGNOSE", result.sugest_diagnosis ?? []);
-            onConfirm("PROCEDURE", result.sugest_procedures ?? []);
+            onConfirm('DIAGNOSE', result.sugest_diagnosis ?? [])
+            onConfirm('PROCEDURE', result.sugest_procedures ?? [])
           }}
         >
           Simpan ke HIS
         </button>
       </div>
     </div>
-  );
+  )
 }

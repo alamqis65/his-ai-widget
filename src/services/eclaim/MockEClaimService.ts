@@ -52,11 +52,7 @@ const MOCK_RESULTS: EClaimCheckResult[] = [
  * Replace with ProductionEClaimService when BPJS/insurance API is ready.
  */
 export class MockEClaimService implements EClaimService {
-  async check(
-    _patientId: string,
-    icdCode: string,
-    diagnosis: string
-  ): Promise<ServiceResponse<EClaimCheckResult>> {
+  async check(_patientId: string, icdCode: string, diagnosis: string): Promise<ServiceResponse<EClaimCheckResult>> {
     await delay(1500 + Math.random() * 1000)
 
     const lower = diagnosis.toLowerCase()

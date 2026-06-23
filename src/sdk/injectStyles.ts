@@ -852,15 +852,13 @@ textarea {
   color: var(--brand);
 }
 
-
-
 /* Recorder */
 .recorder-view {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 28px 16px;
+  gap: 30px;
+  padding: 20px 16px;
   flex: 1;
 }
 
@@ -876,10 +874,10 @@ textarea {
 }
 
 .recorder-ring--active {
-  border-color: rgba(220, 38, 38, 0.3);
+  border-color: rgba(15, 110, 86, 0.3);
   box-shadow:
-    0 0 0 8px rgba(220, 38, 38, 0.07),
-    0 0 0 16px rgba(220, 38, 38, 0.04);
+    0 0 0 8px rgba(15, 110, 86, 0.07),
+    0 0 0 16px rgba(15, 110, 86, 0.04);
   animation: ring-pulse 1.5s ease-in-out infinite;
 }
 
@@ -887,13 +885,13 @@ textarea {
   0%,
   100% {
     box-shadow:
-      0 0 0 8px rgba(220, 38, 38, 0.07),
-      0 0 0 16px rgba(220, 38, 38, 0.04);
+      0 0 0 8px rgba(15, 110, 86, 0.07),
+      0 0 0 16px rgba(15, 110, 86, 0.04);
   }
   50% {
     box-shadow:
-      0 0 0 12px rgba(220, 38, 38, 0.1),
-      0 0 0 22px rgba(220, 38, 38, 0.06);
+      0 0 0 12px rgba(15, 110, 86, 0.1),
+      0 0 0 22px rgba(15, 110, 86, 0.06);
   }
 }
 
@@ -918,12 +916,11 @@ textarea {
   transform: scale(1.04);
 }
 .recorder-btn--stop {
-  background: #dc2626;
+  background: #0f6e56;
   color: white;
 }
 .recorder-btn--stop:hover {
-  background: #b91c1c;
-  transform: scale(1.04);
+  background: #085041;
 }
 .recorder-btn:disabled {
   background: var(--bg-3);
@@ -937,7 +934,7 @@ textarea {
   font-size: 26px;
   font-weight: 600;
   font-family: var(--mono);
-  color: #dc2626;
+  color: #0f6e56;
   letter-spacing: 0.05em;
 }
 .recorder-status-text {
@@ -946,7 +943,7 @@ textarea {
   color: var(--text-2);
 }
 .recorder-status-text--rec {
-  color: #dc2626;
+  color: #0f6e56;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -954,7 +951,7 @@ textarea {
 .rec-dot {
   width: 7px;
   height: 7px;
-  background: #dc2626;
+  background: #0f6e56;
   border-radius: 50%;
   animation: rec-blink 1s ease-in-out infinite;
 }
@@ -980,6 +977,20 @@ textarea {
   align-items: center;
   gap: 8px;
 }
+.recorder-visualizer {
+  background: rgba(29, 158, 117, 0.06);
+  border-radius: 8px;
+}
+
+/* .recorder-duration {
+  color: var(--brand); 
+}
+.recorder-status-text--rec {
+  color: var(--brand);
+}
+.rec-dot {
+  background: var(--brand);
+} */
 
 /* Transcript */
 .transcript-review {
@@ -1562,12 +1573,13 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-3);
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 .soap-transcript-text {
   font-size: 12px;
   color: var(--text-2);
   line-height: 1.6;
+  margin-top: 8px;
 }
 
 .soap-table {
@@ -1585,8 +1597,19 @@ textarea {
 
 .soap-transcript-header {
   display: flex;
-  justify-content: space-between; /* label di kiri, tombol di kanan */
   align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.accordion-chevron {
+  color: var(--text-3);
+  transition: transform 200ms ease;
+  flex-shrink: 0;
+}
+.accordion-chevron--open {
+  transform: rotate(180deg);
 }
 
 .btn-copy {
@@ -1603,7 +1626,6 @@ textarea {
 .btn-copy:hover {
   background: #eee;
 }
-
 
 /* ─── Suggestion Panel ────────────────────────────────────────────────────── */
 .suggestion-panel {
@@ -1658,7 +1680,9 @@ textarea {
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .suggestion-tab:hover {
@@ -1793,7 +1817,11 @@ textarea {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.1s;
 }
 
 .suggestion-save-btn:hover {
@@ -1827,7 +1855,8 @@ textarea {
   font-weight: 600;
   color: var(--his-color-neutral-900);
 }
-.markdown-body ul, .markdown-body ol {
+.markdown-body ul,
+.markdown-body ol {
   margin-top: 0.25rem;
   margin-bottom: 0.5rem;
   padding-left: 1.2rem;
@@ -1835,7 +1864,10 @@ textarea {
 .markdown-body li {
   margin-bottom: 0.25rem;
 }
-.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
   margin-top: 0.75rem;
   margin-bottom: 0.5rem;
   font-weight: 600;

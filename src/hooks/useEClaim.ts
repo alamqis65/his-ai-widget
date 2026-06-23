@@ -33,9 +33,11 @@ export function useEClaim(callbacks?: Pick<SDKCallbacks, 'onResultEClaim'>): Use
   const save = useCallback(() => {
     if (!result) return
     callbacks?.onResultEClaim?.(result)
-    window.dispatchEvent(new CustomEvent('his_ai:result', {
-      detail: { type: 'ECLAIM', data: result }
-    }))
+    window.dispatchEvent(
+      new CustomEvent('his_ai:result', {
+        detail: { type: 'ECLAIM', data: result },
+      }),
+    )
   }, [result, callbacks])
 
   const reset = useCallback(() => {

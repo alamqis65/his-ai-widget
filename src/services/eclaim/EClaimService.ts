@@ -9,9 +9,5 @@ import type { EClaimCheckResult, ServiceResponse } from '@/types'
  * - Validasi ICD code, eligibility, dan tarif INA-CBGs
  */
 export interface EClaimService {
-  check(
-    patientId: string,
-    icdCode: string,
-    diagnosis: string
-  ): Promise<ServiceResponse<EClaimCheckResult>>
+  check(patientId: string, icdCode: string, diagnosis: string): Promise<ServiceResponse<EClaimCheckResult>>
 }

@@ -23,8 +23,8 @@ export class ProductionEClaimService implements EClaimService {
       // Backend mengharapkan BPJSValidateRequestDTO: { icd10_codes: string[], context_text?: string }
       const payload = {
         icd10_codes: [icdCode],
-        context_text: diagnosis
-      };
+        context_text: diagnosis,
+      }
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -38,13 +38,13 @@ export class ProductionEClaimService implements EClaimService {
 
       const backendResponse = await res.json()
       // Mapping respons backend BPJSValidationResultDTO ke EClaimCheckResult widget
-      const data = backendResponse.data || {};
+      const data = backendResponse.data || {}
       const result: EClaimCheckResult = {
         eligible: data.is_compliant || false,
         warnings: data.warnings || [],
         errors: data.errors || [],
-        message: backendResponse.message || "Validasi BPJS Selesai"
-      };
+        message: backendResponse.message || 'Validasi BPJS Selesai',
+      }
 
       return { data: { ...result, checkedAt: new Date() }, ok: true }
     } catch (err) {

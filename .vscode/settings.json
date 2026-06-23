@@ -1,12 +1,19 @@
 {
-    "cSpell.language": "en,id",
-    "cSpell.words": [
-        "anamesa",
-        "dikonfigurasi",
-        "eclaim",
-        "eligibilitas",
-        "HISAI",
-        "HISAISDK",
-        "soapi"
-    ]
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+  "cSpell.language": "en,id",
+  "cSpell.words": [
+    "anamesa",
+    "dikonfigurasi",
+    "eclaim",
+    "eligibilitas",
+    "HISAI",
+    "HISAISDK",
+    "medin",
+    "normalised",
+    "soapi"
+  ]
 }

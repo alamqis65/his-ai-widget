@@ -24,7 +24,11 @@ export function TranscriptReview({ transcript, onUpdate, onConfirm, onReset, isP
         <button class="btn btn-secondary btn-sm" onClick={onReset} disabled={isProcessing}>
           Rekam Ulang
         </button>
-        <button class="btn btn-primary btn-sm" onClick={onConfirm} disabled={isProcessing || !transcript.trim()}>
+        <button
+          class="btn btn-primary btn-primary-custom btn-sm"
+          onClick={onConfirm}
+          disabled={isProcessing || !transcript.trim()}
+        >
           {isProcessing ? (
             <>
               <span class="loading-spinner" style="width:12px;height:12px;border-width:2px" />

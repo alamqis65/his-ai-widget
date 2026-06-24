@@ -347,16 +347,15 @@ textarea {
 }
 
 .btn:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.btn-primary {
+.btn-primary-custom {
   background: var(--brand);
   color: white;
   border-color: var(--brand);
 }
-.btn-primary:hover:not(:disabled) {
+.btn-primary-custom:hover:not(:disabled) {
   background: var(--brand-dark);
   border-color: var(--brand-dark);
   transform: translateY(-1px);

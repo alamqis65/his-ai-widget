@@ -171,7 +171,7 @@ export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
           Rekam Baru
         </button>
         <button
-          class="btn btn-primary btn-sm"
+          class="btn btn-primary btn-primary-custom btn-sm"
           style="display: none"
           onClick={() => {
             onConfirm('DIAGNOSE', result.sugest_diagnosis ?? [])

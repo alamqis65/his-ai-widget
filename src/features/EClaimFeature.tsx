@@ -78,7 +78,7 @@ function EClaimResult({
           Cek Baru
         </button>
         {result.eligible && (
-          <button class="btn btn-primary btn-sm" onClick={onSave}>
+          <button class="btn btn-primary btn-primary-custom btn-sm" onClick={onSave}>
             Ajukan Klaim
           </button>
         )}
@@ -141,7 +141,7 @@ export function EClaimFeature({ callbacks }: Props) {
             ))}
           </div>
           <button
-            class="btn btn-primary btn-full"
+            class="btn btn-primary btn-primary-custom btn-full"
             onClick={() => check(form.patientId || 'P-DEMO', form.icdCode, form.diagnosis)}
             disabled={!form.diagnosis.trim()}
           >

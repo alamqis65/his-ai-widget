@@ -71,7 +71,7 @@ function PathwayResult({
         <button class="btn btn-secondary btn-sm" onClick={onReset}>
           Buat Baru
         </button>
-        <button class="btn btn-primary btn-sm" onClick={onSave}>
+        <button class="btn btn-primary btn-primary-custom btn-sm" onClick={onSave}>
           Simpan ke HIS
         </button>
       </div>
@@ -117,7 +117,11 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
               </button>
             ))}
           </div>
-          <button class="btn btn-primary btn-full" onClick={() => generate(diagnosis)} disabled={!diagnosis.trim()}>
+          <button
+            class="btn btn-primary btn-primary-custom btn-full"
+            onClick={() => generate(diagnosis)}
+            disabled={!diagnosis.trim()}
+          >
             Generate Pathway
           </button>
         </div>

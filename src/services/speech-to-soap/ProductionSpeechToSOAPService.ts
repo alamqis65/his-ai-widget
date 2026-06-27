@@ -93,6 +93,7 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
             transcriptUsed: payload.compose?.rawTranscript ?? '',
             sugest_diagnosis: payload.compose?.sugest_diagnosis ?? [],
             sugest_procedures: payload.compose?.sugest_procedures ?? [],
+            vitalSigns: payload.compose?.tanda_vital ?? [],
           },
         },
         ok: true,

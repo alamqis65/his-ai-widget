@@ -1,0 +1,80 @@
+{
+	"tanda_vital": {
+		"NBPs": [
+			3,
+			"130 mmHg"
+		],
+		"NBPd": [
+			4,
+			"80 mmHg"
+		],
+		"HR Pulse": [
+			2,
+			""
+		],
+		"RESPIRATION": [
+			5,
+			""
+		],
+		"TEMPERATURE": [
+			1,
+			"36.5 °C"
+		],
+		"SpO2": [
+			30,
+			""
+		],
+		"Pain Index": [
+			34,
+			""
+		],
+		"CVP": [
+			46,
+			""
+		],
+		"WEIGHT": [
+			8,
+			""
+		],
+		"HEIGHT": [
+			9,
+			""
+		],
+		"Early Warning Score": [
+			90,
+			""
+		],
+		"Gula Darah Sewaktu": [
+			100,
+			""
+		],
+		"SOFA Score": [
+			91,
+			""
+		],
+		"GERD Q": [
+			1177,
+			""
+		],
+		"CURB 65": [
+			1176,
+			""
+		],
+		"STRONG KIDS": [
+			110,
+			""
+		],
+		"SKOR BRADEN": [
+			117,
+			""
+		],
+		"SKOR BARTHEL": [
+			118,
+			""
+		],
+		"CRT": [
+			86,
+			""
+		]
+	}
+}

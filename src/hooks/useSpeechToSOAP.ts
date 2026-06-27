@@ -1,8 +1,15 @@
 import { useState, useRef, useCallback } from 'preact/hooks'
-import type { RecorderState, SOAPResult, SDKCallbacks, SuggestedDiagnosis, SuggestedProcedure } from '@/types'
+import type {
+  RecorderState,
+  SOAPResult,
+  SDKCallbacks,
+  SuggestedDiagnosis,
+  SuggestedProcedure,
+  SuggestedTTV,
+} from '@/types'
 import { getSpeechToSOAPService } from '@/services/registry'
 
-export type SaveSOAPType = 'DIAGNOSE' | 'PROCEDURE'
+export type SaveSOAPType = 'DIAGNOSE' | 'PROCEDURE' | 'ALL' | 'VITALSIGN'
 
 export interface UseSpeechToSOAPReturn {
   state: RecorderState
@@ -11,7 +18,7 @@ export interface UseSpeechToSOAPReturn {
   recordingDuration: number
   startRecording: () => Promise<void>
   stopRecording: () => void
-  saveSOAP: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
+  saveSOAP: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[] | SuggestedTTV[]) => void
   reset: () => void
 }
 
@@ -92,13 +99,14 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
   }, [])
 
   const saveSOAP = useCallback(
-    (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => {
+    (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[] | SuggestedTTV[]) => {
       if (!soapResult) return
       // Callback SDK
       callbacks?.onResultSOAP?.({
         type,
         sugest_diagnosis: type === 'DIAGNOSE' ? (selected as SuggestedDiagnosis[]) : undefined,
         sugest_procedures: type === 'PROCEDURE' ? (selected as SuggestedProcedure[]) : undefined,
+        sugest_ttv: type === 'VITALSIGN' ? (selected as SuggestedTTV[]) : undefined,
       })
 
       // Dispatch event dengan type custom

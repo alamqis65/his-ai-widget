@@ -1,6 +1,7 @@
-import type { SOAPResult, SuggestedDiagnosis, SuggestedProcedure } from '@/types'
+import type { SOAPResult, SuggestedDiagnosis, SuggestedProcedure, SuggestedTTV } from '@/types'
 import { JSX } from 'preact/jsx-runtime'
 import { SuggestionPanel } from './SuggestionPanel'
+import { VitalSignsPanel } from './VitalSignPanel'
 import type { SaveSOAPType } from '@/hooks/useSpeechToSOAP'
 import { AccordionSection } from '../common/accordion'
 
@@ -8,7 +9,8 @@ interface Props {
   result: SOAPResult
   onReset: () => void
   onConfirm: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
-  onSave: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
+  onSaveDiagnoseAndProcedure: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
+  onSaveTTV: (type: SaveSOAPType, selected: SuggestedTTV[]) => void
 }
 
 function prettifySOAPText(text: string): JSX.Element {
@@ -94,8 +96,8 @@ function normalizeContent(content: any, sectionKey?: string): JSX.Element | stri
   return String(content)
 }
 
-export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
-  const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures } = result
+export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndProcedure, onSaveTTV }: Props) {
+  const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures, vitalSigns } = result
   const sections = [
     {
       key: 'S',
@@ -152,15 +154,14 @@ export function SoapResultView({ result, onReset, onConfirm, onSave }: Props) {
             </div>
             <div class="soap-section-content">
               {s.content}
-
-              {/* SuggestionPanel hanya akan muncul jika s.key adalah "P" */}
               {s.key === 'A' && (
                 <SuggestionPanel
                   diagnoses={sugest_diagnosis ?? []}
                   procedures={sugest_procedures ?? []}
-                  onSave={onSave}
+                  onSave={onSaveDiagnoseAndProcedure}
                 />
               )}
+              {s.key === 'O' && <VitalSignsPanel vitalSigns={vitalSigns ?? {}} onSave={onSaveTTV} />}
             </div>
           </div>
         ))}

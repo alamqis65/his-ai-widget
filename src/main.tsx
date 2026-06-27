@@ -6,7 +6,7 @@ import './sdk'
 // Dev preview — simulasi SDK init
 window.his_ai_widget.init({
   // ── Identity ──────────────────────────────────────────────────────────
-  userName: 'dr. Budi Santoso',
+  userName: 'dr. Budi',
   theme: 'light',
 
   // ── Konteks pasien awal (bisa di-update via setPatient()) ─────────────
@@ -18,11 +18,9 @@ window.his_ai_widget.init({
   // ── API Endpoints (opsional — tanpa ini pakai Mock) ────────────────────
   // Uncomment dan isi URL sesuai backend HIS kamu:
   api: {
-    // soapGeneratorEndpoint: 'http://192.168.90.98:8000/api/v1/rag/analyze', // Endpoint baru untuk STT & SOAP
-    pretext:
-      'Pasien perempuan 32 tahun datang ke poli dengan keluhan sakit kepala sejak dua hari, disertai mual ringan. Tidak ada riwayat trauma kepala, tekanan darah saat diperiksa 130/80 mmHg, suhu tubuh normal. Dokter menilai kemungkinan tension headache dan merencanakan terapi simptomatik serta anjuran istirahat cukup.',
+    // soapGeneratorEndpoint: 'http://192.168.50.125:8000/api/v1/rag/analyze', // Endpoint baru untuk STT & SOAP
     chatEndpoint: 'http://192.168.90.98:8000/api/v1/ai-assistant/patient-ai-assistant',
-    // sttEndpoint dan soapEndpoint tidak lagi diperlukan terpisah karena dihandle oleh rag/analyze
+    // sttEndpoint dan soapEndpoint tidak lagi diperlukan terpisah karena di panggil oleh rag/analyze
     //pathwayEndpoint: 'http://192.168.90.98:8000/api/v1/ai-assistant/patient-ai-assistant', // Kita arahkan ke AI Assistant untuk pathway
     eclaimEndpoint: 'http://192.168.90.98:8000/api/v1/bpjs/validate',
     //   headers: {
@@ -66,6 +64,13 @@ window.his_ai_widget.init({
 
   onError: err => {
     console.error('[HIS] Widget error:', err)
+  },
+})
+
+window.his_ai_widget.setConfig({
+  api: {
+    pretext:
+      'Pasien perempuan 32 tahun datang ke poli dengan keluhan sakit kepala sejak dua hari, disertai mual ringan. Tidak ada riwayat trauma kepala, tekanan darah saat diperiksa 130/80 mmHg, suhu tubuh normal. Dokter menilai kemungkinan tension headache dan merencanakan terapi simptomatik serta anjuran istirahat cukup.',
   },
 })
 

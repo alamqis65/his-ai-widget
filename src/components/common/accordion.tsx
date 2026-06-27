@@ -16,7 +16,6 @@ export function AccordionSection({
       <div class="soap-transcript-header" onClick={() => setOpen(o => !o)}>
         <p class="soap-transcript-label">{label}</p>
         <div style="display:flex;align-items:center;gap:8px">
-          {open && <CopyButton text={text} />}
           <svg
             width="14"
             height="14"
@@ -33,6 +32,7 @@ export function AccordionSection({
         </div>
       </div>
       {open && <p class="soap-transcript-text">{text}</p>}
+      <div style="display:flex; justify-content:right">{open && <CopyButton text={text} />}</div>
     </div>
   )
 }

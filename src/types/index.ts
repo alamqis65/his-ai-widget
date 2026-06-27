@@ -38,6 +38,12 @@ export interface SuggestedProcedure {
   ProcedureName: string
 }
 
+export interface SuggestedTTV {
+  id: number
+  name: string
+  value: string
+}
+
 export interface SOAPResult {
   soap: SOAPNote
   anamesa: any
@@ -45,6 +51,8 @@ export interface SOAPResult {
   transcriptUsed: string
   sugest_diagnosis?: SuggestedDiagnosis[]
   sugest_procedures?: SuggestedProcedure[]
+  vitalSigns?: Record<string, [number, string]>
+  sugest_ttv?: SuggestedTTV[]
 }
 
 // ─── Clinical Pathway Types ───────────────────────────────────────────────────

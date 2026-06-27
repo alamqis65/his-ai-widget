@@ -3,6 +3,7 @@ import { injectStyles } from './injectStyles'
 import type { SDKConfig, ActiveFeature } from '@/types'
 import { App } from '@/App'
 import logo from '@/assets/MAIA_Head_Transparent.png'
+import merge from 'deepmerge'
 
 /**
  * his_ai_widget SDK — IIFE Library
@@ -122,6 +123,17 @@ const HISWidget = {
 
   get isOpen(): boolean {
     return _isOpen
+  },
+
+  setConfig(config: Partial<SDKConfig>): void {
+    _config = merge(_config, config)
+
+    // Apply theme change if provided
+    if (config.theme && _container) {
+      _container.setAttribute('data-theme', config.theme)
+    }
+
+    window.dispatchEvent(new CustomEvent('his_ai:config-updated', { detail: config }))
   },
 
   /** @internal — dibaca oleh App.tsx */

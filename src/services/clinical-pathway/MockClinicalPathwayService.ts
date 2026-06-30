@@ -93,8 +93,20 @@ function getPathway(diagnosis: string): ClinicalPathwayResult {
  * Replace with ProductionClinicalPathwayService when LLM backend is ready.
  */
 export class MockClinicalPathwayService implements ClinicalPathwayService {
-  async generate(diagnosis: string): Promise<ServiceResponse<ClinicalPathwayResult>> {
+  async generate(params: import('@/types').ClinicalPathwayParams): Promise<ServiceResponse<ClinicalPathwayResult>> {
     await delay(2000 + Math.random() * 1000)
-    return { data: getPathway(diagnosis), ok: true }
+    return { data: getPathway(params.diagnosa_id), ok: true }
+  }
+
+  async getMasterDiagnoses(): Promise<ServiceResponse<import('@/types').DiagnosisMaster[]>> {
+    await delay(500)
+    return { 
+      data: [
+        { id: 'A09', name: 'Gastroenteritis (Mock)' },
+        { id: 'J06', name: 'ISPA (Mock)' },
+        { id: 'I10', name: 'Hipertensi (Mock)' }
+      ], 
+      ok: true 
+    }
   }
 }

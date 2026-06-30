@@ -1,14 +1,8 @@
-import type { ClinicalPathwayResult, ServiceResponse, SDKApiConfig } from '@/types'
+import type { ClinicalPathwayParams, ClinicalPathwayResult, ServiceResponse, SDKApiConfig, SDKConfig } from '@/types'
 import type { ClinicalPathwayService } from './ClinicalPathwayService'
 
 /**
  * ProductionClinicalPathwayService — generate clinical pathway dari diagnosis.
- *
- * Endpoint menerima POST:
- * { diagnosis: string, context?: string }
- *
- * Endpoint harus mengembalikan:
- * { pathway: ClinicalPathwayResult }
  */
 export class ProductionClinicalPathwayService implements ClinicalPathwayService {
   constructor(private readonly apiConfig: SDKApiConfig) {}
@@ -17,37 +11,17 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
     return (window as any).his_ai_widget?._getConfig() || {}
   }
 
-  async generate(diagnosis: string, context?: string): Promise<ServiceResponse<ClinicalPathwayResult>> {
+  async generate(params: ClinicalPathwayParams): Promise<ServiceResponse<ClinicalPathwayResult>> {
     const endpoint = this.apiConfig.pathwayEndpoint
     if (!endpoint) {
       return { data: {} as ClinicalPathwayResult, ok: false, error: 'pathwayEndpoint tidak dikonfigurasi' }
-    }
-
-    const config = this.getFullConfig()
-    const active_patient = {
-      mrn: config.patientId || 'UNKNOWN',
-      name: config.userName || 'Pasien',
-      age: 30,
-      gender: 'L',
-    }
-
-    const promptMessage = `Buatkan struktur Clinical Pathway untuk diagnosa: ${diagnosis}. Konteks tambahan: ${context || 'Tidak ada'}. Jawab HANYA menggunakan format JSON valid dengan struktur berikut: {"diagnosis": "...", "totalDays": angka, "steps": [{"day": "Hari 1", "activities": ["..."], "medications": ["..."], "assessments": ["..."]}]}. Pastikan output langsung JSON tanpa markdown \`\`\`json.`
-
-    const payload = {
-      id_chat: 'PATHWAY-' + (config.visitId || 'SESSION'),
-      visit_id: config.visitId || 'V-UNKNOWN',
-      message: promptMessage,
-      ui_raw_json: {
-        active_patient: active_patient,
-        clinical_notes: config.api?.pretext || 'Tidak ada catatan klinis',
-      },
     }
 
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...this.apiConfig.headers },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(params),
       })
 
       if (!res.ok) {
@@ -55,29 +29,51 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
       }
 
       const backendResponse = await res.json()
-      const jawabanMedis = backendResponse.jawaban_medis || '{}'
-
-      let parsedPathway: any = {}
-      try {
-        // Hapus backtick markdown jika LLM membungkusnya
-        const cleanJsonStr = jawabanMedis
-          .replace(/```json/g, '')
-          .replace(/```/g, '')
-          .trim()
-        parsedPathway = JSON.parse(cleanJsonStr)
-      } catch (e) {
-        console.error('Gagal parse Pathway JSON:', e)
-        // Fallback jika LLM tidak merespons JSON murni
-        parsedPathway = {
-          diagnosis: diagnosis,
-          totalDays: 1,
-          steps: [{ day: '1', activities: ['Gagal mem-parsing Clinical Pathway, baca respons aslinya di log'] }],
+      
+      // Parse response from python backend (PathwayGenerateResponse)
+      const mappedSteps = (backendResponse.clinical_pathway || []).map((phase: any) => {
+        const asuhan = phase.asuhan_medis || {}
+        return {
+          day: `Hari ${phase.hari_ke} - ${phase.nama_fase}`,
+          activities: asuhan.tindakan_perawat || [],
+          medications: (asuhan.medikasi_farmasi || []).map((m: any) => `${m.nama_obat} (${m.dosis})`),
+          assessments: (asuhan.laboratorium || []).map((l: any) => l.nama_pemeriksaan),
         }
+      })
+
+      const parsedPathway: ClinicalPathwayResult = {
+        diagnosis: backendResponse.metadata_sistem?.diagnose_id_asli || params.diagnosa_id,
+        totalDays: backendResponse.metadata_sistem?.durasi_final || params.target_hari_dokter,
+        steps: mappedSteps,
+        generatedAt: new Date()
       }
 
-      return { data: { ...parsedPathway, generatedAt: new Date() }, ok: true }
+      return { data: parsedPathway, ok: true }
     } catch (err) {
       return { data: {} as ClinicalPathwayResult, ok: false, error: (err as Error).message }
     }
   }
+
+  async getMasterDiagnoses(): Promise<ServiceResponse<DiagnosisMaster[]>> {
+    const endpoint = this.apiConfig.pathwayEndpoint
+    if (!endpoint) {
+      return { data: [], ok: false, error: 'pathwayEndpoint tidak dikonfigurasi' }
+    }
+
+    try {
+      const urlObj = new URL(endpoint)
+      const baseUrl = urlObj.origin
+      const res = await fetch(`${baseUrl}/api/v1/clinical-pathway/master-diagnoses`)
+
+      if (!res.ok) {
+        return { data: [], ok: false, error: `HTTP ${res.status}` }
+      }
+
+      const backendResponse = await res.json()
+      return { data: backendResponse || [], ok: true }
+    } catch (err) {
+      return { data: [], ok: false, error: (err as Error).message }
+    }
+  }
 }
+

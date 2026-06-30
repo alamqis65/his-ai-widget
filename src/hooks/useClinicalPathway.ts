@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'preact/hooks'
-import type { ClinicalPathwayState, ClinicalPathwayResult, SDKCallbacks } from '@/types'
+import type { ClinicalPathwayParams, ClinicalPathwayState, ClinicalPathwayResult, SDKCallbacks } from '@/types'
 import { getClinicalPathwayService } from '@/services/registry'
 
 interface UseClinicalPathwayReturn {
   state: ClinicalPathwayState
   result: ClinicalPathwayResult | null
   error: string | null
-  generate: (diagnosis: string) => Promise<void>
+  generate: (params: ClinicalPathwayParams) => Promise<void>
   save: () => void
   reset: () => void
 }
@@ -16,12 +16,12 @@ export function useClinicalPathway(callbacks?: Pick<SDKCallbacks, 'onResultPathw
   const [result, setResult] = useState<ClinicalPathwayResult | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const generate = useCallback(async (diagnosis: string) => {
-    if (!diagnosis.trim()) return
+  const generate = useCallback(async (params: ClinicalPathwayParams) => {
+    if (!params.diagnosa_id.trim()) return
     setState('GENERATING')
     setError(null)
 
-    const res = await getClinicalPathwayService().generate(diagnosis)
+    const res = await getClinicalPathwayService().generate(params)
     if (res.ok) {
       setResult(res.data)
       setState('DONE')

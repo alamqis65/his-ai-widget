@@ -4,7 +4,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
   },
-  "cSpell.language": "en,id",
+  "cSpell.language": "en,id-id",
   "cSpell.words": [
     "anamesa",
     "dikonfigurasi",

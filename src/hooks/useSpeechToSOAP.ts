@@ -86,7 +86,6 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
       const result = await getSpeechToSOAPService().process(audioBlob)
 
       if (result.ok) {
-        console.log(result.data.soapResult)
         setSoapResult(result.data.soapResult)
         setState('DONE')
       } else {
@@ -106,7 +105,7 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
         type,
         sugest_diagnosis: type === 'DIAGNOSE' ? (selected as SuggestedDiagnosis[]) : undefined,
         sugest_procedures: type === 'PROCEDURE' ? (selected as SuggestedProcedure[]) : undefined,
-        sugest_ttv: type === 'VITALSIGN' ? (selected as SuggestedTTV[]) : undefined,
+        sugest_VitalSign: type === 'VITALSIGN' ? (selected as SuggestedTTV[]) : undefined,
       })
 
       // Dispatch event dengan type custom

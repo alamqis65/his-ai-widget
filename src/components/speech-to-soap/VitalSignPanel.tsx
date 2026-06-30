@@ -3,7 +3,7 @@ import type { SuggestedTTV } from '@/types'
 import type { SaveSOAPType } from '@/hooks/useSpeechToSOAP'
 
 interface Props {
-  vitalSigns: Record<string, [number, string]>
+  vitalSigns: SuggestedTTV[]
   onSave: (type: SaveSOAPType, selected: SuggestedTTV[]) => void
 }
 
@@ -12,14 +12,24 @@ interface Props {
 interface VitalSignRowProps {
   name: string
   value: string
+  unitType: string
+  onChange: (value: string) => void
 }
 
-function VitalSignRow({ name, value }: VitalSignRowProps) {
+function VitalSignRow({ name, value, unitType, onChange }: VitalSignRowProps) {
   return (
     <div class="vital-sign-row">
       <div class="vital-sign-row-info">
         <span class="vital-sign-name">{name}</span>
-        <span class="vital-sign-value">{value}</span>
+        <input
+          class="vital-sign-value"
+          type="text"
+          value={value}
+          onInput={e => {
+            onChange(e.currentTarget.value)
+          }}
+        />
+        <span class="vital-sign-unit"> {unitType} </span>
       </div>
     </div>
   )
@@ -29,22 +39,19 @@ function VitalSignRow({ name, value }: VitalSignRowProps) {
 
 export function VitalSignsPanel({ vitalSigns, onSave }: Props) {
   const [saved, setSaved] = useState(false)
+  const [items, setItems] = useState(vitalSigns?.filter(v => !!v.Value) ?? [])
 
-  // Convert the vital signs object to an array and filter out empty values
-  const vitalSignsArray = Object.entries(vitalSigns)
-    .map(([name, [id, value]]) => ({ name, id, value }))
-    .filter(item => item.value && item.value.trim() !== '')
-
-  if (vitalSignsArray.length === 0) {
+  if (items.length === 0) {
     return null
+  }
+
+  const handleValueChange = (id: number, value: string) => {
+    setItems(prev => prev.map(item => (item.VitalSignID === id ? { ...item, Value: value } : item)))
   }
 
   const handleSaveAll = () => {
     setSaved(true)
-    onSave(
-      'VITALSIGN',
-      vitalSignsArray.map(({ name, id, value }) => ({ id, name, value })),
-    )
+    onSave('VITALSIGN', items)
     setTimeout(() => setSaved(false), 1800)
   }
 
@@ -75,8 +82,14 @@ export function VitalSignsPanel({ vitalSigns, onSave }: Props) {
 
       {/* List */}
       <div class="vital-signs-list">
-        {vitalSignsArray.map(item => (
-          <VitalSignRow key={`${item.name}-${item.id}`} name={item.name} value={item.value} />
+        {items.map(item => (
+          <VitalSignRow
+            key={`${item.VitalSignLabel}-${item.VitalSignID}`}
+            name={item.VitalSignLabel}
+            value={item.Value}
+            unitType={item.ValueUnit}
+            onChange={value => handleValueChange(item.VitalSignID, value)}
+          />
         ))}
       </div>
     </div>

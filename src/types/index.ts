@@ -39,9 +39,12 @@ export interface SuggestedProcedure {
 }
 
 export interface SuggestedTTV {
-  id: number
-  name: string
-  value: string
+  VitalSignID: number
+  VitalSignName: string
+  Value: string
+  ValueUnit: string
+  VitalSignType: string
+  VitalSignLabel: string
 }
 
 export interface SOAPResult {
@@ -51,8 +54,7 @@ export interface SOAPResult {
   transcriptUsed: string
   sugest_diagnosis?: SuggestedDiagnosis[]
   sugest_procedures?: SuggestedProcedure[]
-  vitalSigns?: Record<string, [number, string]>
-  sugest_ttv?: SuggestedTTV[]
+  sugest_VitalSign?: SuggestedTTV[]
 }
 
 // ─── Clinical Pathway Types ───────────────────────────────────────────────────

@@ -133,7 +133,7 @@ export function SuggestionPanel({ diagnoses, procedures, onSave }: Props) {
             onClick={() => setActiveTab('diagnose')}
           >
             Diagnosa
-            <span class="suggestion-tab-count">{diagnoses.length}</span>
+            <span class="suggestion-tab-count">{diagnosesWithId.length}</span>
           </button>
         )}
 

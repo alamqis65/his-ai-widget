@@ -1916,12 +1916,11 @@ textarea {
 }
 
 .vital-sign-row-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 150px 60px;
+  align-items: center;
+  gap: 12px;
 }
 
 .vital-sign-name {
@@ -1936,8 +1935,29 @@ textarea {
 .vital-sign-value {
   font-size: 11px;
   font-weight: 700;
-  color: #1d4ed8;
+  color: #040d25;
   flex-shrink: 0;
+  width: 41%;
+  border-radius: 0.375rem;
+  padding-left: 1em;
+  background-color: transparent;
+  justify-self: end;
+}
+
+.vital-sign-value:hover {
+  border-color: var(--brand-dark);
+}
+
+.vital-sign-value:focus {
+  border-color: var(--brand-dark);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.15);
+}
+
+.vital-sign-unit {
+  width: 55px;
+  text-align: left;
+  color: #64748b;
+  font-size: 11px;
 }
 
 /* Markdown Body Styles for AI Assistant Chat */

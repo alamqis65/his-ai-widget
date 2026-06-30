@@ -97,7 +97,7 @@ function normalizeContent(content: any, sectionKey?: string): JSX.Element | stri
 }
 
 export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndProcedure, onSaveTTV }: Props) {
-  const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures, vitalSigns } = result
+  const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures, sugest_VitalSign } = result
   const sections = [
     {
       key: 'S',
@@ -161,7 +161,7 @@ export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndPr
                   onSave={onSaveDiagnoseAndProcedure}
                 />
               )}
-              {s.key === 'O' && <VitalSignsPanel vitalSigns={vitalSigns ?? {}} onSave={onSaveTTV} />}
+              {s.key === 'O' && <VitalSignsPanel vitalSigns={sugest_VitalSign ?? []} onSave={onSaveTTV} />}
             </div>
           </div>
         ))}

@@ -1928,7 +1928,7 @@ textarea {
 .vital-sign-row-info {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(110px, 1fr) 150px 60px;
+  grid-template-columns: 110px 100px 60px; /* lebih sempit */
   align-items: center;
   gap: 12px;
 }
@@ -1947,7 +1947,7 @@ textarea {
   font-weight: 700;
   color: #040d25;
   flex-shrink: 0;
-  width: 41%;
+  width: 65%;
   border-radius: 0.375rem;
   padding-left: 1em;
   background-color: transparent;

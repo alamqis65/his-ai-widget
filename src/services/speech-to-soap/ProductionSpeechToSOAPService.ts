@@ -28,6 +28,7 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
     const endpoint = this.apiConfig.soapGeneratorEndpoint
     const pretext = this.apiConfig.pretext
     const vitalSignList = this.apiConfig.vitalSignList
+    const soapiTemplate = this.apiConfig.soapiTemplate
     if (!endpoint) {
       return {
         data: {} as SpeechToSOAPResult,
@@ -41,6 +42,7 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
       form.append('audio_file', audioBlob, 'recording.webm')
       form.append('raw_text', pretext || '')
       form.append('vital_sign_list', vitalSignList || '')
+      form.append('soapi_template', soapiTemplate || '')
       form.append('output_language', 'Indonesia')
       form.append('dialect', 'Umum')
       form.append('reference_cases_show', 'true')

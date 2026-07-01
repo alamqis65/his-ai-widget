@@ -7,13 +7,41 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
     soapResult: {
       anamesa: 'testing anamesa',
       soap: {
-        Subjective:
-          'Pasien mengeluhkan nyeri dada sejak 2 hari, terasa seperti tertindih, menjalar ke lengan kiri, disertai sesak napas ringan dan keringat dingin.',
-        Objective: 'TD: 140/90 mmHg, HR: 98x/mnt, RR: 20x/mnt, SpO2: 96%. EKG: ST elevasi segmen V1-V4.',
-        Assessment: 'STEMI anterior (I21.0)',
-        Plan: '1. Loading aspirin 300mg + clopidogrel 300mg\n2. ISDN sublingual 5mg\n3. Rujuk segera ke kardiologi\n4. Monitor EKG continuous',
-        Interventions:
-          'Pasien diberikan aspirin dan clopidogrel, serta ISDN sublingual. Rujukan ke kardiologi dilakukan untuk tindakan lebih lanjut.',
+        Subjective: {
+          KeluhanUtama: 'Nyeri dada sejak 2 hari, terasa seperti tertindih, menjalar ke lengan kiri.',
+          RiwayatPenyakitSekarang: 'Disertai sesak napas ringan dan keringat dingin.',
+          RiwayatPenyakitDahulu: '',
+          RiwayatOperasi: '',
+          RiwayatPengobatan: '',
+          RiwayatAlergi: '',
+          RiwayatKeluarga: '',
+          RiwayatSosial: '',
+          TelaahSistem: '',
+          KeteranganTambahan: '',
+        },
+        Objective: {
+          KeadaanUmum: '',
+          Kesadaran: '',
+          PemeriksaanFisik: ['TD: 140/90 mmHg', 'HR: 98x/mnt', 'RR: 20x/mnt', 'SpO2: 96%'],
+          PemeriksaanPenunjang: ['EKG: ST elevasi segmen V1-V4'],
+          TemuanKlinis: '',
+        },
+        Assessment: {
+          PertimbanganKlinis: 'STEMI anterior (I21.0)',
+        },
+        Plan: {
+          TerapiObat: ['Aspirin 300mg loading', 'Clopidogrel 300mg loading', 'ISDN sublingual 5mg'],
+          Tindakan: ['Rujuk segera ke kardiologi'],
+          PemeriksaanPenunjang: [],
+          Monitoring: ['Monitor EKG continuous'],
+          Konsultasi: [],
+          Edukasi: '',
+          RencanaKontrol: '',
+        },
+        Interventions: {
+          SudahDilakukan: ['Pemberian aspirin dan clopidogrel', 'ISDN sublingual', 'Rujukan ke kardiologi'],
+          Disarankan: [],
+        },
       },
       generatedAt: new Date(),
       transcriptUsed:
@@ -92,10 +120,41 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
     soapResult: {
       anamesa: 'testing anamesa',
       soap: {
-        Subjective: 'Anak 7 tahun, demam tinggi 3 hari, batuk, dan pilek. Tidak ada riwayat kejang.',
-        Objective: 'Suhu 38.9°C, HR: 102x/mnt. Tenggorokan hiperemis. Rhonki (-/-).',
-        Assessment: 'ISPA (J06.9) — Common cold dengan febris',
-        Plan: '1. Paracetamol 10-15 mg/kgBB tiap 6-8 jam bila demam\n2. Zinc 20mg/hari\n3. Edukasi orang tua\n4. Kontrol 3 hari',
+        Subjective: {
+          KeluhanUtama: 'Demam tinggi 3 hari, batuk, dan pilek.',
+          RiwayatPenyakitSekarang: 'Tidak ada riwayat kejang.',
+          RiwayatPenyakitDahulu: '',
+          RiwayatOperasi: '',
+          RiwayatPengobatan: '',
+          RiwayatAlergi: '',
+          RiwayatKeluarga: '',
+          RiwayatSosial: '',
+          TelaahSistem: '',
+          KeteranganTambahan: '',
+        },
+        Objective: {
+          KeadaanUmum: '',
+          Kesadaran: '',
+          PemeriksaanFisik: ['Suhu 38.9°C', 'HR: 102x/mnt', 'Tenggorokan hiperemis', 'Rhonki (-/-)'],
+          PemeriksaanPenunjang: [],
+          TemuanKlinis: '',
+        },
+        Assessment: {
+          PertimbanganKlinis: 'ISPA (J06.9) — Common cold dengan febris',
+        },
+        Plan: {
+          TerapiObat: ['Paracetamol 10-15 mg/kgBB tiap 6-8 jam bila demam', 'Zinc 20mg/hari'],
+          Tindakan: [],
+          PemeriksaanPenunjang: [],
+          Monitoring: [],
+          Konsultasi: [],
+          Edukasi: 'Edukasi orang tua',
+          RencanaKontrol: 'Kontrol 3 hari',
+        },
+        Interventions: {
+          SudahDilakukan: [],
+          Disarankan: [],
+        },
       },
       generatedAt: new Date(),
       transcriptUsed:
@@ -172,11 +231,41 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
     soapResult: {
       anamesa: 'testing anamesa',
       soap: {
-        Subjective:
-          'Pasien wanita 45 tahun riwayat DM tipe 2 untuk kontrol rutin. Keluhan sering haus dan poliuri. GDP terakhir 210 mg/dL.',
-        Objective: 'TD: 130/80 mmHg, BB: 68kg, BMI: 27.2 kg/m². GDP hari ini: 210 mg/dL.',
-        Assessment: 'Diabetes Melitus Tipe 2 tidak terkontrol (E11.65)',
-        Plan: '1. Lanjutkan Metformin 500mg 3x1\n2. Tambah Glimepiride 1mg 1x1 pagi\n3. Diet DM 1700 kkal\n4. Kontrol 1 bulan',
+        Subjective: {
+          KeluhanUtama: 'Pasien wanita 45 tahun riwayat DM tipe 2 untuk kontrol rutin.',
+          RiwayatPenyakitSekarang: 'Keluhan sering haus dan poliuri. GDP terakhir 210 mg/dL.',
+          RiwayatPenyakitDahulu: '',
+          RiwayatOperasi: '',
+          RiwayatPengobatan: '',
+          RiwayatAlergi: '',
+          RiwayatKeluarga: '',
+          RiwayatSosial: '',
+          TelaahSistem: '',
+          KeteranganTambahan: '',
+        },
+        Objective: {
+          KeadaanUmum: '',
+          Kesadaran: '',
+          PemeriksaanFisik: ['TD: 130/80 mmHg', 'BB: 68kg', 'BMI: 27.2 kg/m²'],
+          PemeriksaanPenunjang: ['GDP hari ini: 210 mg/dL'],
+          TemuanKlinis: '',
+        },
+        Assessment: {
+          PertimbanganKlinis: 'Diabetes Melitus Tipe 2 tidak terkontrol (E11.65)',
+        },
+        Plan: {
+          TerapiObat: ['Metformin 500mg 3x1', 'Glimepiride 1mg 1x1 pagi'],
+          Tindakan: [],
+          PemeriksaanPenunjang: [],
+          Monitoring: [],
+          Konsultasi: [],
+          Edukasi: 'Diet DM 1700 kkal',
+          RencanaKontrol: 'Kontrol 1 bulan',
+        },
+        Interventions: {
+          SudahDilakukan: [],
+          Disarankan: [],
+        },
       },
       generatedAt: new Date(),
       transcriptUsed:

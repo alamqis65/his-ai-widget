@@ -1,4 +1,4 @@
-import type { ClinicalPathwayResult, ServiceResponse } from '@/types'
+import type { ClinicalPathwayParams, ClinicalPathwayResult, ServiceResponse, DiagnosisMaster } from '@/types'
 
 /**
  * ClinicalPathwayService — abstraction untuk generate clinical pathway.
@@ -9,5 +9,6 @@ import type { ClinicalPathwayResult, ServiceResponse } from '@/types'
  * - Support template per departemen (bedah, interna, anak, dll)
  */
 export interface ClinicalPathwayService {
-  generate(diagnosis: string, patientContext?: string): Promise<ServiceResponse<ClinicalPathwayResult>>
+  generate(params: ClinicalPathwayParams): Promise<ServiceResponse<ClinicalPathwayResult>>
+  getMasterDiagnoses(): Promise<ServiceResponse<DiagnosisMaster[]>>
 }

@@ -61,6 +61,20 @@ export interface SOAPResult {
 
 export type ClinicalPathwayState = 'IDLE' | 'GENERATING' | 'DONE' | 'ERROR'
 
+export interface ClinicalPathwayParams {
+  registration_no: string
+  diagnosa_id: string
+  tipe_kunjungan: string
+  is_bpjs: boolean
+  age_in_years: number
+  target_hari_dokter: number
+}
+
+export interface DiagnosisMaster {
+  id: string
+  name: string
+}
+
 export interface PathwayStep {
   day: string
   activities: string[]

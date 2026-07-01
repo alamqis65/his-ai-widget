@@ -28,72 +28,69 @@ function prettifySOAPText(text: string): JSX.Element {
   )
 }
 
-function normalizeContent(content: any, sectionKey?: string): JSX.Element | string {
+function normalizeContent(content: any): JSX.Element | string {
   if (content == null) return ''
-  if (typeof content === 'string') return prettifySOAPText(content)
 
-  if (typeof content === 'object') {
-    if (sectionKey === 'P') {
+  // String
+  if (typeof content === 'string') {
+    return prettifySOAPText(content)
+  }
+
+  // Primitive
+  if (typeof content === 'number' || typeof content === 'boolean') {
+    return String(content)
+  }
+
+  // Array
+  if (Array.isArray(content)) {
+    if (content.length === 0) {
+      return <span>-</span>
+    }
+
+    // array string / number
+    if (typeof content[0] !== 'object' || content[0] === null) {
       return (
-        <div class="soap-plan">
-          {Object.entries(content).map(([k, v]) => {
-            if (k === 'rekomendasi_resep' && Array.isArray(v)) {
-              return (
-                <div key={k}>
-                  <strong>Rekomendasi Resep:</strong>
-                  <ul class="soap-list">
-                    {v.map((item: any) => (
-                      <li key={item.ItemID}>{item.ItemName}</li>
-                    ))}
-                  </ul>
-                </div>
-              )
-            }
-            if (k === 'rekomendasi_penunjang' && Array.isArray(v)) {
-              return (
-                <div key={k}>
-                  <strong>Rekomendasi Penunjang:</strong>
-                  <ul class="soap-list">
-                    {v.map((item: any) => (
-                      <li key={item.ItemCode}>{item.NamaPemeriksaan}</li>
-                    ))}
-                  </ul>
-                </div>
-              )
-            }
-            if (typeof v === 'string') {
-              return (
-                <div key={k}>
-                  <strong>{k.replace(/_/g, ' ')}:</strong>
-                  {prettifySOAPText(v)}
-                </div>
-              )
-            }
-            return (
-              <div key={k}>
-                <strong>{k.replace(/_/g, ' ')}:</strong> {String(v)}
-              </div>
-            )
-          })}
-        </div>
+        <ul class="soap-list">
+          {content.map((item, idx) => (
+            <li key={idx}>{String(item)}</li>
+          ))}
+        </ul>
       )
     }
 
+    // array object
     return (
-      <table class="soap-table">
-        <tbody>
-          {Object.entries(content).map(([k, v]) => (
-            <tr key={k}>
-              <td class="soap-key">{k.replace(/_/g, ' ')}</td>
-              <td class="soap-value">{String(v)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div class="soap-array">
+        {content.map((item, idx) => (
+          <div class="soap-card" key={idx}>
+            {normalizeContent(item)}
+          </div>
+        ))}
+      </div>
     )
   }
 
-  return String(content)
+  // Object
+  return (
+    <table class="soap-table">
+      <tbody>
+        {Object.entries(content).map(([k, v]) => {
+          // skip kalau null/undefined
+          if (!v) return null
+
+          // kalau array kosong, skip juga
+          if (Array.isArray(v) && v.length === 0) return null
+
+          return (
+            <tr key={k}>
+              <td class="soap-key">{k.replace(/_/g, ' ')}</td>
+              <td class="soap-value">{normalizeContent(v)}</td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
 }
 
 export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndProcedure, onSaveTTV }: Props) {
@@ -102,25 +99,25 @@ export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndPr
     {
       key: 'S',
       label: 'Subjective',
-      content: normalizeContent(soap.Subjective, 'S'),
+      content: normalizeContent(soap.Subjective),
       color: 'blue',
     },
     {
       key: 'O',
       label: 'Objective',
-      content: normalizeContent(soap.Objective, 'O'),
+      content: normalizeContent(soap.Objective),
       color: 'green',
     },
     {
       key: 'A',
       label: 'Assessment',
-      content: normalizeContent(soap.Assessment, 'A'),
+      content: normalizeContent(soap.Assessment),
       color: 'orange',
     },
     {
       key: 'P',
       label: 'Plan',
-      content: normalizeContent(soap.Plan, 'P'),
+      content: normalizeContent(soap.Plan),
       color: 'purple',
     },
   ] as const

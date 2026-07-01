@@ -10,13 +10,16 @@
     "dikonfigurasi",
     "eclaim",
     "eligibilitas",
+    "Glimepiride",
     "HISAI",
     "HISAISDK",
     "medin",
+    "Melitus",
     "normalised",
     "poli",
     "simptomatik",
     "soapi",
     "VITALSIGN"
-  ]
+  ],
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }

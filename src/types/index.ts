@@ -126,6 +126,11 @@ export interface SDKApiConfig {
    */
   pretext?: string
   /**
+   * custom bentuk JSON dari SOAPI result
+   * @example { 'SOAPI:{S:{},O:{},A:{},P:{},I:{}}' }
+   */
+  soapiTemplate?: string
+  /**
    * digunakan khusus untuk medin
    * digunakan untuk memberikan data id dari vital sign yang bisa di mapping oleh AI
    * @example { 'pasien berusia 15 tahun dengan riwayat hipertensi tingkat 1' }

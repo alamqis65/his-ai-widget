@@ -3,7 +3,7 @@ import { JSX } from 'preact/jsx-runtime'
 import { SuggestionPanel } from './SuggestionPanel'
 import { VitalSignsPanel } from './VitalSignPanel'
 import type { SaveSOAPType } from '@/hooks/useSpeechToSOAP'
-import { AccordionSection } from '../common/Accordion'
+import { AccordionSection } from '../common/accordion'
 
 interface Props {
   result: SOAPResult

@@ -42,9 +42,11 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
         const asuhan = phase.asuhan_medis || {}
         return {
           day: `Hari ${phase.hari_ke} - ${phase.nama_fase}`,
-          activities: asuhan.tindakan_perawat || [],
-          medications: (asuhan.medikasi_farmasi || []).map((m: any) => `${m.nama_obat} (${m.dosis})`),
-          assessments: (asuhan.laboratorium || []).map((l: any) => l.nama_pemeriksaan),
+          activities: Array.from(new Set(asuhan.tindakan_perawat || [])),
+          medications: Array.from(
+            new Set((asuhan.medikasi_farmasi || []).map((m: any) => `${m.nama_obat} (${m.dosis})`)),
+          ),
+          assessments: Array.from(new Set((asuhan.laboratorium || []).map((l: any) => l.nama_pemeriksaan))),
         }
       })
 

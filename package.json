@@ -13,6 +13,7 @@
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "build:lib": "vite build --mode lib",
+    "prebuild:lib": "npm run generate:styles",
     "preview:lib": "python3 -m http.server 8080",
     "generate:styles": "node scripts/generate-styles.cjs",
     "lint": "eslint .",

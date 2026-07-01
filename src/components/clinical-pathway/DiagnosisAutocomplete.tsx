@@ -36,7 +36,7 @@ export function DiagnosisAutocomplete({ diagnoses, selectedDiagnosis, onSelectDi
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div class="diagnosis-autocomplete">
       <input
         class="form-input"
         type="text"
@@ -63,35 +63,15 @@ export function DiagnosisAutocomplete({ diagnoses, selectedDiagnosis, onSelectDi
       />
 
       {isDropdownOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '100%',
-            left: 0,
-            right: 0,
-            background: 'white',
-            border: '1px solid #cbd5e1',
-            borderRadius: '4px',
-            maxHeight: '200px',
-            overflowY: 'auto',
-            zIndex: 10,
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-          }}
-        >
+        <div class="diagnosis-autocomplete-dropdown">
           {filteredDiagnoses.length > 0 ? (
             filteredDiagnoses.map(d => (
-              <div
-                key={d.id}
-                onClick={() => handleSelectDiagnosis(d)}
-                style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', fontSize: '13px' }}
-                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#f8fafc')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
-              >
-                <strong style={{ display: 'inline-block', width: '50px' }}>{d.id}</strong> {d.name}
+              <div key={d.id} onClick={() => handleSelectDiagnosis(d)} class="diagnosis-autocomplete-option">
+                <strong class="diagnosis-autocomplete-option-id">{d.id}</strong> {d.name}
               </div>
             ))
           ) : (
-            <div style={{ padding: '8px 12px', color: '#94a3b8', fontSize: '13px' }}>Diagnosis tidak ditemukan</div>
+            <div class="diagnosis-autocomplete-empty">Diagnosis tidak ditemukan</div>
           )}
         </div>
       )}

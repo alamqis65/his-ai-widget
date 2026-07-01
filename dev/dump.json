@@ -1,0 +1,41 @@
+{
+	"soap": {
+		"Subjective": {
+			"KeluhanUtama": "",
+			"RiwayatPenyakitSekarang": "",
+			"RiwayatPenyakitDahulu": "",
+			"RiwayatOperasi": "",
+			"RiwayatPengobatan": "",
+			"RiwayatAlergi": "",
+			"RiwayatKeluarga": "",
+			"RiwayatSosial": "",
+			"TelaahSistem": "",
+			"KeteranganTambahan": ""
+		},
+		"Objective": {
+			"KeadaanUmum": "",
+			"Kesadaran": "",
+			"PemeriksaanFisik": [],
+			"PemeriksaanPenunjang": [],
+			"TemuanKlinis": ""
+		},
+		"Assessment": {
+			"DiagnosisUtama": "",
+			"DiagnosisBanding": [],
+			"PertimbanganKlinis": ""
+		},
+		"Plan": {
+			"TerapiObat": [],
+			"Tindakan": [],
+			"PemeriksaanPenunjang": [],
+			"Monitoring": [],
+			"Konsultasi": [],
+			"Edukasi": "",
+			"RencanaKontrol": ""
+		},
+		"Interventions": {
+			"SudahDilakukan": [],
+			"Disarankan": []
+		}
+	}
+}

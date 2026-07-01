@@ -1,0 +1,135 @@
+/* ─── E-Claim ─────────────────────────────────────────────────────────────── */
+.eclaim-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+}
+
+.eclaim-status--eligible {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+.eclaim-status--ineligible {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.eclaim-status-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.eclaim-status--eligible .eclaim-status-icon {
+  background: #22c55e;
+  color: white;
+}
+.eclaim-status--ineligible .eclaim-status-icon {
+  background: #dc2626;
+  color: white;
+}
+
+.eclaim-status-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.eclaim-status-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+  font-family: var(--mono);
+}
+
+.eclaim-cost-row {
+  display: flex;
+  align-items: center;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.eclaim-cost-item {
+  flex: 1;
+  padding: 10px 14px;
+}
+.eclaim-cost-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+}
+.eclaim-cost-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+}
+.eclaim-cost-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-top: 2px;
+  font-family: var(--mono);
+}
+.eclaim-cost-value--covered {
+  color: #15803d;
+}
+
+.eclaim-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.eclaim-notes-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.eclaim-note-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+.eclaim-note-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--brand);
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.eclaim-note-item p {
+  font-size: 12px;
+  color: var(--text-1);
+  line-height: 1.5;
+}
+
+.eclaim-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--brand-light);
+  border-radius: var(--radius-md);
+  border: 1px solid #b2e8d8;
+}
+.eclaim-code-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--brand-dark);
+}
+.eclaim-code-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-dark);
+  font-family: var(--mono);
+}
+

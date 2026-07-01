@@ -46,18 +46,15 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
   }
 
   return (
-    <div class="feature-layout" style={{ position: 'relative' }}>
-      <div
-        class="feature-header"
-        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
-      >
+    <div class="feature-layout clinical-pathway-root">
+      <div class="feature-header clinical-pathway-header">
         <div>
           <h2 class="feature-title">Clinical Pathway</h2>
           <p class="feature-subtitle">Generate rencana perawatan terstruktur berdasarkan diagnosis</p>
         </div>
         <button
           onClick={() => setShowSettings(!showSettings)}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: 0.6 }}
+          class="clinical-pathway-settings-btn"
           title="Context Settings (Mock)"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -84,9 +81,9 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
         <div class="feature-form">
           <label class="form-label">Diagnosis Utama</label>
           {loadingDiagnoses ? (
-            <div style={{ padding: '8px', color: '#64748b', fontSize: '13px' }}>Memuat Master Diagnosa...</div>
+            <div class="pathway-diagnoses-loading">Memuat Master Diagnosa...</div>
           ) : errorDiagnoses ? (
-            <div style={{ padding: '8px', color: '#ef4444', fontSize: '13px' }}>Error: {errorDiagnoses}</div>
+            <div class="pathway-diagnoses-error">Error: {errorDiagnoses}</div>
           ) : (
             <DiagnosisAutocomplete
               diagnoses={diagnoses}
@@ -96,7 +93,7 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
           )}
 
           {tipeKunjungan !== 'Rawat Jalan' && (
-            <div style={{ marginTop: '16px' }}>
+            <div class="pathway-target-hari-field">
               <label class="form-label">Target Hari Dokter</label>
               <input
                 class="form-input"
@@ -109,7 +106,7 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
             </div>
           )}
 
-          <div style={{ marginTop: '24px' }}>
+          <div class="pathway-generate-action">
             <button
               class="btn btn-primary btn-primary-custom btn-full"
               onClick={handleGenerate}

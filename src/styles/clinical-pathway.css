@@ -1,0 +1,191 @@
+/* ─── Clinical Pathway ────────────────────────────────────────────────────── */
+.pathway-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pathway-step {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.pathway-step-day {
+  background: var(--bg-3);
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.pathway-step-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pathway-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pathway-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+}
+
+.pathway-group-label--blue {
+  color: #1d4ed8;
+}
+.pathway-group-label--purple {
+  color: #7e22ce;
+}
+
+.pathway-item {
+  font-size: 12px;
+  color: var(--text-1);
+  line-height: 1.5;
+}
+
+/* ── ClinicalPathwayFeature layout ──────────────────────────────────────── */
+/* Modifiers on top of the shared .feature-layout / .feature-header classes
+   (see layout.css) — kept feature-scoped since no other feature needs them. */
+
+.clinical-pathway-root {
+  position: relative;
+}
+
+.clinical-pathway-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.clinical-pathway-settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.pathway-diagnoses-loading {
+  padding: 8px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.pathway-diagnoses-error {
+  padding: 8px;
+  color: #ef4444;
+  font-size: 13px;
+}
+
+.pathway-target-hari-field {
+  margin-top: 16px;
+}
+
+.pathway-generate-action {
+  margin-top: 24px;
+}
+
+/* ── ContextSettingsPanel (dev-only test panel) ─────────────────────────── */
+
+.context-settings-panel {
+  background: var(--bg-2);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+}
+
+.context-settings-title {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #334155;
+}
+
+.context-settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.context-settings-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #64748b;
+}
+
+.context-settings-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+}
+
+.context-settings-checkbox-row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.context-settings-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 26px;
+}
+
+.context-settings-checkbox {
+  margin-right: 8px;
+}
+
+/* ── DiagnosisAutocomplete ───────────────────────────────────────────────── */
+
+.diagnosis-autocomplete {
+  position: relative;
+}
+
+.diagnosis-autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.diagnosis-autocomplete-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--bg-3);
+  font-size: 13px;
+}
+
+.diagnosis-autocomplete-option:hover {
+  background-color: var(--bg-2);
+}
+
+.diagnosis-autocomplete-option-id {
+  display: inline-block;
+  width: 50px;
+}
+
+.diagnosis-autocomplete-empty {
+  padding: 8px 12px;
+  color: var(--text-3);
+  font-size: 13px;
+}
+

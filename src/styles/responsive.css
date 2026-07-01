@@ -1,0 +1,19 @@
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --widget-w: 100vw;
+    --widget-h: 100dvh;
+  }
+  .widget-root {
+    border-radius: 0;
+  }
+  #his-ai-fab {
+    bottom: 16px;
+    right: 16px;
+  }
+  .sdk-widget-panel {
+    right: 0;
+    bottom: 84px;
+  }
+}
+

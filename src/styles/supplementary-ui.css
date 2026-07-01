@@ -1,0 +1,482 @@
+/**
+ * supplementary-ui.css
+ *
+ * Grab-bag of smaller styles added after the main feature stylesheets were
+ * written: a chat input fix, SOAP transcript/suggestion views, and shared
+ * result-view primitives (tabs, list, badges, save button) reused by the
+ * speech-to-soap / clinical-pathway / eclaim result screens.
+ *
+ * Kept as one file and loaded last (see styles/index.css) so cascade order
+ * matches the original stylesheet exactly. If this file keeps growing,
+ * consider splitting the feature-specific bits into their own feature
+ * stylesheet and keeping only the shared tabs/list/badges/save-button rules
+ * here.
+ */
+
+/* ─── Chat input clear button ─────────────────────────────────────────────── */
+.chat-input-clear {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 120ms ease;
+  flex-shrink: 0;
+}
+.chat-input-clear:hover {
+  background: var(--bg-3);
+  color: var(--color-error, #dc2626);
+}
+
+/* ─── Transcript preview (SOAP result) ───────────────────────────────────── */
+.soap-transcript-preview {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 13px;
+  margin-bottom: 10px;
+}
+.soap-transcript-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+  margin-bottom: 0;
+}
+.soap-transcript-text {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.soap-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.soap-key {
+  font-weight: 600;
+  padding-right: 0.5rem;
+  vertical-align: top;
+}
+.soap-value {
+  color: #444;
+}
+
+.soap-transcript-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.accordion-chevron {
+  color: var(--text-3);
+  transition: transform 200ms ease;
+  flex-shrink: 0;
+}
+.accordion-chevron--open {
+  transform: rotate(180deg);
+}
+
+.btn-copy {
+  font-size: 10px !important;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.btn-copy:hover {
+  background: #eee;
+}
+
+/* ─── Suggestion Panel ────────────────────────────────────────────────────── */
+.suggestion-panel {
+  border-radius: var(--radius-md);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  background: var(--surface-1, #fff);
+  margin-top: 4px;
+}
+
+.suggestion-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.suggestion-panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2, #64748b);
+  flex: 1;
+}
+
+.suggestion-panel-hint {
+  font-size: 10px;
+  color: var(--text-3, #94a3b8);
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────────────────── */
+.suggestion-tabs {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.suggestion-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3, #94a3b8);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.suggestion-tab:hover {
+  color: var(--text-1, #1e293b);
+}
+
+.suggestion-tab--active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  font-weight: 600;
+}
+
+.suggestion-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: var(--text-2, #64748b);
+}
+
+.suggestion-tab--active .suggestion-tab-count {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* ─── List ───────────────────────────────────────────────────────────────── */
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestion-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.12s;
+}
+
+.suggestion-row:last-child {
+  border-bottom: none;
+}
+
+.suggestion-row:hover {
+  background: #f8fafc;
+}
+
+/* Primary diagnosis: faint blue-tinted left border */
+.suggestion-row--primary {
+  border-left: 3px solid #3b82f6;
+}
+
+/* Secondary diagnosis: faint gray left border */
+.suggestion-row--secondary {
+  border-left: 3px solid #cbd5e1;
+}
+
+/* Procedure: faint teal left border */
+.suggestion-row--procedure {
+  border-left: 3px solid #14b8a6;
+}
+
+.suggestion-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.suggestion-row-top {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.suggestion-icd {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono, monospace);
+  color: var(--text-2, #64748b);
+}
+
+.suggestion-name {
+  font-size: 11px;
+  color: var(--text-1, #1e293b);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Badges ─────────────────────────────────────────────────────────────── */
+.suggestion-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.suggestion-badge--primary {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.suggestion-badge--secondary {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* ─── Save button ─────────────────────────────────────────────────────────── */
+.suggestion-save-btn {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.1s;
+}
+
+.suggestion-save-btn:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: scale(1.08);
+}
+
+.suggestion-save-btn--saved {
+  background: #22c55e !important;
+  border-color: #22c55e !important;
+  color: #fff !important;
+  transform: scale(1.08);
+}
+
+/* ─── Vital Signs Panel ──────────────────────────────────────────────────────
+   Mirrors .suggestion-panel styling, but saves all vital signs in one
+   bulk action instead of per-row checkmarks. */
+.vital-signs-panel {
+  border-radius: var(--radius-md);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  background: var(--surface-1, #fff);
+  margin-top: 4px;
+}
+
+.vital-signs-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.vital-signs-panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2, #64748b);
+  flex: 1;
+}
+
+/* ─── Bulk save button ───────────────────────────────────────────────────── */
+.vital-signs-save-all-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.1s;
+}
+
+.vital-signs-save-all-btn:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: scale(1.04);
+}
+
+.vital-signs-save-all-btn--saved {
+  background: #22c55e !important;
+  border-color: #22c55e !important;
+  color: #fff !important;
+  transform: scale(1.04);
+}
+
+/* ─── List ───────────────────────────────────────────────────────────────── */
+.vital-signs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.vital-sign-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.12s;
+}
+
+.vital-sign-row:last-child {
+  border-bottom: none;
+}
+
+.vital-sign-row:hover {
+  background: #f8fafc;
+}
+
+.vital-sign-row-info {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 110px 100px 60px; /* lebih sempit */
+  align-items: center;
+  gap: 12px;
+}
+
+.vital-sign-name {
+  font-size: 11px;
+  color: var(--text-1, #1e293b);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vital-sign-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: #040d25;
+  flex-shrink: 0;
+  width: 65%;
+  border-radius: 0.375rem;
+  padding-left: 1em;
+  background-color: transparent;
+  justify-self: end;
+}
+
+.vital-sign-value:hover {
+  border-color: var(--brand-dark);
+}
+
+.vital-sign-value:focus {
+  border-color: var(--brand-dark);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.15);
+}
+
+.vital-sign-unit {
+  width: 55px;
+  text-align: left;
+  color: #64748b;
+  font-size: 11px;
+}
+
+/* Markdown Body Styles for AI Assistant Chat */
+.markdown-body {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  color: inherit;
+}
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--his-color-neutral-900);
+}
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.2rem;
+}
+.markdown-body li {
+  margin-bottom: 0.25rem;
+}
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}

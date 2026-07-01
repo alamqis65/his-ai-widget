@@ -75,7 +75,5 @@ export function RecorderVisualizer({ isRecording }: { isRecording: boolean }) {
     }
   }, [isRecording])
 
-  return (
-    <canvas ref={canvasRef} style={{ width: '100%', height: '80px', display: 'block' }} class="recorder-visualizer" />
-  )
+  return <canvas ref={canvasRef} class="recorder-visualizer" />
 }

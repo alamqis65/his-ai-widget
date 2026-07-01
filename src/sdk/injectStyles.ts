@@ -1,11 +1,11 @@
 /**
- * injectStyles.ts — AUTO-GENERATED
+ * injectStyles.ts — AUTO-GENERATED, do not edit by hand.
  *
- * CSS di-embed langsung ke dalam JS bundle.
- * Dipanggil saat his_ai_widget.init() — inject ke <head> sekali saja.
+ * Source: src/styles/index.css and the files it imports.
+ * Regenerate with: npm run generate:styles (also runs automatically before build:lib)
  *
- * JANGAN edit file ini manual.
- * Edit src/styles/index.css lalu jalankan: npm run build:lib
+ * The CSS is embedded directly into the JS bundle so the widget can inject
+ * it into <head> once, at his_ai_widget.init() time.
  */
 
 const CSS = `@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap");
@@ -977,6 +977,9 @@ textarea {
   gap: 8px;
 }
 .recorder-visualizer {
+  width: 100%;
+  height: 80px;
+  display: block;
   background: rgba(29, 158, 117, 0.06);
   border-radius: 8px;
 }
@@ -1221,6 +1224,141 @@ textarea {
   font-size: 12px;
   color: var(--text-1);
   line-height: 1.5;
+}
+
+/* ── ClinicalPathwayFeature layout ──────────────────────────────────────── */
+/* Modifiers on top of the shared .feature-layout / .feature-header classes
+   (see layout.css) — kept feature-scoped since no other feature needs them. */
+
+.clinical-pathway-root {
+  position: relative;
+}
+
+.clinical-pathway-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.clinical-pathway-settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.pathway-diagnoses-loading {
+  padding: 8px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.pathway-diagnoses-error {
+  padding: 8px;
+  color: #ef4444;
+  font-size: 13px;
+}
+
+.pathway-target-hari-field {
+  margin-top: 16px;
+}
+
+.pathway-generate-action {
+  margin-top: 24px;
+}
+
+/* ── ContextSettingsPanel (dev-only test panel) ─────────────────────────── */
+
+.context-settings-panel {
+  background: var(--bg-2);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+}
+
+.context-settings-title {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #334155;
+}
+
+.context-settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.context-settings-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #64748b;
+}
+
+.context-settings-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+}
+
+.context-settings-checkbox-row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.context-settings-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 26px;
+}
+
+.context-settings-checkbox {
+  margin-right: 8px;
+}
+
+/* ── DiagnosisAutocomplete ───────────────────────────────────────────────── */
+
+.diagnosis-autocomplete {
+  position: relative;
+}
+
+.diagnosis-autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.diagnosis-autocomplete-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--bg-3);
+  font-size: 13px;
+}
+
+.diagnosis-autocomplete-option:hover {
+  background-color: var(--bg-2);
+}
+
+.diagnosis-autocomplete-option-id {
+  display: inline-block;
+  width: 50px;
+}
+
+.diagnosis-autocomplete-empty {
+  padding: 8px 12px;
+  color: var(--text-3);
+  font-size: 13px;
 }
 
 /* ─── E-Claim ─────────────────────────────────────────────────────────────── */
@@ -1537,6 +1675,21 @@ textarea {
     bottom: 84px;
   }
 }
+
+/**
+ * supplementary-ui.css
+ *
+ * Grab-bag of smaller styles added after the main feature stylesheets were
+ * written: a chat input fix, SOAP transcript/suggestion views, and shared
+ * result-view primitives (tabs, list, badges, save button) reused by the
+ * speech-to-soap / clinical-pathway / eclaim result screens.
+ *
+ * Kept as one file and loaded last (see styles/index.css) so cascade order
+ * matches the original stylesheet exactly. If this file keeps growing,
+ * consider splitting the feature-specific bits into their own feature
+ * stylesheet and keeping only the shared tabs/list/badges/save-button rules
+ * here.
+ */
 
 /* ─── Chat input clear button ─────────────────────────────────────────────── */
 .chat-input-clear {
@@ -2013,7 +2166,7 @@ export function injectStyles(): void {
   if (_injected) return
   if (typeof document === 'undefined') return
 
-  // Cek apakah sudah ada (support multiple init() call)
+  // Guard against double-injection if init() is called more than once.
   if (document.getElementById('his-ai-widget-css')) {
     _injected = true
     return

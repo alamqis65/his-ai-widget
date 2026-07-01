@@ -20,33 +20,24 @@ export function ContextSettingsPanel({
   setIsBpjs,
 }: ContextSettingsPanelProps) {
   return (
-    <div
-      style={{
-        background: '#f8fafc',
-        padding: '12px',
-        borderRadius: '8px',
-        marginBottom: '16px',
-        fontSize: '13px',
-        border: '1px solid #e2e8f0',
-      }}
-    >
-      <h4 style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#334155' }}>Context Testing Settings</h4>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+    <div class="context-settings-panel">
+      <h4 class="context-settings-title">Context Testing Settings</h4>
+      <div class="context-settings-grid">
         <div>
-          <label style={{ display: 'block', marginBottom: '4px', color: '#64748b' }}>No Registrasi</label>
+          <label class="context-settings-label">No Registrasi</label>
           <input
             type="text"
             value={regNo}
             onInput={e => setRegNo((e.target as HTMLInputElement).value)}
-            style={{ width: '100%', padding: '4px 8px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+            class="context-settings-input"
           />
         </div>
         <div>
-          <label style={{ display: 'block', marginBottom: '4px', color: '#64748b' }}>Tipe Kunjungan</label>
+          <label class="context-settings-label">Tipe Kunjungan</label>
           <select
             value={tipeKunjungan}
             onChange={e => setTipeKunjungan((e.target as HTMLSelectElement).value)}
-            style={{ width: '100%', padding: '4px 8px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+            class="context-settings-input"
           >
             <option value="Rawat Darurat">Rawat Darurat</option>
             <option value="Rawat Inap">Rawat Inap</option>
@@ -54,21 +45,21 @@ export function ContextSettingsPanel({
           </select>
         </div>
         <div>
-          <label style={{ display: 'block', marginBottom: '4px', color: '#64748b' }}>Umur (Tahun)</label>
+          <label class="context-settings-label">Umur (Tahun)</label>
           <input
             type="number"
             value={age}
             onInput={e => setAge(parseInt((e.target as HTMLInputElement).value) || 0)}
-            style={{ width: '100%', padding: '4px 8px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+            class="context-settings-input"
           />
         </div>
-        <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-          <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', height: '26px' }}>
+        <div class="context-settings-checkbox-row">
+          <label class="context-settings-checkbox-label">
             <input
               type="checkbox"
               checked={isBpjs}
               onChange={e => setIsBpjs((e.target as HTMLInputElement).checked)}
-              style={{ marginRight: '8px' }}
+              class="context-settings-checkbox"
             />
             Pasien BPJS
           </label>

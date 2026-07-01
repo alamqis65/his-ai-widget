@@ -44,9 +44,16 @@ export class ProductionEClaimService implements EClaimService {
         warnings: data.warnings || [],
         errors: data.errors || [],
         message: backendResponse.message || 'Validasi BPJS Selesai',
+        claimCode: '',
+        diagnosis: '',
+        icdCode: '',
+        estimatedCost: 0,
+        coveredAmount: 0,
+        notes: [],
+        checkedAt: new Date(),
       }
 
-      return { data: { ...result, checkedAt: new Date() }, ok: true }
+      return { data: result, ok: true }
     } catch (err) {
       return { data: {} as EClaimCheckResult, ok: false, error: (err as Error).message }
     }

@@ -8,7 +8,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "dev": "npm run generate:styles && vite",
+    "dev": "npm run generate:styles && eslint . --fix && npm run type-check && vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",

@@ -100,13 +100,13 @@ export class MockClinicalPathwayService implements ClinicalPathwayService {
 
   async getMasterDiagnoses(): Promise<ServiceResponse<import('@/types').DiagnosisMaster[]>> {
     await delay(500)
-    return { 
+    return {
       data: [
         { id: 'A09', name: 'Gastroenteritis (Mock)' },
         { id: 'J06', name: 'ISPA (Mock)' },
-        { id: 'I10', name: 'Hipertensi (Mock)' }
-      ], 
-      ok: true 
+        { id: 'I10', name: 'Hipertensi (Mock)' },
+      ],
+      ok: true,
     }
   }
 }

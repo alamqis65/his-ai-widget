@@ -14,18 +14,18 @@ interface Props {
 export function ClinicalPathwayFeature({ callbacks }: Props) {
   const { state, result, error, generate, save, reset } = useClinicalPathway(callbacks)
   const { diagnoses, loading: loadingDiagnoses, error: errorDiagnoses } = useMasterDiagnoses()
-  
+
   // Context Mock Settings
   const [showSettings, setShowSettings] = useState(false)
   const [regNo, setRegNo] = useState('TEST/001/RD')
   const [tipeKunjungan, setTipeKunjungan] = useState('Rawat Darurat')
   const [age, setAge] = useState(55)
   const [isBpjs, setIsBpjs] = useState(false)
-  
+
   // Form State
   const [targetHari, setTargetHari] = useState(3)
   const [selectedDiagnosis, setSelectedDiagnosis] = useState<DiagnosisMaster | null>(null)
-  
+
   // Auto set targetHari = 1 when Rawat Jalan
   useEffect(() => {
     if (tipeKunjungan === 'Rawat Jalan') {
@@ -41,18 +41,21 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
       tipe_kunjungan: tipeKunjungan,
       is_bpjs: isBpjs,
       age_in_years: age,
-      target_hari_dokter: targetHari
+      target_hari_dokter: targetHari,
     })
   }
 
   return (
     <div class="feature-layout" style={{ position: 'relative' }}>
-      <div class="feature-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div
+        class="feature-header"
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+      >
         <div>
           <h2 class="feature-title">Clinical Pathway</h2>
           <p class="feature-subtitle">Generate rencana perawatan terstruktur berdasarkan diagnosis</p>
         </div>
-        <button 
+        <button
           onClick={() => setShowSettings(!showSettings)}
           style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: 0.6 }}
           title="Context Settings (Mock)"
@@ -85,10 +88,10 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
           ) : errorDiagnoses ? (
             <div style={{ padding: '8px', color: '#ef4444', fontSize: '13px' }}>Error: {errorDiagnoses}</div>
           ) : (
-            <DiagnosisAutocomplete 
-              diagnoses={diagnoses} 
-              selectedDiagnosis={selectedDiagnosis} 
-              onSelectDiagnosis={setSelectedDiagnosis} 
+            <DiagnosisAutocomplete
+              diagnoses={diagnoses}
+              selectedDiagnosis={selectedDiagnosis}
+              onSelectDiagnosis={setSelectedDiagnosis}
             />
           )}
 
@@ -139,4 +142,3 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
     </div>
   )
 }
-

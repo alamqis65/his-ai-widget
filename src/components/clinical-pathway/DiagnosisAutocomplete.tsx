@@ -12,17 +12,19 @@ export function DiagnosisAutocomplete({ diagnoses, selectedDiagnosis, onSelectDi
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   // Determine what to show in the input
-  const inputValue = isDropdownOpen 
-    ? searchQuery 
-    : (selectedDiagnosis ? `${selectedDiagnosis.id} - ${selectedDiagnosis.name}` : searchQuery)
+  const inputValue = isDropdownOpen
+    ? searchQuery
+    : selectedDiagnosis
+      ? `${selectedDiagnosis.id} - ${selectedDiagnosis.name}`
+      : searchQuery
 
   const filteredDiagnoses = useMemo(() => {
     if (!searchQuery) return diagnoses.slice(0, 50)
     return diagnoses
       .filter(
-        (d) =>
+        d =>
           d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          d.id.toLowerCase().includes(searchQuery.toLowerCase())
+          d.id.toLowerCase().includes(searchQuery.toLowerCase()),
       )
       .slice(0, 50) // Limit to 50 results for performance
   }, [diagnoses, searchQuery])
@@ -59,29 +61,31 @@ export function DiagnosisAutocomplete({ diagnoses, selectedDiagnosis, onSelectDi
           setTimeout(() => setIsDropdownOpen(false), 200)
         }}
       />
-      
+
       {isDropdownOpen && (
-        <div style={{ 
-          position: 'absolute', 
-          top: '100%', 
-          left: 0, 
-          right: 0, 
-          background: 'white', 
-          border: '1px solid #cbd5e1', 
-          borderRadius: '4px', 
-          maxHeight: '200px', 
-          overflowY: 'auto', 
-          zIndex: 10, 
-          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            background: 'white',
+            border: '1px solid #cbd5e1',
+            borderRadius: '4px',
+            maxHeight: '200px',
+            overflowY: 'auto',
+            zIndex: 10,
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+          }}
+        >
           {filteredDiagnoses.length > 0 ? (
             filteredDiagnoses.map(d => (
-              <div 
-                key={d.id} 
+              <div
+                key={d.id}
                 onClick={() => handleSelectDiagnosis(d)}
                 style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', fontSize: '13px' }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8fafc')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#f8fafc')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
               >
                 <strong style={{ display: 'inline-block', width: '50px' }}>{d.id}</strong> {d.name}
               </div>

@@ -1,4 +1,11 @@
-import type { ClinicalPathwayParams, ClinicalPathwayResult, ServiceResponse, SDKApiConfig, SDKConfig } from '@/types'
+import type {
+  ClinicalPathwayParams,
+  ClinicalPathwayResult,
+  ServiceResponse,
+  SDKApiConfig,
+  SDKConfig,
+  DiagnosisMaster,
+} from '@/types'
 import type { ClinicalPathwayService } from './ClinicalPathwayService'
 
 /**
@@ -29,7 +36,7 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
       }
 
       const backendResponse = await res.json()
-      
+
       // Parse response from python backend (PathwayGenerateResponse)
       const mappedSteps = (backendResponse.clinical_pathway || []).map((phase: any) => {
         const asuhan = phase.asuhan_medis || {}
@@ -45,7 +52,7 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
         diagnosis: backendResponse.metadata_sistem?.diagnose_id_asli || params.diagnosa_id,
         totalDays: backendResponse.metadata_sistem?.durasi_final || params.target_hari_dokter,
         steps: mappedSteps,
-        generatedAt: new Date()
+        generatedAt: new Date(),
       }
 
       return { data: parsedPathway, ok: true }
@@ -74,4 +81,3 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
     }
   }
 }
-

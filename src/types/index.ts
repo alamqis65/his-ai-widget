@@ -102,6 +102,9 @@ export interface EClaimCheckResult {
   coveredAmount: number
   notes: string[]
   checkedAt: Date
+  errors?: string[]
+  warnings?: string[]
+  message?: string
 }
 
 // ─── Service Types ────────────────────────────────────────────────────────────

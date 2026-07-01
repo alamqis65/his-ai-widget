@@ -23,7 +23,8 @@ window.his_ai_widget.init({
     pretext:
       'Pasien perempuan 32 tahun datang ke poli dengan keluhan sakit kepala sejak dua hari, disertai mual ringan. Tidak ada riwayat trauma kepala, tekanan darah saat diperiksa 130/80 mmHg, suhu tubuh normal. Dokter menilai kemungkinan tension headache dan merencanakan terapi simptomatik serta anjuran istirahat cukup.',
     // sttEndpoint dan soapEndpoint tidak lagi diperlukan terpisah karena di panggil oleh rag/analyze
-    //pathwayEndpoint: 'http://192.168.90.98:8000/api/v1/ai-assistant/patient-ai-assistant', // Kita arahkan ke AI Assistant untuk pathway
+    pathwayEndpoint: 'http://192.168.90.98:8000/api/v1/clinical-pathway/generate',
+    pathwayMasterDiagnosesEndpoint: 'http://192.168.90.98:8000/api/v1/clinical-pathway/master-diagnoses',
     eclaimEndpoint: 'http://192.168.90.98:8000/api/v1/bpjs/validate',
     //   headers: {
     //     'Authorization': 'Bearer <token>',

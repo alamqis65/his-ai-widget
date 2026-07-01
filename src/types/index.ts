@@ -154,6 +154,13 @@ export interface SDKApiConfig {
   pathwayEndpoint?: string
 
   /**
+   * Endpoint Master Diagnosa untuk Clinical Pathway.
+   * Widget akan GET untuk mengambil daftar diagnosa autocompelete.
+   * @example 'https://api.rs-nusantara.com/ai/pathway/master-diagnoses'
+   */
+  pathwayMasterDiagnosesEndpoint?: string
+
+  /**
    * Endpoint E-Claim Check.
    * Widget akan POST { patientId, icdCode, diagnosis } dan expect { result: EClaimCheckResult }
    * @example 'https://api.rs-nusantara.com/eclaim/check'

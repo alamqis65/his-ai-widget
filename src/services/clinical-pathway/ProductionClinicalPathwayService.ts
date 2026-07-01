@@ -55,15 +55,13 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
   }
 
   async getMasterDiagnoses(): Promise<ServiceResponse<DiagnosisMaster[]>> {
-    const endpoint = this.apiConfig.pathwayEndpoint
+    const endpoint = this.apiConfig.pathwayMasterDiagnosesEndpoint
     if (!endpoint) {
-      return { data: [], ok: false, error: 'pathwayEndpoint tidak dikonfigurasi' }
+      return { data: [], ok: false, error: 'pathwayMasterDiagnosesEndpoint tidak dikonfigurasi' }
     }
 
     try {
-      const urlObj = new URL(endpoint)
-      const baseUrl = urlObj.origin
-      const res = await fetch(`${baseUrl}/api/v1/clinical-pathway/master-diagnoses`)
+      const res = await fetch(endpoint)
 
       if (!res.ok) {
         return { data: [], ok: false, error: `HTTP ${res.status}` }

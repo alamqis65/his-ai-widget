@@ -16,16 +16,35 @@ export interface DiagnosisMaster {
   name: string
 }
 
+export interface AssessmentItem {
+  name: string
+  category: string // 'LABORATORIUM' | 'PEMERIKSAAN KLINIS' | 'RADIOLOGI' | 'REHABILITASI'
+}
+
 export interface PathwayStep {
   day: string
   activities: string[]
   medications?: string[]
-  assessments?: string[]
+  assessments?: AssessmentItem[]
+}
+
+export interface PathwayMetadata {
+  statusZona: string // 'ZONA_HIJAU' | 'ZONA_KUNING' | 'ZONA_MERAH'
+  tipeKunjungan: string
+  durasiFinal: number
+  notifikasi?: { tipeAlert: string; pesan: string } | null
+}
+
+export interface PathwayFollowUp {
+  rekomendasi: string
+  pemeriksaanLanjut: string[]
 }
 
 export interface ClinicalPathwayResult {
   diagnosis: string
   totalDays: number
   steps: PathwayStep[]
+  metadata: PathwayMetadata
+  followUp?: PathwayFollowUp
   generatedAt: Date
 }

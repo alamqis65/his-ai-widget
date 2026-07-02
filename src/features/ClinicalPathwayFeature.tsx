@@ -26,9 +26,10 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
   const [targetHari, setTargetHari] = useState(3)
   const [selectedDiagnosis, setSelectedDiagnosis] = useState<DiagnosisMaster | null>(null)
 
-  // Auto set targetHari = 1 when Rawat Jalan
+  // Auto set targetHari = 1 when Rawat Jalan / Outpatient
   useEffect(() => {
-    if (tipeKunjungan === 'Rawat Jalan') {
+    const isRawatJalan = tipeKunjungan === 'Rawat Jalan' || tipeKunjungan.toLowerCase() === 'outpatient'
+    if (isRawatJalan) {
       setTargetHari(1)
     }
   }, [tipeKunjungan])
@@ -92,7 +93,7 @@ export function ClinicalPathwayFeature({ callbacks }: Props) {
             />
           )}
 
-          {tipeKunjungan !== 'Rawat Jalan' && (
+          {tipeKunjungan !== 'Rawat Jalan' && tipeKunjungan.toLowerCase() !== 'outpatient' && (
             <div class="pathway-target-hari-field">
               <label class="form-label">Target Hari Dokter</label>
               <input

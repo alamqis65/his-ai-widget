@@ -153,6 +153,8 @@ export interface SDKConfig extends SDKCallbacks {
   visitId?: string
   doctorId?: string
   departmentId?: string
+  age?: number
+  isBPJS?: boolean
 
   // ── API Endpoints ─────────────────────────────────────────────────────────
   /** Konfigurasi endpoint per service. Kalau tidak diisi → pakai Mock. */

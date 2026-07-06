@@ -9,7 +9,32 @@ import type {
 } from '@/types'
 import { getSpeechToSOAPService } from '@/services/registry'
 
-export type SaveSOAPType = 'DIAGNOSE' | 'PROCEDURE' | 'ALL' | 'VITALSIGN'
+// Internal keys used purely to track *which checkbox group* an item belongs
+// to while the user is selecting things (not sent anywhere as-is). Add a new
+// key here when a new checkable field is introduced (e.g. 'PRESCRIPTION').
+export type SoapFieldKey = 'VITALSIGN' | 'DIAGNOSE' | 'PROCEDURE'
+
+// The only thing actually saved to HIS now is the combined batch. There is no
+// per-item/per-type callback anymore — checkbox selection + "Simpan ke HIS"
+// is the single path in and out.
+export type SaveSOAPType = 'ALL'
+
+/**
+ * Shape sent to onResultSOAP / dispatched with the 'his_ai:result' event
+ * when the user presses "Simpan ke HIS". Only the fields the user actually
+ * checked are included.
+ *
+ * Extend this when a new batch-savable field is added (e.g. sugest_prescription,
+ * doctor_instruction) — SoapResultView.handleSaveAll is the only other place
+ * that needs to know about it.
+ */
+export interface BatchSOAPPayload {
+  anamesa?: any
+  sugest_diagnosis?: SuggestedDiagnosis[]
+  sugest_procedures?: SuggestedProcedure[]
+  sugest_VitalSign?: SuggestedTTV[]
+  [key: string]: any
+}
 
 export interface UseSpeechToSOAPReturn {
   state: RecorderState
@@ -18,7 +43,7 @@ export interface UseSpeechToSOAPReturn {
   recordingDuration: number
   startRecording: () => Promise<void>
   stopRecording: () => void
-  saveSOAP: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[] | SuggestedTTV[]) => void
+  saveSOAP: (payload: BatchSOAPPayload) => void
   reset: () => void
 }
 
@@ -98,20 +123,15 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
   }, [])
 
   const saveSOAP = useCallback(
-    (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[] | SuggestedTTV[]) => {
+    (payload: BatchSOAPPayload) => {
       if (!soapResult) return
-      // Callback SDK
-      callbacks?.onResultSOAP?.({
-        type,
-        sugest_diagnosis: type === 'DIAGNOSE' ? (selected as SuggestedDiagnosis[]) : undefined,
-        sugest_procedures: type === 'PROCEDURE' ? (selected as SuggestedProcedure[]) : undefined,
-        sugest_VitalSign: type === 'VITALSIGN' ? (selected as SuggestedTTV[]) : undefined,
-      })
 
-      // Dispatch event dengan type custom
+      // "Simpan ke HIS": one combined callback + one event, carrying only
+      // whatever fields the user checked.
+      callbacks?.onResultSOAP?.({ type: 'ALL', ...payload })
       window.dispatchEvent(
         new CustomEvent('his_ai:result', {
-          detail: { type, data: selected },
+          detail: { type: 'ALL', data: payload },
         }),
       )
     },

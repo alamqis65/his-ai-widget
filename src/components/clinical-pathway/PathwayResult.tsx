@@ -1,12 +1,13 @@
-import type { ClinicalPathwayResult } from '@/types'
+import type { ClinicalPathwayResult, DiagnosisMaster } from '@/types'
 
 interface PathwayResultProps {
   result: ClinicalPathwayResult
+  diagnosis: DiagnosisMaster | null
   onReset: () => void
   onSave: () => void
 }
 
-export function PathwayResult({ result, onReset, onSave }: PathwayResultProps) {
+export function PathwayResult({ result, diagnosis, onReset, onSave }: PathwayResultProps) {
   return (
     <div class="feature-result">
       <div class="feature-result-header">
@@ -17,7 +18,7 @@ export function PathwayResult({ result, onReset, onSave }: PathwayResultProps) {
           Pathway Selesai
         </div>
         <p class="result-meta">
-          {result.totalDays} hari · {result.diagnosis}
+          {result.totalDays} hari · {diagnosis?.id}
         </p>
       </div>
       <div class="pathway-steps">

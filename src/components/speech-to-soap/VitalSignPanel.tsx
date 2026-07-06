@@ -1,13 +1,15 @@
-import { useState } from 'preact/hooks'
+import { useEffect, useState } from 'preact/hooks'
 import type { SuggestedTTV } from '@/types'
-import type { SaveSOAPType } from '@/hooks/useSpeechToSOAP'
+import type { SoapFieldKey } from '@/hooks/useSpeechToSOAP'
+import { Checkbox } from '../common/Checkbox'
 
 interface Props {
   vitalSigns: SuggestedTTV[]
-  onSave: (type: SaveSOAPType, selected: SuggestedTTV[]) => void
+  /** Reports the vital signs up to SoapResultView (empty array when unchecked) for the combined "Simpan ke HIS" save. */
+  onSelectionChange?: (key: SoapFieldKey, selected: SuggestedTTV[]) => void
 }
 
-// ─── Vital Sign Row (display only, no individual save) ───────────────────────
+// ─── Vital Sign Row (display + inline edit only — no per-row checkbox) ──────
 
 interface VitalSignRowProps {
   name: string
@@ -36,10 +38,19 @@ function VitalSignRow({ name, value, unitType, onChange }: VitalSignRowProps) {
 }
 
 // ─── Vital Signs Panel ────────────────────────────────────────────────────────
+// One checkbox for the whole block (include/exclude all vital signs at once),
+// same pattern as the Anamesa block — not one checkbox per row.
 
-export function VitalSignsPanel({ vitalSigns, onSave }: Props) {
-  const [saved, setSaved] = useState(false)
-  const [items, setItems] = useState(vitalSigns?.filter(v => !!v.Value) ?? [])
+export function VitalSignsPanel({ vitalSigns, onSelectionChange }: Props) {
+  const [checked, setChecked] = useState(false)
+  const [items, setItems] = useState(() => vitalSigns?.filter(v => !!v.Value) ?? [])
+
+  // Report the (edited) vital signs up whenever the checkbox or the values change.
+  // Unchecked -> reports an empty array, so it's excluded from the batch payload.
+  useEffect(() => {
+    onSelectionChange?.('VITALSIGN', checked ? items : [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checked, items])
 
   if (items.length === 0) {
     return null
@@ -49,12 +60,6 @@ export function VitalSignsPanel({ vitalSigns, onSave }: Props) {
     setItems(prev => prev.map(item => (item.VitalSignID === id ? { ...item, Value: value } : item)))
   }
 
-  const handleSaveAll = () => {
-    setSaved(true)
-    onSave('VITALSIGN', items)
-    setTimeout(() => setSaved(false), 1800)
-  }
-
   return (
     <div class="vital-signs-panel">
       <div class="vital-signs-panel-header">
@@ -62,22 +67,11 @@ export function VitalSignsPanel({ vitalSigns, onSave }: Props) {
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
         </svg>
         <span class="vital-signs-panel-title">Tanda Vital</span>
-        <button
-          class={`vital-signs-save-all-btn ${saved ? 'vital-signs-save-all-btn--saved' : ''}`}
-          onClick={handleSaveAll}
-          title="Simpan semua tanda vital ke HIS"
-        >
-          {saved ? (
-            <>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              Tersimpan
-            </>
-          ) : (
-            'Simpan Semua'
-          )}
-        </button>
+        <Checkbox
+          checked={checked}
+          onChange={() => setChecked(v => !v)}
+          title="Sertakan semua tanda vital pada Simpan ke HIS"
+        />
       </div>
 
       {/* List */}

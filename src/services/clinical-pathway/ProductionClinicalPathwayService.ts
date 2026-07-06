@@ -24,11 +24,13 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
       return { data: {} as ClinicalPathwayResult, ok: false, error: 'pathwayEndpoint tidak dikonfigurasi' }
     }
 
+    const fetchBody = params
+
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...this.apiConfig.headers },
-        body: JSON.stringify(params),
+        body: JSON.stringify(fetchBody),
       })
 
       if (!res.ok) {
@@ -36,6 +38,9 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
       }
 
       const backendResponse = await res.json()
+
+      console.log(backendResponse, 'backendResponse')
+      console.log(backendResponse.clinical_pathway, 'params')
 
       // Parse response from python backend (PathwayGenerateResponse)
       const mappedSteps = (backendResponse.clinical_pathway || []).map((phase: any) => {

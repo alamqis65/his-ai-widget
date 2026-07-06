@@ -17,7 +17,7 @@ export function useClinicalPathway(callbacks?: Pick<SDKCallbacks, 'onResultPathw
   const [error, setError] = useState<string | null>(null)
 
   const generate = useCallback(async (params: ClinicalPathwayParams) => {
-    if (!params.diagnosa_id.trim()) return
+    if (!params.diagnosa_id?.trim()) return
     setState('GENERATING')
     setError(null)
 

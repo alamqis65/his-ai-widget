@@ -292,19 +292,46 @@
   color: #444;
 }
 
-.soap-table {
-  width: 100%;
-  border-collapse: collapse;
+/* Object content is rendered as stacked "title then paragraph" fields
+   rather than a two-column table — long values used to get squeezed
+   against the left-hand label column, this reads more like a card. */
+.soap-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.soap-key {
-  font-weight: 600;
-  padding-right: 8px;
-  vertical-align: top;
+.soap-field + .soap-field {
+  margin-top: 2px;
 }
 
-.soap-value {
-  white-space: pre-wrap;
+.soap-field-title {
+  margin: 0 0 3px 0;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+}
+
+.soap-field-body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-1);
+}
+
+/* Array of objects (e.g. multiple procedures within Plan) — one card per entry. */
+.soap-array {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.soap-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
 }
 
 .soap-result {
@@ -402,5 +429,10 @@
   gap: 8px;
   justify-content: flex-end;
   padding-top: 2px;
+}
+.soap-actions .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 

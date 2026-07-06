@@ -72,13 +72,7 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
         {/* DONE: tampilkan hasil + transcript */}
         {state === 'DONE' && soapResult && (
           <div class="feature-result">
-            <SoapResultView
-              result={soapResult}
-              onReset={reset}
-              onConfirm={saveSOAP}
-              onSaveDiagnoseAndProcedure={saveSOAP}
-              onSaveTTV={saveSOAP}
-            />
+            <SoapResultView result={soapResult} onReset={reset} onSave={saveSOAP} />
           </div>
         )}
       </div>

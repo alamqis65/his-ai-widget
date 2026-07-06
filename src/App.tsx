@@ -147,7 +147,12 @@ export function App() {
           <SpeechToSoapFeature callbacks={{ onResultSOAP: cfg.onResultSOAP }} />
         )}
         {active === 'clinical-pathway' && features.pathway && (
-          <ClinicalPathwayFeature callbacks={{ onResultPathway: cfg.onResultPathway }} />
+          <ClinicalPathwayFeature
+            callbacks={{ onResultPathway: cfg.onResultPathway }}
+            age={cfg.age}
+            isBPJS={cfg.isBPJS}
+            departmentId={cfg.departmentId}
+          />
         )}
         {active === 'eclaim' && features.eclaim && <EClaimFeature callbacks={{ onResultEClaim: cfg.onResultEClaim }} />}
       </main>

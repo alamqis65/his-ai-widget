@@ -1058,19 +1058,46 @@ textarea {
   color: #444;
 }
 
-.soap-table {
-  width: 100%;
-  border-collapse: collapse;
+/* Object content is rendered as stacked "title then paragraph" fields
+   rather than a two-column table — long values used to get squeezed
+   against the left-hand label column, this reads more like a card. */
+.soap-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.soap-key {
-  font-weight: 600;
-  padding-right: 8px;
-  vertical-align: top;
+.soap-field + .soap-field {
+  margin-top: 2px;
 }
 
-.soap-value {
-  white-space: pre-wrap;
+.soap-field-title {
+  margin: 0 0 3px 0;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+}
+
+.soap-field-body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-1);
+}
+
+/* Array of objects (e.g. multiple procedures within Plan) — one card per entry. */
+.soap-array {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.soap-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
 }
 
 .soap-result {
@@ -1168,6 +1195,11 @@ textarea {
   gap: 8px;
   justify-content: flex-end;
   padding-top: 2px;
+}
+.soap-actions .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* ─── Clinical Pathway ────────────────────────────────────────────────────── */
@@ -1779,6 +1811,61 @@ textarea {
   background: #eee;
 }
 
+/* ─── Shared batch-selection checkbox ─────────────────────────────────────
+   Used by every checkable SOAP row: vital signs, ICD-10 diagnoses/procedures,
+   and the whole-block Anamesa checkbox. Keep this generic so new checkable
+   fields (prescription, doctor instruction, ...) reuse it as-is. */
+.batch-checkbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.1s;
+}
+.batch-checkbox:hover {
+  border-color: #3b82f6;
+  transform: scale(1.05);
+}
+.batch-checkbox--checked {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* ─── "Pilih Semua" / "Batal Pilih" toggle ────────────────────────────────
+   Shared header button for panels that support batch selection. */
+.panel-select-all-btn {
+  flex-shrink: 0;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  background: #fff;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+.panel-select-all-btn:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
 /* ─── Suggestion Panel ────────────────────────────────────────────────────── */
 .suggestion-panel {
   border-radius: var(--radius-md);
@@ -1957,6 +2044,8 @@ textarea {
 }
 
 /* ─── Save button ─────────────────────────────────────────────────────────── */
+/* Currently unused — per-row/bulk quick-save was replaced by checkbox +
+   "Simpan ke HIS" batch save. Left in place in case a quick-save mode comes back. */
 .suggestion-save-btn {
   flex-shrink: 0;
   width: 26px;
@@ -2020,6 +2109,8 @@ textarea {
 }
 
 /* ─── Bulk save button ───────────────────────────────────────────────────── */
+/* Currently unused — replaced by the single whole-block checkbox in the panel
+   header + "Simpan ke HIS". Left in place in case a quick-save mode comes back. */
 .vital-signs-save-all-btn {
   flex-shrink: 0;
   display: flex;

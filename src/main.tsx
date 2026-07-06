@@ -13,19 +13,20 @@ window.his_ai_widget.init({
   patientId: 'P-2024-001',
   visitId: 'V-20260604-001',
   doctorId: 'DR-BS-001',
-  departmentId: 'DEPT-UMUM',
-
+  departmentId: 'INPATIENT',
+  age: 32,
+  isBPJS: false,
   // ── API Endpoints (opsional — tanpa ini pakai Mock) ────────────────────
   // Uncomment dan isi URL sesuai backend HIS kamu:
   api: {
     // soapGeneratorEndpoint: 'http://localhost:8000/debug', // Endpoint baru untuk STT & SOAP
-    chatEndpoint: 'http://192.168.90.98:8000/api/v1/ai-assistant/patient-ai-assistant',
+    chatEndpoint: 'http://192.168.90.10:8000/api/v1/ai-assistant/patient-ai-assistant',
     pretext:
       'Pasien perempuan 32 tahun datang ke poli dengan keluhan sakit kepala sejak dua hari, disertai mual ringan. Tidak ada riwayat trauma kepala, tekanan darah saat diperiksa 130/80 mmHg, suhu tubuh normal. Dokter menilai kemungkinan tension headache dan merencanakan terapi simptomatik serta anjuran istirahat cukup.',
     // sttEndpoint dan soapEndpoint tidak lagi diperlukan terpisah karena di panggil oleh rag/analyze
-    pathwayEndpoint: 'http://192.168.90.98:8000/api/v1/clinical-pathway/generate',
-    pathwayMasterDiagnosesEndpoint: 'http://192.168.90.98:8000/api/v1/clinical-pathway/master-diagnoses',
-    eclaimEndpoint: 'http://192.168.90.98:8000/api/v1/bpjs/validate',
+    pathwayEndpoint: 'http://192.168.90.10:8000/api/v1/clinical-pathway/generate',
+    pathwayMasterDiagnosesEndpoint: 'http://192.168.90.10:8000/api/v1/clinical-pathway/master-diagnoses',
+    eclaimEndpoint: 'http://192.168.90.10:8000/api/v1/bpjs/validate',
     //   headers: {
     //     'Authorization': 'Bearer <token>',
     //     'X-Hospital-Id': 'RS-NUSANTARA-001',

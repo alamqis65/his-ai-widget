@@ -95,7 +95,7 @@ function getPathway(diagnosis: string): ClinicalPathwayResult {
 export class MockClinicalPathwayService implements ClinicalPathwayService {
   async generate(params: import('@/types').ClinicalPathwayParams): Promise<ServiceResponse<ClinicalPathwayResult>> {
     await delay(2000 + Math.random() * 1000)
-    return { data: getPathway(params.diagnosa_id), ok: true }
+    return { data: getPathway(params.diagnosa_id ?? ''), ok: true }
   }
 
   async getMasterDiagnoses(): Promise<ServiceResponse<import('@/types').DiagnosisMaster[]>> {

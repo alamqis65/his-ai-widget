@@ -1,16 +1,16 @@
+import { useState } from 'preact/hooks'
 import type { SOAPResult, SuggestedDiagnosis, SuggestedProcedure, SuggestedTTV } from '@/types'
 import { JSX } from 'preact/jsx-runtime'
 import { SuggestionPanel } from './SuggestionPanel'
 import { VitalSignsPanel } from './VitalSignPanel'
-import type { SaveSOAPType } from '@/hooks/useSpeechToSOAP'
+import type { SoapFieldKey, BatchSOAPPayload } from '@/hooks/useSpeechToSOAP'
 import { AccordionSection } from '../common/Accordion'
 
 interface Props {
   result: SOAPResult
   onReset: () => void
-  onConfirm: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
-  onSaveDiagnoseAndProcedure: (type: SaveSOAPType, selected: SuggestedDiagnosis[] | SuggestedProcedure[]) => void
-  onSaveTTV: (type: SaveSOAPType, selected: SuggestedTTV[]) => void
+  /** Fired once by "Simpan ke HIS" with only the fields the user checked. */
+  onSave: (payload: BatchSOAPPayload) => void
 }
 
 function prettifySOAPText(text: string): JSX.Element {
@@ -58,7 +58,7 @@ function normalizeContent(content: any): JSX.Element | string {
       )
     }
 
-    // array object
+    // array object -> one card per entry
     return (
       <div class="soap-array">
         {content.map((item, idx) => (
@@ -70,31 +70,63 @@ function normalizeContent(content: any): JSX.Element | string {
     )
   }
 
-  // Object
+  // Object -> stacked "title then paragraph" fields instead of a two-column
+  // table, so long values don't get squeezed against a crowded left column.
   return (
-    <table class="soap-table">
-      <tbody>
-        {Object.entries(content).map(([k, v]) => {
-          // skip kalau null/undefined
-          if (!v) return null
+    <div class="soap-field-group">
+      {Object.entries(content).map(([k, v]) => {
+        // skip kalau null/undefined
+        if (!v) return null
 
-          // kalau array kosong, skip juga
-          if (Array.isArray(v) && v.length === 0) return null
+        // kalau array kosong, skip juga
+        if (Array.isArray(v) && v.length === 0) return null
 
-          return (
-            <tr key={k}>
-              <td class="soap-key">{k.replace(/_/g, ' ')}</td>
-              <td class="soap-value">{normalizeContent(v)}</td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
+        return (
+          <div class="soap-field" key={k}>
+            <p class="soap-field-title">{k.replace(/_/g, ' ')}</p>
+            <div class="soap-field-body">{normalizeContent(v)}</div>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
-export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndProcedure, onSaveTTV }: Props) {
+// Which SoapFieldKey currently support batch checkbox selection.
+// Adding a new checkable field elsewhere (prescription, doctor instruction)
+// only requires: 1) a panel that calls onSelectionChange with its key here,
+// and 2) one extra line in handleSaveAll's payload assembly below.
+type BatchSelections = Partial<Record<SoapFieldKey, any[]>>
+
+export function SoapResultView({ result, onReset, onSave }: Props) {
   const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures, sugest_VitalSign } = result
+
+  const [anamesaChecked, setAnamesaChecked] = useState(false)
+  const [selections, setSelections] = useState<BatchSelections>({})
+
+  const handleSelectionChange = (key: SoapFieldKey, items: any[]) => {
+    setSelections(prev => ({ ...prev, [key]: items }))
+  }
+
+  const selectedCount =
+    (anamesaChecked && anamesa ? 1 : 0) +
+    Object.values(selections).reduce((sum, items) => sum + (items?.length ?? 0), 0)
+
+  const handleSaveAll = () => {
+    const payload: BatchSOAPPayload = {}
+
+    if (anamesaChecked && anamesa) payload.anamesa = anamesa
+    if (selections.DIAGNOSE?.length) payload.sugest_diagnosis = selections.DIAGNOSE as SuggestedDiagnosis[]
+    if (selections.PROCEDURE?.length) payload.sugest_procedures = selections.PROCEDURE as SuggestedProcedure[]
+    if (selections.VITALSIGN?.length) payload.sugest_VitalSign = selections.VITALSIGN as SuggestedTTV[]
+
+    // TODO: when the prescription / doctor-instruction JSON lands, add e.g.:
+    // if (selections.PRESCRIPTION?.length) payload.sugest_prescription = selections.PRESCRIPTION
+    // if (selections.INSTRUCTION?.length) payload.doctor_instruction = selections.INSTRUCTION
+
+    onSave(payload)
+  }
+
   const sections = [
     {
       key: 'S',
@@ -140,7 +172,14 @@ export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndPr
       </div>
 
       <AccordionSection label="Transkripsi" text={transcriptUsed} defaultOpen={false} />
-      <AccordionSection label="Anamesa" text={anamesa} defaultOpen={true} />
+      <AccordionSection
+        label="Anamesa"
+        text={anamesa}
+        defaultOpen={true}
+        selectable
+        checked={anamesaChecked}
+        onToggleCheck={() => setAnamesaChecked(v => !v)}
+      />
 
       <div class="soap-sections">
         {sections.map(s => (
@@ -155,10 +194,12 @@ export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndPr
                 <SuggestionPanel
                   diagnoses={sugest_diagnosis ?? []}
                   procedures={sugest_procedures ?? []}
-                  onSave={onSaveDiagnoseAndProcedure}
+                  onSelectionChange={handleSelectionChange}
                 />
               )}
-              {s.key === 'O' && <VitalSignsPanel vitalSigns={sugest_VitalSign ?? []} onSave={onSaveTTV} />}
+              {s.key === 'O' && (
+                <VitalSignsPanel vitalSigns={sugest_VitalSign ?? []} onSelectionChange={handleSelectionChange} />
+              )}
             </div>
           </div>
         ))}
@@ -170,13 +211,11 @@ export function SoapResultView({ result, onReset, onConfirm, onSaveDiagnoseAndPr
         </button>
         <button
           class="btn btn-primary btn-primary-custom btn-sm"
-          style="display: none"
-          onClick={() => {
-            onConfirm('DIAGNOSE', result.sugest_diagnosis ?? [])
-            onConfirm('PROCEDURE', result.sugest_procedures ?? [])
-          }}
+          onClick={handleSaveAll}
+          disabled={selectedCount === 0}
+          title={selectedCount === 0 ? 'Centang minimal satu data untuk disimpan' : 'Simpan data terpilih ke HIS'}
         >
-          Simpan ke HIS
+          Simpan ke HIS{selectedCount > 0 ? ` (${selectedCount})` : ''}
         </button>
       </div>
     </div>

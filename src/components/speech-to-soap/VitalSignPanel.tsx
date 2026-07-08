@@ -24,6 +24,7 @@ function VitalSignRow({ name, value, unitType, onChange }: VitalSignRowProps) {
       <div class="vital-sign-row-info">
         <span class="vital-sign-name">{name}</span>
         <input
+          style="display:none"
           class="vital-sign-value"
           type="text"
           value={value}
@@ -31,6 +32,7 @@ function VitalSignRow({ name, value, unitType, onChange }: VitalSignRowProps) {
             onChange(e.currentTarget.value)
           }}
         />
+        <span class="vital-sign-value-text">{value}</span>
         <span class="vital-sign-unit"> {unitType} </span>
       </div>
     </div>

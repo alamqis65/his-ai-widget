@@ -40,6 +40,13 @@ export interface SuggestedTTV {
   VitalSignLabel: string
 }
 
+export interface SuggestedPrescription {
+  ItemID: string
+  ItemName: string
+  MedicationRoute: string
+  Peringatan: string
+}
+
 export interface SOAPResult {
   soap: SOAPNote
   anamesa: any
@@ -48,4 +55,6 @@ export interface SOAPResult {
   sugest_diagnosis?: SuggestedDiagnosis[]
   sugest_procedures?: SuggestedProcedure[]
   sugest_VitalSign?: SuggestedTTV[]
+  rekomendasi_resep?: SuggestedPrescription[]
+  rekomendasi_penunjang?: any[]
 }

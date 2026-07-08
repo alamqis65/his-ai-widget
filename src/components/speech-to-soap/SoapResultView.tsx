@@ -1,8 +1,9 @@
 import { useState } from 'preact/hooks'
-import type { SOAPResult, SuggestedDiagnosis, SuggestedProcedure, SuggestedTTV } from '@/types'
+import type { SOAPResult, SuggestedDiagnosis, SuggestedProcedure, SuggestedTTV, SuggestedPrescription } from '@/types'
 import { JSX } from 'preact/jsx-runtime'
-import { SuggestionPanel } from './SuggestionPanel'
+import { SuggestionPanel } from './DiagnoseProcedurePanel'
 import { VitalSignsPanel } from './VitalSignPanel'
+import { PrescriptionPanel } from './prescriptionPanel'
 import type { SoapFieldKey, BatchSOAPPayload } from '@/hooks/useSpeechToSOAP'
 import { AccordionSection } from '../common/Accordion'
 
@@ -26,6 +27,21 @@ function prettifySOAPText(text: string): JSX.Element {
       ))}
     </ul>
   )
+}
+
+function planToText(plan: any): string {
+  if (!plan) return ''
+
+  if (typeof plan === 'string') return plan
+
+  return Object.entries(plan)
+    .filter(([, v]) => v != null && v !== '' && !(Array.isArray(v) && v.length === 0))
+    .map(([k, v]) => {
+      const label = k.replace(/_/g, ' ')
+      const value = Array.isArray(v) ? v.join(', ') : String(v)
+      return `${label}: ${value}`
+    })
+    .join('\n')
 }
 
 function normalizeContent(content: any): JSX.Element | string {
@@ -102,6 +118,7 @@ export function SoapResultView({ result, onReset, onSave }: Props) {
   const { soap, anamesa, transcriptUsed, sugest_diagnosis, sugest_procedures, sugest_VitalSign } = result
 
   const [anamesaChecked, setAnamesaChecked] = useState(false)
+  const [planChecked, setPlanChecked] = useState(false)
   const [selections, setSelections] = useState<BatchSelections>({})
 
   const handleSelectionChange = (key: SoapFieldKey, items: any[]) => {
@@ -110,15 +127,18 @@ export function SoapResultView({ result, onReset, onSave }: Props) {
 
   const selectedCount =
     (anamesaChecked && anamesa ? 1 : 0) +
+    (planChecked && soap.Plan ? 1 : 0) +
     Object.values(selections).reduce((sum, items) => sum + (items?.length ?? 0), 0)
 
   const handleSaveAll = () => {
     const payload: BatchSOAPPayload = {}
 
     if (anamesaChecked && anamesa) payload.anamesa = anamesa
+    if (planChecked && soap.Plan) payload.rencana_plan = planToText(soap.Plan)
     if (selections.DIAGNOSE?.length) payload.sugest_diagnosis = selections.DIAGNOSE as SuggestedDiagnosis[]
     if (selections.PROCEDURE?.length) payload.sugest_procedures = selections.PROCEDURE as SuggestedProcedure[]
     if (selections.VITALSIGN?.length) payload.sugest_VitalSign = selections.VITALSIGN as SuggestedTTV[]
+    if (selections.PRESCRIPTION?.length) payload.rekomendasi_resep = selections.PRESCRIPTION as SuggestedPrescription[]
 
     // TODO: when the prescription / doctor-instruction JSON lands, add e.g.:
     // if (selections.PRESCRIPTION?.length) payload.sugest_prescription = selections.PRESCRIPTION
@@ -149,7 +169,7 @@ export function SoapResultView({ result, onReset, onSave }: Props) {
     {
       key: 'P',
       label: 'Plan',
-      content: normalizeContent(soap.Plan),
+      content: normalizeContent(''),
       color: 'purple',
     },
   ] as const
@@ -199,6 +219,22 @@ export function SoapResultView({ result, onReset, onSave }: Props) {
               )}
               {s.key === 'O' && (
                 <VitalSignsPanel vitalSigns={sugest_VitalSign ?? []} onSelectionChange={handleSelectionChange} />
+              )}
+              {s.key === 'P' && (
+                <>
+                  <AccordionSection
+                    label="Instruksi Dokter"
+                    text={planToText(soap.Plan)}
+                    defaultOpen={true}
+                    selectable
+                    checked={planChecked}
+                    onToggleCheck={() => setPlanChecked(v => !v)}
+                  />
+                  <PrescriptionPanel
+                    prescriptions={result.rekomendasi_resep ?? []}
+                    onSelectionChange={handleSelectionChange}
+                  />
+                </>
               )}
             </div>
           </div>

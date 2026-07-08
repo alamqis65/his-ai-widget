@@ -362,6 +362,18 @@ textarea {
   box-shadow: 0 4px 12px rgb(26 158 118 / 0.3);
 }
 
+.btn-danger-custom {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+}
+.btn-danger-custom:hover:not(:disabled) {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(250, 96, 68, 0.3);
+}
+
 .btn-secondary {
   background: var(--bg);
   color: var(--text-2);
@@ -467,7 +479,6 @@ textarea {
   font-size: 13px;
   color: #dc2626;
 }
-
 /* ─── Chat Layout ─────────────────────────────────────────────────────────── */
 .chat-layout {
   display: flex;
@@ -984,16 +995,6 @@ textarea {
   border-radius: 8px;
 }
 
-/* .recorder-duration {
-  color: var(--brand); 
-}
-.recorder-status-text--rec {
-  color: var(--brand);
-}
-.rec-dot {
-  background: var(--brand);
-} */
-
 /* Transcript */
 .transcript-review {
   display: flex;
@@ -1201,7 +1202,6 @@ textarea {
   cursor: not-allowed;
   transform: none;
 }
-
 /* ─── Clinical Pathway ────────────────────────────────────────────────────── */
 .pathway-steps {
   display: flex;
@@ -2195,6 +2195,16 @@ textarea {
   border-radius: 0.375rem;
   padding-left: 1em;
   background-color: transparent;
+  justify-self: end;
+}
+
+.vital-sign-value-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f44d6;
+  flex-shrink: 0;
+  width: 65%;
+  padding-left: 1em;
   justify-self: end;
 }
 

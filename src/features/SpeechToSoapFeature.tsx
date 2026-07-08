@@ -57,7 +57,13 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
       <div class="sts-content">
         {/* IDLE / RECORDING: tampilkan recorder */}
         {(state === 'IDLE' || state === 'RECORDING') && (
-          <RecorderView state={state} duration={recordingDuration} onStart={startRecording} onStop={stopRecording} />
+          <RecorderView
+            state={state}
+            duration={recordingDuration}
+            onStart={startRecording}
+            onStop={stopRecording}
+            onCancel={reset}
+          />
         )}
 
         {/* PROCESSING: loading indicator */}

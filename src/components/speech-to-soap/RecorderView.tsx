@@ -6,6 +6,7 @@ interface Props {
   duration: number
   onStart: () => void
   onStop: () => void
+  onCancel: () => void
 }
 
 function fmt(s: number) {
@@ -14,7 +15,7 @@ function fmt(s: number) {
     .padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`
 }
 
-export function RecorderView({ state, duration, onStart, onStop }: Props) {
+export function RecorderView({ state, duration, onStart, onStop, onCancel }: Props) {
   const isRecording = state === 'RECORDING'
   const isProcessing = state === 'PROCESSING_STT'
 
@@ -54,7 +55,12 @@ export function RecorderView({ state, duration, onStart, onStop }: Props) {
               <span class="rec-dot" />
               Sedang Merekam
             </p>
+
             <p class="recorder-hint">Klik tombol untuk berhenti</p>
+
+            <button type="button" class="btn btn-sm btn-danger-custom" onClick={onCancel}>
+              Batalkan Rekaman
+            </button>
           </>
         ) : (
           <>

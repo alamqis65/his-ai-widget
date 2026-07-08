@@ -12,7 +12,7 @@ import { getSpeechToSOAPService } from '@/services/registry'
 // Internal keys used purely to track *which checkbox group* an item belongs
 // to while the user is selecting things (not sent anywhere as-is). Add a new
 // key here when a new checkable field is introduced (e.g. 'PRESCRIPTION').
-export type SoapFieldKey = 'VITALSIGN' | 'DIAGNOSE' | 'PROCEDURE'
+export type SoapFieldKey = 'VITALSIGN' | 'DIAGNOSE' | 'PROCEDURE' | 'PRESCRIPTION'
 
 // The only thing actually saved to HIS now is the combined batch. There is no
 // per-item/per-type callback anymore — checkbox selection + "Simpan ke HIS"

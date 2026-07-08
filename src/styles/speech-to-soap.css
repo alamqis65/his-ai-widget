@@ -218,16 +218,6 @@
   border-radius: 8px;
 }
 
-/* .recorder-duration {
-  color: var(--brand); 
-}
-.recorder-status-text--rec {
-  color: var(--brand);
-}
-.rec-dot {
-  background: var(--brand);
-} */
-
 /* Transcript */
 .transcript-review {
   display: flex;
@@ -435,4 +425,3 @@
   cursor: not-allowed;
   transform: none;
 }
-

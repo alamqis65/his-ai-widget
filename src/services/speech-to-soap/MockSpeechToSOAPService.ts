@@ -5,56 +5,76 @@ import { delay } from '@/utils'
 const MOCK_DATA: SpeechToSOAPResult[] = [
   {
     soapResult: {
-      anamesa: 'testing anamesa',
+      anamesa:
+        'Pasien laki-laki 25 tahun datang dengan keluhan batuk berdahak, pilek, dan demam ringan sejak tiga hari.',
       soap: {
         Subjective: {
-          KeluhanUtama: 'Nyeri dada sejak 2 hari, terasa seperti tertindih, menjalar ke lengan kiri.',
-          RiwayatPenyakitSekarang: 'Disertai sesak napas ringan dan keringat dingin.',
-          RiwayatPenyakitDahulu: '',
-          RiwayatOperasi: '',
-          RiwayatPengobatan: '',
-          RiwayatAlergi: '',
-          RiwayatKeluarga: '',
-          RiwayatSosial: '',
-          TelaahSistem: '',
-          KeteranganTambahan: '',
+          keluhan_utama: 'batuk berdahak',
+          riwayat_penyakit_sekarang: 'sejak tiga hari',
+          gejala_lain: 'pilek, demam ringan',
         },
         Objective: {
-          KeadaanUmum: '',
-          Kesadaran: '',
-          PemeriksaanFisik: ['TD: 140/90 mmHg', 'HR: 98x/mnt', 'RR: 20x/mnt', 'SpO2: 96%'],
-          PemeriksaanPenunjang: ['EKG: ST elevasi segmen V1-V4'],
-          TemuanKlinis: '',
+          pemeriksaan_fisik: 'Suhu 37.8°C, faring hiperemis, suara napas vesikuler, ronki tidak terdengar.',
+          hasil_lab: '',
         },
         Assessment: {
-          PertimbanganKlinis: 'STEMI anterior (I21.0)',
+          kesan_klinis: 'Infeksi saluran pernapasan atas.',
         },
         Plan: {
-          TerapiObat: ['Aspirin 300mg loading', 'Clopidogrel 300mg loading', 'ISDN sublingual 5mg'],
-          Tindakan: ['Rujuk segera ke kardiologi'],
-          PemeriksaanPenunjang: [],
-          Monitoring: ['Monitor EKG continuous'],
-          Konsultasi: [],
-          Edukasi: '',
-          RencanaKontrol: '',
+          obat: 'Paracetamol 500 mg dan Ambroxol 30 mg.',
+          terapi: 'Istirahat cukup dan banyak minum air.',
+          tindak_lanjut: 'Kontrol jika demam menetap lebih dari tiga hari.',
         },
         Interventions: {
-          SudahDilakukan: ['Pemberian aspirin dan clopidogrel', 'ISDN sublingual', 'Rujukan ke kardiologi'],
-          Disarankan: [],
+          tindakan: 'Edukasi etika batuk dan penggunaan masker.',
+          kondisi_darurat: 'Segera ke IGD bila sesak napas atau demam tinggi.',
         },
       },
-      generatedAt: new Date(),
-      transcriptUsed:
-        'Pasien datang dengan keluhan nyeri dada sejak 2 hari yang lalu. Nyeri dirasakan seperti tertindih dan menjalar ke lengan kiri. Pasien juga mengeluhkan sesak napas ringan dan berkeringat dingin.',
       sugest_diagnosis: [
-        { ICD10: 'I21.0', LabelICD10: 'Acute transmural myocardial infarction of anterior wall', IsPrimary: 1 },
-        { ICD10: 'I10', LabelICD10: 'Essential (primary) hypertension', IsPrimary: 0 },
-        { ICD10: 'R07.4', LabelICD10: 'Chest pain, unspecified', IsPrimary: 0 },
+        {
+          ICD10: 'J06.9',
+          LabelICD10: 'Acute upper respiratory infection, unspecified',
+          IsPrimary: 1,
+        },
+        {
+          ICD10: 'K29.9',
+          LabelICD10: 'hernia',
+          IsPrimary: 1,
+        },
+        {
+          ICD10: 'K29.10',
+          LabelICD10: 'typus',
+          IsPrimary: 1,
+        },
       ],
       sugest_procedures: [
-        { ProcedureID: '17.7', ProcedureName: 'Intravenous infusion (17.7)' },
-        { ProcedureID: '89.52', ProcedureName: 'Electrocardiogram' },
-        { ProcedureID: '93.90', ProcedureName: 'Non-invasive mechanical ventilation' },
+        {
+          ProcedureID: '89.03',
+          ProcedureName: 'Physical examination',
+        },
+      ],
+      rekomendasi_resep: [
+        {
+          ItemID: '6700',
+          ItemName: 'PARACETAMOL 500 MG TAB GEN',
+          MedicationRoute: 'Oral',
+          Peringatan: '',
+        },
+        {
+          ItemID: '3201',
+          ItemName: 'AMBROXOL 30 MG TAB',
+          MedicationRoute: 'Oral',
+          Peringatan: '',
+        },
+      ],
+      rekomendasi_penunjang: [
+        {
+          ItemCode: 'HE1001',
+          NamaPemeriksaan: 'Hitung Darah Lengkap',
+          KategoriBesar: 'Pemeriksaan Laboratorium',
+          GrupPemeriksaan: 'HEMATOLOGI',
+          Peringatan: '',
+        },
       ],
       sugest_VitalSign: [
         {
@@ -74,14 +94,6 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           VitalSignLabel: 'Nadi',
         },
         {
-          VitalSignID: 3,
-          VitalSignName: 'Respiratory Rate',
-          Value: '18',
-          ValueUnit: 'breaths/min',
-          VitalSignType: 'RespiratoryRate',
-          VitalSignLabel: 'Frekuensi Napas',
-        },
-        {
           VitalSignID: 4,
           VitalSignName: 'Body Temperature',
           Value: '36.8',
@@ -97,75 +109,60 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           VitalSignType: 'SpO2',
           VitalSignLabel: 'Saturasi Oksigen',
         },
-        {
-          VitalSignID: 6,
-          VitalSignName: 'Body Weight',
-          Value: '70',
-          ValueUnit: 'kg',
-          VitalSignType: 'Weight',
-          VitalSignLabel: 'Berat Badan',
-        },
-        {
-          VitalSignID: 7,
-          VitalSignName: 'Body Height',
-          Value: '165',
-          ValueUnit: 'cm',
-          VitalSignType: 'Height',
-          VitalSignLabel: 'Tinggi Badan',
-        },
       ],
+      transcriptUsed:
+        '[ASSESSMENT KLINIS MANUAL]: Pasien mengeluh batuk berdahak sejak tiga hari disertai pilek dan demam ringan. Pemeriksaan fisik mendukung ISPA tanpa tanda pneumonia.',
+      generatedAt: new Date(),
     },
   },
   {
     soapResult: {
-      anamesa: 'testing anamesa',
+      anamesa: 'Pasien perempuan 29 tahun mengeluh nyeri ulu hati sejak dua hari, terutama setelah terlambat makan.',
       soap: {
         Subjective: {
-          KeluhanUtama: 'Demam tinggi 3 hari, batuk, dan pilek.',
-          RiwayatPenyakitSekarang: 'Tidak ada riwayat kejang.',
-          RiwayatPenyakitDahulu: '',
-          RiwayatOperasi: '',
-          RiwayatPengobatan: '',
-          RiwayatAlergi: '',
-          RiwayatKeluarga: '',
-          RiwayatSosial: '',
-          TelaahSistem: '',
-          KeteranganTambahan: '',
+          keluhan_utama: 'nyeri ulu hati',
+          riwayat_penyakit_sekarang: 'sejak dua hari',
+          gejala_lain: 'mual, perut terasa perih',
         },
         Objective: {
-          KeadaanUmum: '',
-          Kesadaran: '',
-          PemeriksaanFisik: ['Suhu 38.9°C', 'HR: 102x/mnt', 'Tenggorokan hiperemis', 'Rhonki (-/-)'],
-          PemeriksaanPenunjang: [],
-          TemuanKlinis: '',
+          pemeriksaan_fisik: 'Tekanan darah 118/76 mmHg, abdomen lunak, nyeri tekan epigastrium.',
+          hasil_lab: '',
         },
         Assessment: {
-          PertimbanganKlinis: 'ISPA (J06.9) — Common cold dengan febris',
+          kesan_klinis: 'Gastritis akut.',
         },
         Plan: {
-          TerapiObat: ['Paracetamol 10-15 mg/kgBB tiap 6-8 jam bila demam', 'Zinc 20mg/hari'],
-          Tindakan: [],
-          PemeriksaanPenunjang: [],
-          Monitoring: [],
-          Konsultasi: [],
-          Edukasi: 'Edukasi orang tua',
-          RencanaKontrol: 'Kontrol 3 hari',
+          obat: 'Omeprazole 20 mg dan Antasida.',
+          terapi: 'Diet lunak dan makan teratur.',
+          tindak_lanjut: 'Kontrol satu minggu bila keluhan belum membaik.',
         },
         Interventions: {
-          SudahDilakukan: [],
-          Disarankan: [],
+          tindakan: 'Edukasi menghindari makanan pedas, kopi, dan alkohol.',
+          kondisi_darurat: 'Segera ke IGD bila muntah darah atau BAB hitam.',
         },
       },
-      generatedAt: new Date(),
-      transcriptUsed:
-        'Anak laki-laki usia 7 tahun dibawa orang tua dengan demam tinggi selama 3 hari. Suhu tubuh 38.9 derajat Celsius. Pasien juga mengalami batuk dan pilek.',
       sugest_diagnosis: [
-        { ICD10: 'J06.9', LabelICD10: 'Acute upper respiratory infection, unspecified', IsPrimary: 1 },
-        { ICD10: 'R50.9', LabelICD10: 'Fever, unspecified', IsPrimary: 0 },
+        {
+          ICD10: 'K29.7',
+          LabelICD10: 'Gastritis, unspecified',
+          IsPrimary: 1,
+        },
+        {
+          ICD10: 'K29.9',
+          LabelICD10: 'tes2',
+          IsPrimary: 1,
+        },
+        {
+          ICD10: 'K29.10',
+          LabelICD10: 'tes3',
+          IsPrimary: 1,
+        },
       ],
       sugest_procedures: [
-        { ProcedureID: '99.21', ProcedureName: 'Injection of antibiotic' },
-        { ProcedureID: '93.90', ProcedureName: 'Non-invasive mechanical ventilation' },
+        {
+          ProcedureID: '89.03',
+          ProcedureName: 'Physical examination',
+        },
       ],
       sugest_VitalSign: [
         {
@@ -175,14 +172,6 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           ValueUnit: 'mmHg',
           VitalSignType: 'BloodPressure',
           VitalSignLabel: 'Tekanan Darah',
-        },
-        {
-          VitalSignID: 2,
-          VitalSignName: 'Heart Rate',
-          Value: '78',
-          ValueUnit: 'bpm',
-          VitalSignType: 'HeartRate',
-          VitalSignLabel: 'Nadi',
         },
         {
           VitalSignID: 3,
@@ -201,14 +190,6 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           VitalSignLabel: 'Suhu Tubuh',
         },
         {
-          VitalSignID: 5,
-          VitalSignName: 'Oxygen Saturation',
-          Value: '98',
-          ValueUnit: '%',
-          VitalSignType: 'SpO2',
-          VitalSignLabel: 'Saturasi Oksigen',
-        },
-        {
           VitalSignID: 6,
           VitalSignName: 'Body Weight',
           Value: '70',
@@ -225,60 +206,60 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           VitalSignLabel: 'Tinggi Badan',
         },
       ],
+      rekomendasi_resep: [
+        {
+          ItemID: '4413',
+          ItemName: 'ESOMEPRAZOLE 40MG INJ',
+          MedicationRoute: 'Parenteral',
+          Peringatan: '',
+        },
+        {
+          ItemID: '5100',
+          ItemName: 'ANTASIDA DOEN TAB',
+          MedicationRoute: 'Oral',
+          Peringatan: '',
+        },
+      ],
+      rekomendasi_penunjang: [
+        {
+          ItemCode: 'GL0001',
+          NamaPemeriksaan: 'Darah Lengkap',
+          KategoriBesar: 'Pemeriksaan Laboratorium',
+          GrupPemeriksaan: 'HEMATOLOGI',
+          Peringatan: '',
+        },
+      ],
+      transcriptUsed:
+        '[ASSESSMENT KLINIS MANUAL]: Pasien mengeluh nyeri ulu hati setelah sering terlambat makan. Pemeriksaan mengarah ke gastritis akut.',
+      generatedAt: new Date(),
     },
   },
   {
     soapResult: {
-      anamesa: 'testing anamesa',
+      anamesa: 'Pasien laki-laki 56 tahun datang untuk kontrol tekanan darah tinggi dengan keluhan pusing ringan.',
       soap: {
         Subjective: {
-          KeluhanUtama: 'Pasien wanita 45 tahun riwayat DM tipe 2 untuk kontrol rutin.',
-          RiwayatPenyakitSekarang: 'Keluhan sering haus dan poliuri. GDP terakhir 210 mg/dL.',
-          RiwayatPenyakitDahulu: '',
-          RiwayatOperasi: '',
-          RiwayatPengobatan: '',
-          RiwayatAlergi: '',
-          RiwayatKeluarga: '',
-          RiwayatSosial: '',
-          TelaahSistem: '',
-          KeteranganTambahan: '',
+          keluhan_utama: 'pusing',
+          riwayat_penyakit_sekarang: 'sejak satu minggu',
+          gejala_lain: 'tidak ada nyeri dada atau sesak napas',
         },
         Objective: {
-          KeadaanUmum: '',
-          Kesadaran: '',
-          PemeriksaanFisik: ['TD: 130/80 mmHg', 'BB: 68kg', 'BMI: 27.2 kg/m²'],
-          PemeriksaanPenunjang: ['GDP hari ini: 210 mg/dL'],
-          TemuanKlinis: '',
+          pemeriksaan_fisik: 'Tekanan darah 165/100 mmHg, nadi 82 x/menit, suhu normal.',
+          hasil_lab: '',
         },
         Assessment: {
-          PertimbanganKlinis: 'Diabetes Melitus Tipe 2 tidak terkontrol (E11.65)',
+          kesan_klinis: 'Hipertensi tidak terkontrol.',
         },
         Plan: {
-          TerapiObat: ['Metformin 500mg 3x1', 'Glimepiride 1mg 1x1 pagi'],
-          Tindakan: [],
-          PemeriksaanPenunjang: [],
-          Monitoring: [],
-          Konsultasi: [],
-          Edukasi: 'Diet DM 1700 kkal',
-          RencanaKontrol: 'Kontrol 1 bulan',
+          obat: 'Amlodipine 5 mg sekali sehari.',
+          terapi: 'Modifikasi gaya hidup dan diet rendah garam.',
+          tindak_lanjut: 'Kontrol dua minggu.',
         },
         Interventions: {
-          SudahDilakukan: [],
-          Disarankan: [],
+          tindakan: 'Edukasi pentingnya kepatuhan minum obat dan olahraga rutin.',
+          kondisi_darurat: 'Segera ke IGD bila muncul nyeri dada, sesak napas, atau kelemahan anggota gerak.',
         },
       },
-      generatedAt: new Date(),
-      transcriptUsed:
-        'Pasien wanita 45 tahun dengan riwayat diabetes melitus tipe 2 datang untuk kontrol rutin. Gula darah puasa terakhir 210 mg/dL.',
-      sugest_diagnosis: [
-        { ICD10: 'E11.65', LabelICD10: 'Type 2 diabetes mellitus with hyperglycemia', IsPrimary: 1 },
-        { ICD10: 'E11.9', LabelICD10: 'Type 2 diabetes mellitus without complications', IsPrimary: 0 },
-        { ICD10: 'Z79.84', LabelICD10: 'Long-term (current) use of oral hypoglycemic drugs', IsPrimary: 0 },
-      ],
-      sugest_procedures: [
-        { ProcedureID: '99.17', ProcedureName: 'Injection of insulin' },
-        { ProcedureID: '87.59', ProcedureName: 'Other x-ray of abdomen' },
-      ],
       sugest_VitalSign: [
         {
           VitalSignID: 1,
@@ -337,6 +318,63 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           VitalSignLabel: 'Tinggi Badan',
         },
       ],
+      sugest_diagnosis: [
+        {
+          ICD10: 'I10',
+          LabelICD10: 'Essential (primary) hypertension',
+          IsPrimary: 1,
+        },
+        {
+          ICD10: 'K29.9',
+          LabelICD10: 'tes10',
+          IsPrimary: 1,
+        },
+        {
+          ICD10: 'K29.10',
+          LabelICD10: 'tes11',
+          IsPrimary: 1,
+        },
+      ],
+      sugest_procedures: [
+        {
+          ProcedureID: '89.03',
+          ProcedureName: 'Blood pressure measurement',
+        },
+      ],
+      rekomendasi_resep: [
+        {
+          ItemID: '7801',
+          ItemName: 'AMLODIPINE 5 MG TAB',
+          MedicationRoute: 'Oral',
+          Peringatan: '',
+        },
+      ],
+      rekomendasi_penunjang: [
+        {
+          ItemCode: 'GL0064',
+          NamaPemeriksaan: 'Glukosa Darah Puasa (Vena)',
+          KategoriBesar: 'Pemeriksaan Laboratorium',
+          GrupPemeriksaan: 'KIMIA DARAH',
+          Peringatan: '',
+        },
+        {
+          ItemCode: 'CH1094',
+          NamaPemeriksaan: 'Cholesterol Beta (LDL) Direk',
+          KategoriBesar: 'Pemeriksaan Laboratorium',
+          GrupPemeriksaan: 'KIMIA DARAH',
+          Peringatan: '',
+        },
+        {
+          ItemCode: 'TR1034',
+          NamaPemeriksaan: 'Trigliserida',
+          KategoriBesar: 'Pemeriksaan Laboratorium',
+          GrupPemeriksaan: 'KIMIA DARAH',
+          Peringatan: '',
+        },
+      ],
+      transcriptUsed:
+        '[ASSESSMENT KLINIS MANUAL]: Pasien kontrol hipertensi dengan tekanan darah 165/100 mmHg. Tidak terdapat keluhan nyeri dada maupun sesak. Disarankan melanjutkan terapi antihipertensi dan modifikasi gaya hidup.',
+      generatedAt: new Date(),
     },
   },
 ]

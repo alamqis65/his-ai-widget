@@ -283,6 +283,18 @@
   box-shadow: 0 4px 12px rgb(26 158 118 / 0.3);
 }
 
+.btn-danger-custom {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+}
+.btn-danger-custom:hover:not(:disabled) {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(250, 96, 68, 0.3);
+}
+
 .btn-secondary {
   background: var(--bg);
   color: var(--text-2);
@@ -388,4 +400,3 @@
   font-size: 13px;
   color: #dc2626;
 }
-

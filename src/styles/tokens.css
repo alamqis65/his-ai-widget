@@ -1,7 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap");
 
-/* ─── Tokens ──────────────────────────────────────────────────────────────── */
-:root {
+/* ─── Tokens ──────────────────────────────────────────────────────────────── *
+ * Defined on :host (not :root) because this stylesheet is injected inside
+ * the widget's shadow root — `:root` only ever matches the top-level
+ * document's <html>, never a shadow root, so it would silently match
+ * nothing here.
+ *
+ * Because these are plain CSS custom properties, a parent project can still
+ * re-theme the widget from its own stylesheet by targeting the host element
+ * directly, e.g.:
+ *
+ *   #his-ai-widget-host { --brand: #7c3aed; --widget-w: 420px; }
+ *
+ * Custom properties inherit through the shadow boundary, and a selector in
+ * the outer page targeting the host element takes precedence over this
+ * :host default at equal specificity — so the parent project's values win.
+ * ────────────────────────────────────────────────────────────────────────── */
+:host {
   --brand: #1a9e76;
   --brand-dark: #0f7558;
   --brand-light: #e6f7f2;

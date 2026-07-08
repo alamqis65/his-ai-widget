@@ -1,5 +1,5 @@
 import { render } from 'preact'
-import { injectStyles } from './injectStyles'
+import { mountShadowHost } from './shadowRoot'
 import type { SDKConfig, ActiveFeature } from '@/types'
 import { App } from '@/App'
 import logo from '@/assets/MAIA_Head_Transparent.png'
@@ -13,6 +13,11 @@ import merge from 'deepmerge'
  *   <script>
  *     his_ai_widget.init({ userName: 'dr. Budi' })
  *   </script>
+ *
+ * Everything the widget renders (the FAB button and the panel) lives inside
+ * one shadow root, mounted on a single `#his-ai-widget-host` element on
+ * document.body — see ./shadowRoot.ts. That's what keeps the widget's
+ * styling independent from whatever project it gets dropped into.
  */
 
 // ─── Internal State ───────────────────────────────────────────────────────────
@@ -20,14 +25,15 @@ import merge from 'deepmerge'
 let _config: SDKConfig = {}
 let _isOpen = false
 let _mounted = false
+let _host: HTMLElement | null = null
 let _container: HTMLElement | null = null
 let _fabBtn: HTMLElement | null = null
 let _fabLabel: HTMLElement | null = null
 
 // ─── DOM Helpers ──────────────────────────────────────────────────────────────
 
-function mountFAB(): void {
-  if (document.getElementById('his-ai-fab')) return
+function mountFAB(root: ShadowRoot): void {
+  if (root.querySelector('#his-ai-fab')) return
 
   const fab = document.createElement('div')
   fab.id = 'his-ai-fab'
@@ -43,21 +49,21 @@ function mountFAB(): void {
       </svg>
     </button>
   `
-  document.body.appendChild(fab)
+  root.appendChild(fab)
 
-  _fabBtn = document.getElementById('his-ai-fab-btn')
+  _fabBtn = root.querySelector<HTMLElement>('#his-ai-fab-btn')
   //nanti di bikin tooltip
-  _fabLabel = document.getElementById('his-ai-fab-label')
+  _fabLabel = root.querySelector<HTMLElement>('#his-ai-fab-label')
   _fabBtn?.addEventListener('click', () => HISWidget.toggle())
 }
 
-function mountWidget(): void {
+function mountWidget(root: ShadowRoot): void {
   if (_mounted) return
 
   _container = document.createElement('div')
   _container.id = 'his-ai-widget-container'
   _container.className = 'sdk-widget-panel'
-  document.body.appendChild(_container)
+  root.appendChild(_container)
 
   render(<App />, _container)
   _mounted = true
@@ -69,12 +75,12 @@ const HISWidget = {
   init(config: SDKConfig = {}): void {
     _config = { theme: 'light', ...config }
 
-    injectStyles()
-
     const doMount = () => {
-      mountFAB()
-      mountWidget()
-      _container?.setAttribute('data-theme', _config.theme ?? 'light')
+      const { host, root } = mountShadowHost()
+      _host = host
+      mountFAB(root)
+      mountWidget(root)
+      _host.setAttribute('data-theme', _config.theme ?? 'light')
     }
 
     if (document.readyState === 'loading') {
@@ -129,8 +135,8 @@ const HISWidget = {
     _config = merge(_config, config)
 
     // Apply theme change if provided
-    if (config.theme && _container) {
-      _container.setAttribute('data-theme', config.theme)
+    if (config.theme && _host) {
+      _host.setAttribute('data-theme', config.theme)
     }
 
     window.dispatchEvent(new CustomEvent('his_ai:config-updated', { detail: config }))

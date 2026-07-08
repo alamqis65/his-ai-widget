@@ -34,24 +34,24 @@ Semua fitur tersedia dalam mode **mock** (tanpa backend). Tinggal swap service s
 
 **Langkah 1** — Build widget:
 ```bash
-npm run build
-# Hasilnya: dist/assets/main-[hash].js dan main-[hash].css
+npm run build:lib
+# Hasilnya: dist/his_ai_widget.js (+ .js.map)
+# CSS ikut ke-bundle di dalam file JS ini — nggak ada file .css terpisah,
+# karena style-nya di-inject widget sendiri ke shadow root miliknya saat
+# his_ai_widget.init() dipanggil (lihat src/sdk/shadowRoot.ts).
 ```
 
-**Langkah 2** — Copy `dist/` ke project HIS kamu:
+**Langkah 2** — Copy hasil build ke project HIS kamu:
 ```
 wwwroot/
-└── ai-widget/          ← copy isi dist/ ke sini
-    ├── index.html
-    └── assets/
-        ├── main-xxx.js
-        └── main-xxx.css
+└── ai-widget/          ← copy dist/his_ai_widget.js ke sini
+    └── his_ai_widget.js
 ```
 
 **Langkah 3** — Tambahkan ke layout HIS (Razor, PHP, HTML, apapun):
 ```html
 <!-- Load widget -->
-<script src="/ai-widget/assets/main-xxx.js"></script>
+<script src="/ai-widget/his_ai_widget.js"></script>
 
 <!-- Inisialisasi -->
 <script>
@@ -62,7 +62,15 @@ wwwroot/
 </script>
 ```
 
-Selesai. Widget muncul sebagai floating button di kanan bawah.
+Selesai. Widget muncul sebagai floating button di kanan bawah, dirender di dalam shadow root-nya sendiri — style HIS kamu nggak akan bentrok dengan style widget (dan sebaliknya).
+
+Mau ubah warna/ukuran widget dari sisi HIS? Set custom property CSS yang sama di atas host elemennya, dari stylesheet HIS kamu sendiri:
+```css
+#his-ai-widget-host {
+  --brand: #7c3aed;      /* warna aksen */
+  --widget-w: 420px;     /* lebar panel */
+}
+```
 
 ---
 

@@ -18,7 +18,9 @@ export default defineConfig(({ mode }) => {
       ? {
           // ── SDK Library build ──────────────────────────────────────────────
           // Output: dist/his_ai_widget.js — 1 file, CSS embedded sebagai string
-          // CSS di-inject ke <head> via injectStyles() saat init() dipanggil
+          // (via `?inline` import di src/sdk/shadowRoot.ts) dan di-inject ke
+          // dalam shadow root milik widget saat init() dipanggil — bukan ke
+          // <head> dokumen, supaya style-nya terisolasi dari project parent.
           lib: {
             entry: resolve(__dirname, 'src/sdk/index.tsx'),
             name: 'his_ai_widget',

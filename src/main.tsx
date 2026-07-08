@@ -1,6 +1,3 @@
-import { render } from 'preact'
-import { App } from './App'
-import './styles/index.css'
 import './sdk'
 
 // Dev preview — simulasi SDK init
@@ -77,5 +74,3 @@ window.his_ai_widget.setConfig({
       'Pasien perempuan 32 tahun datang ke poli dengan keluhan sakit kepala sejak dua hari, disertai mual ringan. Tidak ada riwayat trauma kepala, tekanan darah saat diperiksa 130/80 mmHg, suhu tubuh normal. Dokter menilai kemungkinan tension headache dan merencanakan terapi simptomatik serta anjuran istirahat cukup.',
   },
 })
-
-render(<App />, document.getElementById('app')!)

@@ -1,6 +1,6 @@
 /* ─── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  :root {
+  :host {
     --widget-w: 100vw;
     --widget-h: 100dvh;
   }

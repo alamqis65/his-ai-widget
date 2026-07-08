@@ -6,11 +6,12 @@
   margin: 0;
   padding: 0;
 }
-html,
-body {
-  height: 100%;
+/* Was `html, body` — but this stylesheet lives inside the widget's shadow
+ * root, where there is no <html>/<body> to match. :host is the equivalent
+ * "root of this tree" target, and font/color set here inherit down into
+ * everything the widget renders without touching the parent page. */
+:host {
   font-family: var(--font);
-  background: #f0f4f8;
   color: var(--text-1);
   -webkit-font-smoothing: antialiased;
 }
@@ -21,11 +22,5 @@ button {
 input,
 textarea {
   font-family: var(--font);
-}
-#app {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 

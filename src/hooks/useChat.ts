@@ -27,14 +27,18 @@ export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat'>): UseChat
         timestamp: new Date(),
       }
 
+      // Update local state first
       setMessages(prev => [...prev, userMessage])
       setIsLoading(true)
       setError(null)
 
+      // Build the conversation array that includes the newly added user message
+      const updatedMessages = [...messages, userMessage]
+
       // Service di-resolve saat call — otomatis Mock atau Production
       // berdasarkan config dari his_ai_widget.init()
       const service = getAIService()
-      const result = await service.sendMessage(content, messages)
+      const result = await service.sendMessage(content, updatedMessages)
 
       if (result.ok) {
         const assistantMessage: ChatMessage = {

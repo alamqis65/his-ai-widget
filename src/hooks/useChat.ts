@@ -20,45 +20,49 @@ export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat'>): UseChat
     async (content: string) => {
       if (!content.trim() || isLoading) return
 
-      const userMessage: ChatMessage = {
-        id: generateId(),
-        role: 'user',
-        content: content.trim(),
-        timestamp: new Date(),
-      }
+      const trimmedContent = content.trim()
+      // Optimistically add user message to local state
+      let newMessages: ChatMessage[] = []
+      setMessages(prev => {
+        const userMsg: ChatMessage = {
+          id: generateId(),
+          role: 'user',
+          content: trimmedContent,
+          timestamp: new Date(),
+        }
+        newMessages = [...prev, userMsg]
+        return newMessages
+      })
 
-      // Update local state first
-      setMessages(prev => [...prev, userMessage])
       setIsLoading(true)
       setError(null)
 
-      // Build the conversation array that includes the newly added user message
-      const updatedMessages = [...messages, userMessage]
+      try {
+        const service = getAIService()
+        const result = await service.sendMessage(trimmedContent, newMessages)
 
-      // Service di-resolve saat call — otomatis Mock atau Production
-      // berdasarkan config dari his_ai_widget.init()
-      const service = getAIService()
-      const result = await service.sendMessage(content, updatedMessages)
-
-      if (result.ok) {
-        const assistantMessage: ChatMessage = {
-          id: generateId(),
-          role: 'assistant',
-          content: result.data,
-          timestamp: new Date(),
+        if (result.ok) {
+          const assistantMsg: ChatMessage = {
+            id: generateId(),
+            role: 'assistant',
+            content: result.data,
+            timestamp: new Date(),
+          }
+          setMessages(prev => [...prev, assistantMsg])
+        } else {
+          setError(result.error ?? 'Terjadi kesalahan. Coba lagi.')
         }
-        setMessages(prev => [...prev, assistantMessage])
-      } else {
-        setError(result.error ?? 'Terjadi kesalahan. Coba lagi.')
+      } catch (e) {
+        // Handle unexpected errors from the service
+        setError('Terjadi kesalahan. Coba lagi.')
+      } finally {
+        setIsLoading(false)
       }
-
-      setIsLoading(false)
     },
-    [isLoading, messages],
+    [isLoading],
   )
 
   const clearHistory = useCallback(() => {
-    // Emit riwayat chat sebelum di-clear
     if (messages.length > 0) {
       callbacks?.onResultChat?.(messages)
       window.dispatchEvent(

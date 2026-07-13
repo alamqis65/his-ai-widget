@@ -1,11 +1,32 @@
 // ─── Speech to SOAP Types ─────────────────────────────────────────────────────
 
-export type RecorderState = 'IDLE' | 'RECORDING' | 'PROCESSING_STT' | 'REVIEWING' | 'PROCESSING_LLM' | 'DONE' | 'ERROR'
+export type RecorderState =
+  | 'IDLE'
+  | 'RECORDING'
+  | 'PAUSED'
+  | 'PROCESSING_STT'
+  | 'REVIEWING'
+  | 'PROCESSING_LLM'
+  | 'DONE'
+  | 'ERROR'
 
 export interface STTResult {
   transcript: string
   confidence?: number
   durationMs?: number
+}
+
+/**
+ * SOAPProgressEvent
+ *
+ * Satu "langkah" progres yang dikirim AI service lewat SSE selama proses
+ * audio -> SOAP berlangsung (mis. "Mendengarkan audio...", "Mentranskripsi...",
+ * "Menyusun rekomendasi...", "Hampir selesai..."). Dipakai buat ngisi loading
+ * panel supaya nggak kosong pas nunggu.
+ */
+export interface SOAPProgressEvent {
+  message: string
+  step?: string
 }
 
 // NOTE: these SOAP sections come back as free-form JSON from the AI service

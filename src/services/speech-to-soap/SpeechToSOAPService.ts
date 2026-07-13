@@ -1,4 +1,4 @@
-import type { SOAPResult, ServiceResponse } from '@/types'
+import type { SOAPResult, SOAPProgressEvent, ServiceResponse } from '@/types'
 
 export interface SpeechToSOAPResult {
   soapResult: SOAPResult
@@ -17,5 +17,8 @@ export interface SpeechToSOAPResult {
  *   }
  */
 export interface SpeechToSOAPService {
-  process(audioBlob: Blob): Promise<ServiceResponse<SpeechToSOAPResult>>
+  process(
+    audioBlob: Blob,
+    onProgress?: (event: SOAPProgressEvent) => void,
+  ): Promise<ServiceResponse<SpeechToSOAPResult>>
 }

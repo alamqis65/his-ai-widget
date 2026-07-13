@@ -41,8 +41,12 @@ export interface UseSpeechToSOAPReturn {
   soapResult: SOAPResult | null
   error: string | null
   recordingDuration: number
+  progressMessage: string | null
   startRecording: () => Promise<void>
   stopRecording: () => void
+  pauseRecording: () => void
+  resumeRecording: () => void
+  cancelRecording: () => void
   saveSOAP: (payload: BatchSOAPPayload) => void
   reset: () => void
 }
@@ -63,6 +67,7 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
   const [soapResult, setSoapResult] = useState<SOAPResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [recordingDuration, setRecordingDuration] = useState(0)
+  const [progressMessage, setProgressMessage] = useState<string | null>(null)
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -103,12 +108,15 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
 
     // Single processing state — transcript + SOAP sekaligus
     setState('PROCESSING_LLM')
+    setProgressMessage(null)
 
     mediaRecorder.onstop = async () => {
       mediaRecorder.stream.getTracks().forEach(t => t.stop())
 
       const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
-      const result = await getSpeechToSOAPService().process(audioBlob)
+      const result = await getSpeechToSOAPService().process(audioBlob, event => {
+        setProgressMessage(event.message)
+      })
 
       if (result.ok) {
         setSoapResult(result.data.soapResult)
@@ -120,6 +128,53 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
     }
 
     mediaRecorder.stop()
+  }, [])
+
+  const pauseRecording = useCallback(() => {
+    const mediaRecorder = mediaRecorderRef.current
+    if (!mediaRecorder || mediaRecorder.state !== 'recording') return
+
+    mediaRecorder.pause()
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+    setState('PAUSED')
+  }, [])
+
+  const resumeRecording = useCallback(() => {
+    const mediaRecorder = mediaRecorderRef.current
+    if (!mediaRecorder || mediaRecorder.state !== 'paused') return
+
+    mediaRecorder.resume()
+    timerRef.current = window.setInterval(() => {
+      setRecordingDuration(d => d + 1)
+    }, 1000)
+    setState('RECORDING')
+  }, [])
+
+  const cancelRecording = useCallback(() => {
+    const mediaRecorder = mediaRecorderRef.current
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+
+    if (mediaRecorder) {
+      mediaRecorder.ondataavailable = null
+      mediaRecorder.onstop = null
+      if (mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop()
+      }
+      mediaRecorder.stream.getTracks().forEach(t => t.stop())
+    }
+
+    mediaRecorderRef.current = null
+    chunksRef.current = []
+    setState('IDLE')
+    setRecordingDuration(0)
+    setProgressMessage(null)
   }, [])
 
   const saveSOAP = useCallback(
@@ -143,6 +198,7 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
     setSoapResult(null)
     setError(null)
     setRecordingDuration(0)
+    setProgressMessage(null)
     chunksRef.current = []
     if (timerRef.current) {
       clearInterval(timerRef.current)
@@ -155,8 +211,12 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
     soapResult,
     error,
     recordingDuration,
+    progressMessage,
     startRecording,
     stopRecording,
+    pauseRecording,
+    resumeRecording,
+    cancelRecording,
     saveSOAP,
     reset,
   }

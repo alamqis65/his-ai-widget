@@ -1,5 +1,6 @@
-import type { ServiceResponse, SDKApiConfig } from '@/types'
+import type { ServiceResponse, SDKApiConfig, SOAPProgressEvent, SDKConfig } from '@/types'
 import type { SpeechToSOAPService, SpeechToSOAPResult } from './SpeechToSOAPService'
+import { SOAPProgressListener, generateSOAPRequestId } from './SOAPProgressListener'
 
 /**
  * ProductionSpeechToSOAPService
@@ -24,17 +25,32 @@ import type { SpeechToSOAPService, SpeechToSOAPResult } from './SpeechToSOAPServ
 export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
   constructor(private readonly apiConfig: SDKApiConfig) {}
 
-  async process(audioBlob: Blob): Promise<ServiceResponse<SpeechToSOAPResult>> {
+  private getFullConfig(): SDKConfig {
+    return (window as any).his_ai_widget?._getConfig() || {}
+  }
+
+  async process(
+    audioBlob: Blob,
+    onProgress?: (event: SOAPProgressEvent) => void,
+  ): Promise<ServiceResponse<SpeechToSOAPResult>> {
     const endpoint = this.apiConfig.soapGeneratorEndpoint
     const pretext = this.apiConfig.pretext
     const vitalSignList = this.apiConfig.vitalSignList
     const soapiTemplate = this.apiConfig.soapiTemplate
+    const TipeKunjungan = this.getFullConfig().departmentId
     if (!endpoint) {
       return {
         data: {} as SpeechToSOAPResult,
         ok: false,
         error: 'soapGeneratorEndpoint tidak dikonfigurasi di init({ api: { soapGeneratorEndpoint } })',
       }
+    }
+
+    const requestId = generateSOAPRequestId()
+    const progressListener = new SOAPProgressListener()
+    if (this.apiConfig.soapProgressEndpoint) {
+      const progressUrl = `${this.apiConfig.soapProgressEndpoint}?request_id=${encodeURIComponent(requestId)}`
+      progressListener.start(progressUrl, event => onProgress?.(event))
     }
 
     try {
@@ -49,6 +65,8 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
       form.append('show_prompts', 'false')
       form.append('is_bpjs', 'true')
       form.append('reference_is_bpjs_only', 'false')
+      form.append('request_id', requestId)
+      form.append('tipe_kunjungan', TipeKunjungan || '')
 
       const res = await fetch(endpoint, {
         method: 'POST',
@@ -105,6 +123,9 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
         ok: false,
         error: (err as Error).message,
       }
+    } finally {
+      // Proses selesai (sukses/gagal) — tutup koneksi SSE progress kalau masih terbuka.
+      progressListener.stop()
     }
   }
 }

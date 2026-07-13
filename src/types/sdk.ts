@@ -43,6 +43,30 @@ export interface SDKApiConfig {
   vitalSignList?: string
 
   /**
+   * Endpoint SSE (Server-Sent Events) untuk progress Speech-to-SOAP (opsional).
+   *
+   * Kalau diisi, widget akan buka koneksi `EventSource` ke endpoint ini
+   * selagi audio diproses (state PROCESSING_LLM), supaya loading panel bisa
+   * nampilin pesan progres real-time dari AI service (mis. "Mendengarkan
+   * audio...", "Mentranskripsi...", "Menyusun rekomendasi...", "Hampir
+   * selesai...") alih-alih spinner kosong.
+   *
+   * Widget generate `request_id` unik per proses, kirim sebagai query param
+   * ke endpoint ini (`?request_id=xxx`) DAN sebagai field di form-data POST
+   * ke `soapGeneratorEndpoint`, supaya backend bisa korelasiin job yang mana
+   * ngirim event progress yang mana.
+   *
+   * Format tiap event SSE (data-only, boleh pakai `event: progress` opsional):
+   *   data: {"message": "Mentranskripsi audio...", "step": "TRANSCRIBE"}
+   *
+   * Kalau tidak diisi → loading panel pakai teks statis (fallback), tidak
+   * ada koneksi SSE yang dibuka.
+   *
+   * @example 'https://api.rs-nusantara.com/ai/speech-to-soap/progress'
+   */
+  soapProgressEndpoint?: string
+
+  /**
    * Endpoint Clinical Pathway Generator.
    * Widget akan POST { diagnosis, context } dan expect { pathway: ClinicalPathwayResult }
    * @example 'https://api.rs-nusantara.com/ai/pathway'

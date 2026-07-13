@@ -12,10 +12,23 @@ const STEPS = ['Mulai', 'Rekam', 'Proses', 'Selesai'] as const
 const STATES = ['IDLE', 'RECORDING', 'PROCESSING_LLM', 'DONE'] as const
 
 export function SpeechToSoapFeature({ callbacks }: Props) {
-  const { state, soapResult, error, recordingDuration, startRecording, stopRecording, saveSOAP, reset } =
-    useSpeechToSOAP(callbacks)
+  const {
+    state,
+    soapResult,
+    error,
+    recordingDuration,
+    progressMessage,
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    resumeRecording,
+    cancelRecording,
+    saveSOAP,
+    reset,
+  } = useSpeechToSOAP(callbacks)
 
-  const currentIdx = STATES.indexOf(state as (typeof STATES)[number])
+  // PAUSED tetap dianggap sebagai step "Rekam" untuk keperluan progress bar.
+  const currentIdx = STATES.indexOf((state === 'PAUSED' ? 'RECORDING' : state) as (typeof STATES)[number])
 
   return (
     <div class="sts-layout">
@@ -55,22 +68,24 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
       )}
 
       <div class="sts-content">
-        {/* IDLE / RECORDING: tampilkan recorder */}
-        {(state === 'IDLE' || state === 'RECORDING') && (
+        {/* IDLE / RECORDING / PAUSED: tampilkan recorder */}
+        {(state === 'IDLE' || state === 'RECORDING' || state === 'PAUSED') && (
           <RecorderView
             state={state}
             duration={recordingDuration}
             onStart={startRecording}
             onStop={stopRecording}
-            onCancel={reset}
+            onPause={pauseRecording}
+            onResume={resumeRecording}
+            onCancel={cancelRecording}
           />
         )}
 
-        {/* PROCESSING: loading indicator */}
+        {/* PROCESSING: loading indicator, pesan progres live dari SSE */}
         {state === 'PROCESSING_LLM' && (
           <div class="feature-loading">
             <div class="loading-spinner" />
-            <p class="loading-text">Memproses audio...</p>
+            <p class="loading-text">{progressMessage ?? 'Memproses audio...'}</p>
             <p class="loading-sub">Transkripsi dan generate SOAP sekaligus</p>
           </div>
         )}

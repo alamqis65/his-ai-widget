@@ -39,9 +39,6 @@ export class ProductionClinicalPathwayService implements ClinicalPathwayService 
 
       const backendResponse = await res.json()
 
-      console.log(backendResponse, 'backendResponse')
-      console.log(backendResponse.clinical_pathway, 'params')
-
       // Parse response from python backend (PathwayGenerateResponse)
       const mappedSteps = (backendResponse.clinical_pathway || []).map((phase: any) => {
         const asuhan = phase.asuhan_medis || {}

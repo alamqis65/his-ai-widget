@@ -1,6 +1,15 @@
-import type { ServiceResponse } from '@/types'
+import type { ServiceResponse, SOAPProgressEvent } from '@/types'
 import type { SpeechToSOAPService, SpeechToSOAPResult } from './SpeechToSOAPService'
 import { delay } from '@/utils'
+
+// Simulasi pesan progres SSE buat mode dev/demo (tidak ada backend beneran
+// yang ngirim event, jadi kita "putar" pesan-pesan ini sendiri dengan jeda).
+const MOCK_PROGRESS_STEPS: SOAPProgressEvent[] = [
+  { message: 'Mendengarkan audio...', step: 'LISTEN' },
+  { message: 'Mentranskripsi percakapan...', step: 'TRANSCRIBE' },
+  { message: 'Menyusun rekomendasi diagnosa & tindakan...', step: 'RECOMMEND' },
+  { message: 'Hampir selesai...', step: 'FINALIZE' },
+]
 
 const MOCK_DATA: SpeechToSOAPResult[] = [
   {
@@ -384,8 +393,17 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
  * Simulasi single API call yang mengembalikan transcript + SOAP sekaligus.
  */
 export class MockSpeechToSOAPService implements SpeechToSOAPService {
-  async process(_audioBlob: Blob): Promise<ServiceResponse<SpeechToSOAPResult>> {
-    await delay(2500 + Math.random() * 1000)
+  async process(
+    _audioBlob: Blob,
+    onProgress?: (event: SOAPProgressEvent) => void,
+  ): Promise<ServiceResponse<SpeechToSOAPResult>> {
+    const totalDelay = 2500 + Math.random() * 1000
+    const stepDelay = totalDelay / MOCK_PROGRESS_STEPS.length
+
+    for (const step of MOCK_PROGRESS_STEPS) {
+      onProgress?.(step)
+      await delay(stepDelay)
+    }
 
     const mock = MOCK_DATA[Math.floor(Math.random() * MOCK_DATA.length)]
     return {

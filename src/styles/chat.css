@@ -181,6 +181,34 @@
   padding: 0 2px;
 }
 
+.chat-msg-take-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  color: var(--brand);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 120ms,
+    border-color 120ms;
+}
+
+.chat-msg-take-result:hover {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: white;
+}
+
+.chat-msg-take-result svg {
+  flex-shrink: 0;
+}
+
 .chat-error-bar {
   display: flex;
   align-items: center;

@@ -16,7 +16,7 @@ window.his_ai_widget.init({
   // ── API Endpoints (opsional — tanpa ini pakai Mock) ────────────────────
   // Uncomment dan isi URL sesuai backend HIS kamu:
   api: {
-    soapGeneratorEndpoint: 'http://192.168.90.98:8000/api/v1/rag/analyze', // Endpoint baru untuk STT & SOAP
+    soapGeneratorEndpoint: 'http://192.168.90.10:8000/api/v1/rag/analyze', // Endpoint baru untuk STT & SOAP
     chatEndpoint: 'http://192.168.90.10:8000/api/v1/ai-assistant/patient-ai-assistant',
     pretext:
       'meta:(PASIEN OUTPATIENT), transcript: Pasien seorang perempuan datang dengan keluhan sakit kepala sejak dua hari terakhir, disertai mual ringan. Ia menjelaskan bahwa rasa sakit kepala terasa seperti ditekan di bagian belakang kepala, tanpa riwayat trauma kepala maupun penyakit serius sebelumnya. Pasien juga tidak memiliki riwayat alergi obat atau makanan. Pemeriksaan tanda vital menunjukkan tekanan darah 130/80 mmHg, nadi 82 kali per menit reguler, respirasi 18 kali per menit, suhu tubuh 36,8°C, dan saturasi oksigen 98%. Kesadaran pasien baik, compos mentis, serta tidak ditemukan tanda neurologis yang mengkhawatirkan. Dokter menilai kondisi ini kemungkinan besar adalah sakit kepala tegang (tension headache) yang biasanya dipicu oleh stres atau kurang istirahat. Dokter kemudian memberikan edukasi agar pasien beristirahat cukup, mengurangi stres, menghindari terlalu lama menatap layar, memperbanyak minum air putih, serta melakukan relaksasi sederhana. Untuk terapi simptomatik, dokter meresepkan Paracetamol 500 mg bila nyeri dan Domperidone 10 mg bila mual bertambah. Dokter menutup konsultasi dengan pesan agar pasien segera kembali bila sakit kepala tidak membaik dalam beberapa hari atau muncul gejala lain seperti muntah hebat atau gangguan penglihatan. Pasien menerima anjuran tersebut dan mengucapkan terima kasih.',
@@ -35,7 +35,7 @@ window.his_ai_widget.init({
   features: {
     chat: true,
     soap: true,
-    pathway: true,
+    pathway: false,
     eclaim: false, // ← sembunyikan E-Claim
   },
 
@@ -43,6 +43,14 @@ window.his_ai_widget.init({
   onResultChat: messages => {
     console.log('[HIS] Riwayat chat:', messages)
     // Simpan ke EMR / session storage
+  },
+
+  onResultChatMessage: result => {
+    console.log('[HIS] Ambil hasil chat:', result)
+    // result.raw berisi payload mentah dari backend AI:
+    // jawaban_medis, suggested_prescriptions, suggested_orders,
+    // suggested_diagnoses, suggested_procedures, dll.
+    // fetch('/api/emr/chat-result', { method: 'POST', body: JSON.stringify(result) })
   },
 
   onResultSOAP: result => {

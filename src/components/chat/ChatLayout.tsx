@@ -6,7 +6,7 @@ import { useChat } from '@/hooks/useChat'
 import type { SDKCallbacks } from '@/types'
 
 interface Props {
-  callbacks?: Pick<SDKCallbacks, 'onResultChat'>
+  callbacks?: Pick<SDKCallbacks, 'onResultChat' | 'onResultChatMessage'>
 }
 
 const SUGGESTIONS = [
@@ -17,7 +17,7 @@ const SUGGESTIONS = [
 ]
 
 export function ChatLayout({ callbacks }: Props) {
-  const { messages, isLoading, error, sendMessage, clearHistory } = useChat(callbacks)
+  const { messages, isLoading, error, sendMessage, clearHistory, takeChatResult } = useChat(callbacks)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export function ChatLayout({ callbacks }: Props) {
         )}
 
         {messages.map(msg => (
-          <ChatMessage key={msg.id} message={msg} />
+          <ChatMessage key={msg.id} message={msg} onTakeResult={takeChatResult} />
         ))}
 
         {isLoading && (

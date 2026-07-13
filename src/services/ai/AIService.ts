@@ -1,4 +1,4 @@
-import type { ChatMessage, ServiceResponse } from '@/types'
+import type { ChatMessage, ChatSendResult, ServiceResponse } from '@/types'
 
 /**
  * AIService — abstraction layer for AI chat completion.
@@ -11,5 +11,5 @@ import type { ChatMessage, ServiceResponse } from '@/types'
  * - Integrate with VITE_AI_BASE_URL + VITE_CHAT_ENDPOINT
  */
 export interface AIService {
-  sendMessage(message: string, history: ChatMessage[]): Promise<ServiceResponse<string>>
+  sendMessage(message: string, history: ChatMessage): Promise<ServiceResponse<ChatSendResult>>
 }

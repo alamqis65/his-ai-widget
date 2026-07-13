@@ -142,7 +142,9 @@ export function App() {
 
       {/* ── Content ── */}
       <main class="widget-content">
-        {active === 'chat' && features.chat && <ChatFeature callbacks={{ onResultChat: cfg.onResultChat }} />}
+        {active === 'chat' && features.chat && (
+          <ChatFeature callbacks={{ onResultChat: cfg.onResultChat, onResultChatMessage: cfg.onResultChatMessage }} />
+        )}
         {active === 'speech-to-soap' && features.soap && (
           <SpeechToSoapFeature callbacks={{ onResultSOAP: cfg.onResultSOAP }} />
         )}

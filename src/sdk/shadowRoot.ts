@@ -46,6 +46,25 @@ export function mountShadowHost(): { host: HTMLElement; root: ShadowRoot } {
 
   _shadowRoot = _host.shadowRoot ?? _host.attachShadow({ mode: 'open' })
 
+  // Stop key events from bubbling out to the host page (capture phase,
+  // as high up as possible: right on the shadow host itself).
+  //
+  // Why: once a keydown event crosses the shadow boundary, any listener
+  // on document/window sees `event.target` retargeted to `_host` (a plain
+  // <div>), not the actual <input>/<textarea> inside our shadow tree —
+  // that's the standard Shadow DOM event-retargeting behavior. Host pages
+  // sometimes have global keydown guards (e.g. legacy "Backspace navigates
+  // back" prevention, common in .NET/WebForms apps, or keybinding
+  // libraries) that check `event.target.tagName` to decide whether the
+  // user is typing in a field. Because the retargeted element is a <div>,
+  // those checks fail and the host calls preventDefault() on keys like
+  // Backspace — even though the user is legitimately typing inside our
+  // widget. Stopping propagation here keeps all such key events contained
+  // to the widget, regardless of which internal component receives them.
+  for (const type of ['keydown', 'keyup', 'keypress']) {
+    _host.addEventListener(type, e => e.stopPropagation(), { capture: true })
+  }
+
   if (!_shadowRoot.querySelector(`#${WIDGET_STYLE_ID}`)) {
     const style = document.createElement('style')
     style.id = WIDGET_STYLE_ID

@@ -1,4 +1,4 @@
-import type { ChatMessage, ServiceResponse } from '@/types'
+import type { ChatMessage, ChatSendResult, ServiceResponse } from '@/types'
 import type { AIService } from './AIService'
 import { delay } from '@/utils'
 
@@ -29,7 +29,7 @@ function getResponse(message: string): string {
  * Replace with ProductionAIService when backend is ready.
  */
 export class MockAIService implements AIService {
-  async sendMessage(message: string, _history: ChatMessage[]): Promise<ServiceResponse<string>> {
+  async sendMessage(message: string, _history: ChatMessage): Promise<ServiceResponse<ChatSendResult>> {
     // Simulate network latency
     await delay(800 + Math.random() * 700)
 
@@ -39,7 +39,7 @@ export class MockAIService implements AIService {
     // }
 
     return {
-      data: getResponse(message),
+      data: { text: getResponse(message) },
       ok: true,
     }
   }

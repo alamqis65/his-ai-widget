@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'preact/hooks'
-import type { ChatMessage, SDKCallbacks } from '@/types'
+import type { ChatMessage, ChatMessageResult, SDKCallbacks } from '@/types'
 import { getAIService } from '@/services/registry'
 import { generateId } from '@/utils'
 
@@ -9,9 +9,10 @@ interface UseChatReturn {
   error: string | null
   sendMessage: (content: string) => Promise<void>
   clearHistory: () => void
+  takeChatResult: (messageId: string) => void
 }
 
-export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat'>): UseChatReturn {
+export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat' | 'onResultChatMessage'>): UseChatReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -22,31 +23,28 @@ export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat'>): UseChat
 
       const trimmedContent = content.trim()
       // Optimistically add user message to local state
-      let newMessages: ChatMessage[] = []
-      setMessages(prev => {
-        const userMsg: ChatMessage = {
-          id: generateId(),
-          role: 'user',
-          content: trimmedContent,
-          timestamp: new Date(),
-        }
-        newMessages = [...prev, userMsg]
-        return newMessages
-      })
+      const userMsg: ChatMessage = {
+        id: generateId(),
+        role: 'user',
+        content: trimmedContent,
+        timestamp: new Date(),
+      }
+      setMessages(prev => [...prev, userMsg])
 
       setIsLoading(true)
       setError(null)
 
       try {
         const service = getAIService()
-        const result = await service.sendMessage(trimmedContent, newMessages)
+        const result = await service.sendMessage(trimmedContent, userMsg)
 
         if (result.ok) {
           const assistantMsg: ChatMessage = {
             id: generateId(),
             role: 'assistant',
-            content: result.data,
+            content: result.data.text,
             timestamp: new Date(),
+            raw: result.data.raw,
           }
           setMessages(prev => [...prev, assistantMsg])
         } else {
@@ -54,7 +52,7 @@ export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat'>): UseChat
         }
       } catch (e) {
         // Handle unexpected errors from the service
-        setError('Terjadi kesalahan. Coba lagi.')
+        setError(e instanceof Error ? `Terjadi kesalahan. Coba lagi. ${e.message}` : 'Terjadi kesalahan. Coba lagi.')
       } finally {
         setIsLoading(false)
       }
@@ -75,5 +73,31 @@ export function useChat(callbacks?: Pick<SDKCallbacks, 'onResultChat'>): UseChat
     setError(null)
   }, [messages, callbacks])
 
-  return { messages, isLoading, error, sendMessage, clearHistory }
+  /**
+   * Fires when the doctor clicks "Ambil hasil chat ini" under a specific
+   * AI answer. Unlike clearHistory (whole session, on clear), this sends
+   * just that one message's raw AI payload — jawaban_medis plus all the
+   * suggested_* fields — via onResultChatMessage.
+   */
+  const takeChatResult = useCallback(
+    (messageId: string) => {
+      const msg = messages.find(m => m.id === messageId)
+      if (!msg || msg.role !== 'assistant') return
+
+      const result: ChatMessageResult = {
+        messageId: msg.id,
+        timestamp: msg.timestamp,
+        raw: msg.raw,
+      }
+      callbacks?.onResultChatMessage?.(result)
+      window.dispatchEvent(
+        new CustomEvent('his_ai:result', {
+          detail: { type: 'CHAT_MESSAGE_RESULT', data: result },
+        }),
+      )
+    },
+    [messages, callbacks],
+  )
+
+  return { messages, isLoading, error, sendMessage, clearHistory, takeChatResult }
 }

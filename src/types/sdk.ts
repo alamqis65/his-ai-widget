@@ -1,4 +1,4 @@
-import type { ChatMessage } from './chat'
+import type { ChatMessage, ChatMessageResult } from './chat'
 import type { SOAPResult } from './speech-to-soap'
 import type { ClinicalPathwayResult } from './clinical-pathway'
 import type { EClaimCheckResult } from './eclaim'
@@ -117,6 +117,15 @@ export interface SDKCallbacks {
   onResultChat?: (messages: ChatMessage[]) => void
 
   /**
+   * Dipanggil saat dokter klik "Ambil hasil chat ini" di bawah salah satu
+   * jawaban AI. Beda dengan onResultChat (seluruh riwayat, saat sesi
+   * berakhir/clear), ini fire per-jawaban dan membawa payload mentah dari
+   * backend AI (jawaban_medis + semua suggested_*), bukan cuma teksnya.
+   * @example onResultChatMessage: (result) => saveToEMR('chat-result', result.raw)
+   */
+  onResultChatMessage?: (result: ChatMessageResult) => void
+
+  /**
    * Dipanggil saat dokter klik "Simpan ke HIS" di fitur Speech to SOAP.
    * @example onResultSOAP: (result) => saveToEMR('soap', result)
    */
@@ -149,11 +158,14 @@ export interface SDKConfig extends SDKCallbacks {
   theme?: WidgetTheme
 
   // ── Patient Context ───────────────────────────────────────────────────────
+  patientData?: any // optional additional patient data
+
   patientId?: string
   visitId?: string
   doctorId?: string
   departmentId?: string
   age?: number
+  gender?: string
   isBPJS?: boolean
 
   // ── API Endpoints ─────────────────────────────────────────────────────────

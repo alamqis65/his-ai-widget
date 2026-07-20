@@ -39,6 +39,7 @@ export interface SOAPNote {
   Assessment: any
   Plan: any
   Interventions?: any
+  Instructions?: any
 }
 
 export interface SuggestedDiagnosis {

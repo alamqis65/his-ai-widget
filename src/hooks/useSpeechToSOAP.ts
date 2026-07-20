@@ -183,7 +183,7 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
 
       // "Simpan ke HIS": one combined callback + one event, carrying only
       // whatever fields the user checked.
-      callbacks?.onResultSOAP?.({ type: 'ALL', ...payload })
+      callbacks?.onResultSOAP?.({ type: 'ALL', soap: soapResult.soap, ...payload })
       window.dispatchEvent(
         new CustomEvent('his_ai:result', {
           detail: { type: 'ALL', data: payload },

@@ -33,7 +33,7 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
   return (
     <div class="sts-layout">
       <div>
-        <h2 class="feature-title">Speech to SOAP</h2>
+        <h2 class="feature-title"></h2>
         <p class="feature-subtitle">Rekam percakapan anda, dan MAIA akan menghasilkan SOAPI berdasarkan transkripsi</p>
       </div>
 

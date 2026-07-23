@@ -113,6 +113,11 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
             sugest_procedures: payload.compose?.suggested_procedures ?? [],
             sugest_VitalSign: payload.compose?.vital_signs ?? [],
             rekomendasi_resep: payload.compose?.suggested_prescriptions ?? [],
+            // NOTE: guessing the backend field name here (mirrors
+            // suggested_prescriptions) — adjust to match whatever key the
+            // soap-generator endpoint actually returns for lab/test-order
+            // suggestions once confirmed.
+            suggested_labs: payload.compose?.suggested_labs ?? [],
           },
         },
         ok: true,

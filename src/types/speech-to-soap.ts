@@ -20,9 +20,9 @@ export interface STTResult {
  * SOAPProgressEvent
  *
  * Satu "langkah" progres yang dikirim AI service lewat SSE selama proses
- * audio -> SOAP berlangsung (mis. "Mendengarkan audio...", "Mentranskripsi...",
- * "Menyusun rekomendasi...", "Hampir selesai..."). Dipakai buat ngisi loading
- * panel supaya nggak kosong pas nunggu.
+ * audio -> SOAP berlangsung (mis. "Mendengarkan audio...", "Mentranskripsikan...",
+ * "Menyusun rekomendasi...", "Hampir selesai..."). Dipakai buat mengisi loading
+ * panel supaya tidak kosong saat menunggu .
  */
 export interface SOAPProgressEvent {
   message: string
@@ -38,7 +38,13 @@ export interface SOAPNote {
   Objective: any
   Assessment: any
   Plan: any
+  /** Legacy field name — kept for the "current mode" UI (not shown anywhere yet). */
   Interventions?: any
+  /**
+   * Native-mode "I" (SOAP**I**). API only ever sends one of `Instructions` /
+   * `Interventions`, never both — native mode falls back to `Interventions`
+   * when `Instructions` isn't present.
+   */
   Instructions?: any
 }
 
@@ -69,6 +75,14 @@ export interface SuggestedPrescription {
   Peringatan: string
 }
 
+export interface SuggestedLaboratory {
+  ItemCode: string
+  NamaPemeriksaan: string
+  KategoriBesar?: string
+  GrupPemeriksaan?: string
+  Peringatan?: string
+}
+
 export interface SOAPResult {
   soap: SOAPNote
   anamesa: any
@@ -78,5 +92,5 @@ export interface SOAPResult {
   sugest_procedures?: SuggestedProcedure[]
   sugest_VitalSign?: SuggestedTTV[]
   rekomendasi_resep?: SuggestedPrescription[]
-  rekomendasi_penunjang?: any[]
+  suggested_labs?: SuggestedLaboratory[]
 }

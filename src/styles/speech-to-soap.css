@@ -437,6 +437,10 @@
   background: #faf5ff;
   border-left-color: #a855f7;
 }
+.soap-section--teal {
+  background: #f0fdfa;
+  border-left-color: #14b8a6;
+}
 
 .soap-section-head {
   display: flex;
@@ -470,6 +474,10 @@
 .soap-section--purple .soap-section-icon {
   background: #f3e8ff;
   color: #7e22ce;
+}
+.soap-section--teal .soap-section-icon {
+  background: #ccfbf1;
+  color: #0f766e;
 }
 
 .soap-section-label {

@@ -47,17 +47,17 @@ export interface SDKApiConfig {
    *
    * Kalau diisi, widget akan buka koneksi `EventSource` ke endpoint ini
    * selagi audio diproses (state PROCESSING_LLM), supaya loading panel bisa
-   * nampilin pesan progres real-time dari AI service (mis. "Mendengarkan
-   * audio...", "Mentranskripsi...", "Menyusun rekomendasi...", "Hampir
+   * menampilkan pesan progres real-time dari AI service (mis. "Mendengarkan
+   * audio...", "Mentranskripsikan...", "Menyusun rekomendasi...", "Hampir
    * selesai...") alih-alih spinner kosong.
    *
    * Widget generate `request_id` unik per proses, kirim sebagai query param
    * ke endpoint ini (`?request_id=xxx`) DAN sebagai field di form-data POST
-   * ke `soapGeneratorEndpoint`, supaya backend bisa korelasiin job yang mana
-   * ngirim event progress yang mana.
+   * ke `soapGeneratorEndpoint`, supaya backend bisa mengkorelasikan job yang mana
+   * kirim event progress yang mana.
    *
    * Format tiap event SSE (data-only, boleh pakai `event: progress` opsional):
-   *   data: {"message": "Mentranskripsi audio...", "step": "TRANSCRIBE"}
+   *   data: {"message": "Mentranskripsikan audio...", "step": "TRANSCRIBE"}
    *
    * Kalau tidak diisi → loading panel pakai teks statis (fallback), tidak
    * ada koneksi SSE yang dibuka.
@@ -75,7 +75,7 @@ export interface SDKApiConfig {
 
   /**
    * Endpoint Master Diagnosa untuk Clinical Pathway.
-   * Widget akan GET untuk mengambil daftar diagnosa autocompelete.
+   * Widget akan GET untuk mengambil daftar diagnosa auto complete.
    * @example 'https://api.rs-nusantara.com/ai/pathway/master-diagnoses'
    */
   pathwayMasterDiagnosesEndpoint?: string
@@ -173,6 +173,19 @@ export interface SDKCallbacks {
 export type WidgetTheme = 'light' | 'dark'
 export type ActiveFeature = 'chat' | 'speech-to-soap' | 'clinical-pathway' | 'eclaim'
 
+// ─── Speech to SOAP view modes ────────────────────────────────────────────────
+// Different embedding menus can want different result views for the exact
+// same API response — this is display-only, the backend contract doesn't
+// change. Extend this union (and add a matching view component) whenever a
+// new menu needs its own SOAP presentation.
+//
+// 'current' — existing checkbox-driven view: batch-select anamesa/plan/
+//              diagnoses/procedures/vitals/prescriptions/lab suggestions,
+//              "Simpan ke HIS" sends only what's checked.
+// 'native'  — pure S/O/A/P(+I) straight from the API, no checkboxes,
+//              "Simpan ke HIS" always enabled and sends the whole SOAP note.
+export type SoapViewMode = 'current' | 'native'
+
 export interface SDKConfig extends SDKCallbacks {
   // ── Identity ──────────────────────────────────────────────────────────────
   /** Nama dokter / user yang tampil di header widget */
@@ -203,6 +216,14 @@ export interface SDKConfig extends SDKCallbacks {
    * @example features: { eclaim: false, pathway: false }
    */
   features?: SDKFeatureFlags
+
+  // ── Speech to SOAP view ───────────────────────────────────────────────────
+  /**
+   * Menentukan tampilan hasil Speech-to-SOAP. Default: 'current'.
+   * Beda menu/embed bisa pakai mode beda meski endpoint & response-nya sama.
+   * @example soapViewMode: 'native'
+   */
+  soapViewMode?: SoapViewMode
 }
 
 // ─── Legacy compat ────────────────────────────────────────────────────────────

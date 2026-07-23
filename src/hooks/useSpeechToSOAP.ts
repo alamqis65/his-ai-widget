@@ -6,13 +6,15 @@ import type {
   SuggestedDiagnosis,
   SuggestedProcedure,
   SuggestedTTV,
+  SuggestedPrescription,
+  SuggestedLaboratory,
 } from '@/types'
 import { getSpeechToSOAPService } from '@/services/registry'
 
 // Internal keys used purely to track *which checkbox group* an item belongs
 // to while the user is selecting things (not sent anywhere as-is). Add a new
 // key here when a new checkable field is introduced (e.g. 'PRESCRIPTION').
-export type SoapFieldKey = 'VITALSIGN' | 'DIAGNOSE' | 'PROCEDURE' | 'PRESCRIPTION'
+export type SoapFieldKey = 'VITALSIGN' | 'DIAGNOSE' | 'PROCEDURE' | 'PRESCRIPTION' | 'LABORATORY'
 
 // The only thing actually saved to HIS now is the combined batch. There is no
 // per-item/per-type callback anymore — checkbox selection + "Simpan ke HIS"
@@ -30,10 +32,13 @@ export type SaveSOAPType = 'ALL'
  */
 export interface BatchSOAPPayload {
   anamesa?: any
+  rencana_plan?: string
   sugest_diagnosis?: SuggestedDiagnosis[]
   sugest_procedures?: SuggestedProcedure[]
   sugest_VitalSign?: SuggestedTTV[]
-  [key: string]: any
+  rekomendasi_resep?: SuggestedPrescription[]
+  suggested_labs?: SuggestedLaboratory[]
+  // [key: string]: any
 }
 
 export interface UseSpeechToSOAPReturn {
@@ -181,12 +186,14 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
     (payload: BatchSOAPPayload) => {
       if (!soapResult) return
 
-      // "Simpan ke HIS": one combined callback + one event, carrying only
-      // whatever fields the user checked.
+      // "Simpan ke HIS": one combined callback + one event, carrying whatever
+      // fields the user checked, plus the raw `soap` itself every time — this
+      // matters most for native mode, where there's nothing checked at all
+      // and the SOAP note is the entire payload.
       callbacks?.onResultSOAP?.({ type: 'ALL', soap: soapResult.soap, ...payload })
       window.dispatchEvent(
         new CustomEvent('his_ai:result', {
-          detail: { type: 'ALL', data: payload },
+          detail: { type: 'ALL', data: { soap: soapResult.soap, ...payload } },
         }),
       )
     },

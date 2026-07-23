@@ -146,7 +146,7 @@ export function App() {
           <ChatFeature callbacks={{ onResultChat: cfg.onResultChat, onResultChatMessage: cfg.onResultChatMessage }} />
         )}
         {active === 'speech-to-soap' && features.soap && (
-          <SpeechToSoapFeature callbacks={{ onResultSOAP: cfg.onResultSOAP }} />
+          <SpeechToSoapFeature callbacks={{ onResultSOAP: cfg.onResultSOAP }} viewMode={cfg.soapViewMode} />
         )}
         {active === 'clinical-pathway' && features.pathway && (
           <ClinicalPathwayFeature

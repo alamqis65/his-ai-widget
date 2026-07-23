@@ -76,12 +76,19 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           Peringatan: '',
         },
       ],
-      rekomendasi_penunjang: [
+      suggested_labs: [
         {
           ItemCode: 'HE1001',
           NamaPemeriksaan: 'Hitung Darah Lengkap',
           KategoriBesar: 'Pemeriksaan Laboratorium',
           GrupPemeriksaan: 'HEMATOLOGI',
+          Peringatan: '',
+        },
+        {
+          ItemCode: 'KR0020',
+          NamaPemeriksaan: 'Kreatin (darah)',
+          KategoriBesar: 'Pemeriksaan Laboratorium',
+          GrupPemeriksaan: 'KIMIA DARAH',
           Peringatan: '',
         },
       ],
@@ -145,7 +152,7 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           terapi: 'Diet lunak dan makan teratur.',
           tindak_lanjut: 'Kontrol satu minggu bila keluhan belum membaik.',
         },
-        Interventions: {
+        Instructions: {
           tindakan: 'Edukasi menghindari makanan pedas, kopi, dan alkohol.',
           kondisi_darurat: 'Segera ke IGD bila muntah darah atau BAB hitam.',
         },
@@ -229,12 +236,19 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           Peringatan: '',
         },
       ],
-      rekomendasi_penunjang: [
+      suggested_labs: [
         {
           ItemCode: 'GL0001',
           NamaPemeriksaan: 'Darah Lengkap',
           KategoriBesar: 'Pemeriksaan Laboratorium',
           GrupPemeriksaan: 'HEMATOLOGI',
+          Peringatan: '',
+        },
+        {
+          ItemCode: 'UR0003',
+          NamaPemeriksaan: 'Ureum',
+          KategoriBesar: 'Pemeriksaan Laboratorium',
+          GrupPemeriksaan: 'KIMIA DARAH',
           Peringatan: '',
         },
       ],
@@ -358,7 +372,7 @@ const MOCK_DATA: SpeechToSOAPResult[] = [
           Peringatan: '',
         },
       ],
-      rekomendasi_penunjang: [
+      suggested_labs: [
         {
           ItemCode: 'GL0064',
           NamaPemeriksaan: 'Glukosa Darah Puasa (Vena)',

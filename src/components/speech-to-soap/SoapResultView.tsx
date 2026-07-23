@@ -1,9 +1,17 @@
 import { useState } from 'preact/hooks'
-import type { SOAPResult, SuggestedDiagnosis, SuggestedProcedure, SuggestedTTV, SuggestedPrescription } from '@/types'
+import type {
+  SOAPResult,
+  SuggestedDiagnosis,
+  SuggestedProcedure,
+  SuggestedTTV,
+  SuggestedPrescription,
+  SuggestedLaboratory,
+} from '@/types'
 import { JSX } from 'preact/jsx-runtime'
 import { SuggestionPanel } from './DiagnoseProcedurePanel'
 import { VitalSignsPanel } from './VitalSignPanel'
 import { PrescriptionPanel } from './prescriptionPanel'
+import { LaboratoryPanel } from './laboratoryPanel'
 import type { SoapFieldKey, BatchSOAPPayload } from '@/hooks/useSpeechToSOAP'
 import { AccordionSection } from '../common/Accordion'
 
@@ -139,10 +147,7 @@ export function SoapResultView({ result, onReset, onSave }: Props) {
     if (selections.PROCEDURE?.length) payload.sugest_procedures = selections.PROCEDURE as SuggestedProcedure[]
     if (selections.VITALSIGN?.length) payload.sugest_VitalSign = selections.VITALSIGN as SuggestedTTV[]
     if (selections.PRESCRIPTION?.length) payload.rekomendasi_resep = selections.PRESCRIPTION as SuggestedPrescription[]
-
-    // TODO: when the prescription / doctor-instruction JSON lands, add e.g.:
-    // if (selections.PRESCRIPTION?.length) payload.sugest_prescription = selections.PRESCRIPTION
-    // if (selections.INSTRUCTION?.length) payload.doctor_instruction = selections.INSTRUCTION
+    if (selections.LABORATORY?.length) payload.suggested_labs = selections.LABORATORY as SuggestedLaboratory[]
 
     onSave(payload)
   }
@@ -232,6 +237,10 @@ export function SoapResultView({ result, onReset, onSave }: Props) {
                   />
                   <PrescriptionPanel
                     prescriptions={result.rekomendasi_resep ?? []}
+                    onSelectionChange={handleSelectionChange}
+                  />
+                  <LaboratoryPanel
+                    laboratories={result.suggested_labs ?? []}
                     onSelectionChange={handleSelectionChange}
                   />
                 </>

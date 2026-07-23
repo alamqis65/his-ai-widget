@@ -1,17 +1,20 @@
 import { useSpeechToSOAP } from '@/hooks/useSpeechToSOAP'
 import { RecorderView } from '@/components/speech-to-soap/RecorderView'
 import { SoapResultView } from '@/components/speech-to-soap/SoapResultView'
-import type { SDKCallbacks } from '@/types'
+import { NativeSoapResultView } from '@/components/speech-to-soap/NativeSoapResultView'
+import type { SDKCallbacks, SoapViewMode } from '@/types'
 
 interface Props {
   callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>
+  /** Which SOAP result view to render. Set via SDK config's `soapViewMode`. Default: 'current'. */
+  viewMode?: SoapViewMode
 }
 
 // Simplified state machine: IDLE → RECORDING → PROCESSING_LLM → DONE
 const STEPS = ['Mulai', 'Rekam', 'Proses', 'Selesai'] as const
 const STATES = ['IDLE', 'RECORDING', 'PROCESSING_LLM', 'DONE'] as const
 
-export function SpeechToSoapFeature({ callbacks }: Props) {
+export function SpeechToSoapFeature({ callbacks, viewMode = 'current' }: Props) {
   const {
     state,
     soapResult,
@@ -93,7 +96,11 @@ export function SpeechToSoapFeature({ callbacks }: Props) {
         {/* DONE: tampilkan hasil + transcript */}
         {state === 'DONE' && soapResult && (
           <div class="feature-result">
-            <SoapResultView result={soapResult} onReset={reset} onSave={saveSOAP} />
+            {viewMode === 'native' ? (
+              <NativeSoapResultView result={soapResult} onReset={reset} onSave={saveSOAP} />
+            ) : (
+              <SoapResultView result={soapResult} onReset={reset} onSave={saveSOAP} />
+            )}
           </div>
         )}
       </div>

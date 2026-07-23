@@ -1,0 +1,138 @@
+{
+    "type": "ALL",
+    "soap": {
+        "Subjective": {
+            "keluhan_utama": "pusing",
+            "riwayat_penyakit_sekarang": "sejak satu minggu",
+            "gejala_lain": "tidak ada nyeri dada atau sesak napas"
+        },
+        "Objective": {
+            "pemeriksaan_fisik": "Tekanan darah 165/100 mmHg, nadi 82 x/menit, suhu normal.",
+            "hasil_lab": ""
+        },
+        "Assessment": {
+            "kesan_klinis": "Hipertensi tidak terkontrol."
+        },
+        "Plan": {
+            "obat": "Amlodipine 5 mg sekali sehari.",
+            "terapi": "Modifikasi gaya hidup dan diet rendah garam.",
+            "tindak_lanjut": "Kontrol dua minggu."
+        },
+        "Interventions": {
+            "tindakan": "Edukasi pentingnya kepatuhan minum obat dan olahraga rutin.",
+            "kondisi_darurat": "Segera ke IGD bila muncul nyeri dada, sesak napas, atau kelemahan anggota gerak."
+        }
+    },
+    "anamesa": "Pasien laki-laki 56 tahun datang untuk kontrol tekanan darah tinggi dengan keluhan pusing ringan.",
+    "rencana_plan": "obat: Amlodipine 5 mg sekali sehari.\nterapi: Modifikasi gaya hidup dan diet rendah garam.\ntindak lanjut: Kontrol dua minggu.",
+    "sugest_diagnosis": [
+        {
+            "ICD10": "I10",
+            "LabelICD10": "Essential (primary) hypertension",
+            "IsPrimary": 1
+        },
+        {
+            "ICD10": "K29.9",
+            "LabelICD10": "tes10",
+            "IsPrimary": 1
+        },
+        {
+            "ICD10": "K29.10",
+            "LabelICD10": "tes11",
+            "IsPrimary": 1
+        }
+    ],
+    "sugest_VitalSign": [
+        {
+            "VitalSignID": 1,
+            "VitalSignName": "Blood Pressure",
+            "Value": "120/80",
+            "ValueUnit": "mmHg",
+            "VitalSignType": "BloodPressure",
+            "VitalSignLabel": "Tekanan Darah"
+        },
+        {
+            "VitalSignID": 2,
+            "VitalSignName": "Heart Rate",
+            "Value": "78",
+            "ValueUnit": "bpm",
+            "VitalSignType": "HeartRate",
+            "VitalSignLabel": "Nadi"
+        },
+        {
+            "VitalSignID": 3,
+            "VitalSignName": "Respiratory Rate",
+            "Value": "18",
+            "ValueUnit": "breaths/min",
+            "VitalSignType": "RespiratoryRate",
+            "VitalSignLabel": "Frekuensi Napas"
+        },
+        {
+            "VitalSignID": 4,
+            "VitalSignName": "Body Temperature",
+            "Value": "36.8",
+            "ValueUnit": "°C",
+            "VitalSignType": "Temperature",
+            "VitalSignLabel": "Suhu Tubuh"
+        },
+        {
+            "VitalSignID": 5,
+            "VitalSignName": "Oxygen Saturation",
+            "Value": "98",
+            "ValueUnit": "%",
+            "VitalSignType": "SpO2",
+            "VitalSignLabel": "Saturasi Oksigen"
+        },
+        {
+            "VitalSignID": 6,
+            "VitalSignName": "Body Weight",
+            "Value": "70",
+            "ValueUnit": "kg",
+            "VitalSignType": "Weight",
+            "VitalSignLabel": "Berat Badan"
+        },
+        {
+            "VitalSignID": 7,
+            "VitalSignName": "Body Height",
+            "Value": "165",
+            "ValueUnit": "cm",
+            "VitalSignType": "Height",
+            "VitalSignLabel": "Tinggi Badan"
+        }
+    ],
+    "rekomendasi_resep": [
+        {
+            "ItemID": "7801",
+            "ItemName": "AMLODIPINE 5 MG TAB",
+            "MedicationRoute": "Oral",
+            "Peringatan": "",
+            "DisplayID": "7801"
+        }
+    ],
+    "rekomendasi_penunjang": [
+        {
+            "ItemCode": "GL0064",
+            "NamaPemeriksaan": "Glukosa Darah Puasa (Vena)",
+            "KategoriBesar": "Pemeriksaan Laboratorium",
+            "GrupPemeriksaan": "KIMIA DARAH",
+            "Peringatan": "",
+            "DisplayCode": "GL0064"
+        },
+        {
+            "ItemCode": "CH1094",
+            "NamaPemeriksaan": "Cholesterol Beta (LDL) Direk",
+            "KategoriBesar": "Pemeriksaan Laboratorium",
+            "GrupPemeriksaan": "KIMIA DARAH",
+            "Peringatan": "",
+            "DisplayCode": "CH1094"
+        },
+        {
+            "ItemCode": "TR1034",
+            "NamaPemeriksaan": "Trigliserida",
+            "KategoriBesar": "Pemeriksaan Laboratorium",
+            "GrupPemeriksaan": "KIMIA DARAH",
+            "Peringatan": "",
+            "DisplayCode": "TR1034"
+        }
+    ]
+}

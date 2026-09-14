@@ -51,7 +51,6 @@
   justify-content: center;
   font-size: 10px;
   font-weight: 600;
-  color: var(--text-3);
   z-index: 1;
   transition: all 150ms ease;
 }
@@ -60,11 +59,10 @@
   background: var(--brand);
   border-color: var(--brand);
   color: white;
-  box-shadow: 0 0 0 3px rgb(26 158 118 / 0.2);
+  box-shadow: 0 0 0 3px var(--brand-shadow-md);
 }
 
 .sts-step--done .sts-step-dot {
-  background: var(--brand-light);
   border-color: var(--brand);
   color: var(--brand-dark);
 }
@@ -108,10 +106,10 @@
 }
 
 .recorder-ring--active {
-  border-color: rgba(15, 110, 86, 0.3);
+  border-color: var(--brand-light-border);
   box-shadow:
-    0 0 0 8px rgba(15, 110, 86, 0.07),
-    0 0 0 16px rgba(15, 110, 86, 0.04);
+    0 0 0 8px var(--brand-glow-weak),
+    0 0 0 16px var(--brand-glow-faint);
   animation: ring-pulse 1.5s ease-in-out infinite;
 }
 
@@ -119,13 +117,13 @@
   0%,
   100% {
     box-shadow:
-      0 0 0 8px rgba(15, 110, 86, 0.07),
-      0 0 0 16px rgba(15, 110, 86, 0.04);
+      0 0 0 8px var(--brand-glow-weak),
+      0 0 0 16px var(--brand-glow-faint);
   }
   50% {
     box-shadow:
-      0 0 0 12px rgba(15, 110, 86, 0.1),
-      0 0 0 22px rgba(15, 110, 86, 0.06);
+      0 0 0 12px var(--brand-glow-strong),
+      0 0 0 22px var(--brand-glow-weak);
   }
 }
 
@@ -150,11 +148,11 @@
   transform: scale(1.04);
 }
 .recorder-btn--stop {
-  background: #0f6e56;
+  background: var(--brand-dark);
   color: white;
 }
 .recorder-btn--stop:hover {
-  background: #085041;
+  background: var(--brand-darker);
 }
 .recorder-btn:disabled {
   background: var(--bg-3);
@@ -168,7 +166,7 @@
   font-size: 26px;
   font-weight: 600;
   font-family: var(--mono);
-  color: #0f6e56;
+  color: var(--brand-darker);
   letter-spacing: 0.05em;
 }
 .recorder-status-text {
@@ -177,7 +175,7 @@
   color: var(--text-2);
 }
 .recorder-status-text--rec {
-  color: #0f6e56;
+  color: var(--brand-darker);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -185,7 +183,7 @@
 .rec-dot {
   width: 7px;
   height: 7px;
-  background: #0f6e56;
+  background: var(--brand-darker);
   border-radius: 50%;
   animation: rec-blink 1s ease-in-out infinite;
 }
@@ -243,28 +241,28 @@
   transform: scale(1.05);
 }
 .recorder-btn-side--cancel {
-  color: #dc2626;
-  border-color: #fecaca;
+  color: var(--color-danger);
+  border-color: var(--color-danger-border);
 }
 .recorder-btn-side--cancel:hover {
-  background: #fef2f2;
-  border-color: #fca5a5;
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger);
 }
 .recorder-btn-side--pause {
-  color: #0f6e56;
-  border-color: #bfe3d8;
+  color: var(--brand-darker);
+  border-color: var(--brand-light-border);
 }
 .recorder-btn-side--pause:hover {
-  background: #f0faf7;
-  border-color: #8fd3bd;
+  background: var(--brand-light);
+  border-color: var(--brand);
 }
 .recorder-ring--paused {
-  border-color: rgba(217, 119, 6, 0.35);
+  border-color: var(--color-warning-border);
   box-shadow: none;
   animation: none;
 }
 .recorder-status-text--paused {
-  color: #b45309;
+  color: var(--color-warning-strong);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -272,7 +270,7 @@
 .pause-dot {
   width: 7px;
   height: 7px;
-  background: #d97706;
+  background: var(--color-warning);
   border-radius: 50%;
 }
 .recorder-processing {
@@ -285,7 +283,7 @@
   width: 100%;
   height: 80px;
   display: block;
-  background: rgba(29, 158, 117, 0.06);
+  background: var(--brand-tint-weak);
   border-radius: 8px;
 }
 
@@ -322,7 +320,7 @@
 }
 .transcript-textarea:focus {
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgb(26 158 118/0.12);
+  box-shadow: 0 0 0 3px var(--brand-shadow-sm);
   background: var(--bg);
 }
 .transcript-actions {
@@ -350,7 +348,7 @@
 .soap-plan strong {
   display: block;
   margin-bottom: 4px;
-  color: #444;
+  color: var(--text-2);
 }
 
 /* Object content is rendered as stacked "title then paragraph" fields
@@ -389,7 +387,7 @@
 }
 
 .soap-card {
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 8px 10px;
@@ -422,24 +420,24 @@
   border-left: 3px solid;
 }
 .soap-section--blue {
-  background: #eff6ff;
-  border-left-color: #3b82f6;
+  background: var(--color-info-bg);
+  border-left-color: var(--color-info);
 }
 .soap-section--green {
-  background: #f0fdf4;
-  border-left-color: #22c55e;
+  background: var(--color-success-bg);
+  border-left-color: var(--color-success);
 }
 .soap-section--orange {
-  background: #fff7ed;
-  border-left-color: #f97316;
+  background: var(--color-orange-bg);
+  border-left-color: var(--color-orange);
 }
 .soap-section--purple {
-  background: #faf5ff;
-  border-left-color: #a855f7;
+  background: var(--color-purple-bg);
+  border-left-color: var(--color-purple);
 }
 .soap-section--teal {
-  background: #f0fdfa;
-  border-left-color: #14b8a6;
+  background: var(--color-teal-bg);
+  border-left-color: var(--color-teal);
 }
 
 .soap-section-head {
@@ -460,24 +458,24 @@
   font-family: var(--mono);
 }
 .soap-section--blue .soap-section-icon {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: var(--color-info-soft);
+  color: var(--color-info-strong);
 }
 .soap-section--green .soap-section-icon {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--color-success-soft);
+  color: var(--color-success-strong);
 }
 .soap-section--orange .soap-section-icon {
-  background: #ffedd5;
-  color: #c2410c;
+  background: var(--color-orange-soft);
+  color: var(--color-orange-strong);
 }
 .soap-section--purple .soap-section-icon {
-  background: #f3e8ff;
-  color: #7e22ce;
+  background: var(--color-purple-soft);
+  color: var(--color-purple-strong);
 }
 .soap-section--teal .soap-section-icon {
-  background: #ccfbf1;
-  color: #0f766e;
+  background: var(--color-teal-soft);
+  color: var(--color-teal-strong);
 }
 
 .soap-section-label {
@@ -505,20 +503,39 @@
   transform: none;
 }
 
-/* Cancel-recording confirmation dialog */
+/* Cancel-recording confirmation dialog + "Tulis Teks" dialog.
+   NOTE: overlay used to use `border-radius: inherit`, but `.recorder-view`
+   (its parent) has no radius of its own and no visible background — so the
+   overlay rendered as a flat, hard-edged gray slab with no visual connection
+   to the rest of the UI. Fixed by giving it its own radius that matches the
+   surrounding card, a lighter/blurred backdrop instead of a near-opaque
+   fill, and a soft fade/scale-in so it feels like part of the panel opening
+   rather than something snapping on top of it. */
 .confirm-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: var(--overlay);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   z-index: 20;
-  border-radius: inherit;
+  border-radius: var(--radius-lg);
+  animation: confirm-overlay-in 160ms ease-out;
+}
+@keyframes confirm-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .confirm-dialog {
   background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: 18px;
@@ -527,6 +544,17 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  animation: confirm-dialog-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes confirm-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 .confirm-dialog-title {
   font-size: 14px;
@@ -544,4 +572,37 @@
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+}
+
+/* Input alternatif: upload audio / tulis teks (tampil di layar "Mulai") */
+.recorder-alt-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.recorder-alt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.confirm-dialog--wide {
+  max-width: 340px;
+}
+.recorder-textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 100px;
+  border-radius: var(--radius-md, 8px);
+  border: 1.5px solid var(--border-2);
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text-1);
+  background: var(--bg);
+}
+.recorder-textarea:focus {
+  outline: none;
+  border-color: var(--brand);
 }

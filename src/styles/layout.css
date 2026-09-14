@@ -33,8 +33,13 @@
 .widget-avatar {
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--brand-light), var(--brand));
+  box-shadow:
+    0 4px 12px var(--brand-glow-strong),
+    inset 0 1px 2px var(--border-2);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,7 +66,7 @@
 .widget-status-dot {
   width: 6px;
   height: 6px;
-  background: #22c55e;
+  background: var(--color-success);
   border-radius: 50%;
   animation: pulse-dot 2s ease-in-out infinite;
 }
@@ -222,7 +227,7 @@
 
 .form-input:focus {
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgb(26 158 118 / 0.12);
+  box-shadow: 0 0 0 3px var(--brand-shadow-sm);
   background: var(--bg);
 }
 
@@ -238,7 +243,7 @@
 
 .suggestion-chip {
   background: var(--brand-light);
-  border: 1px solid #b2e8d8;
+  border: 1px solid var(--brand-light-border);
   color: var(--brand-dark);
   padding: 4px 10px;
   border-radius: var(--radius-full);
@@ -248,7 +253,7 @@
 }
 
 .suggestion-chip:hover {
-  background: #cff0e8;
+  background: var(--brand-light-hover);
   border-color: var(--brand);
 }
 
@@ -280,7 +285,7 @@
   background: var(--brand-dark);
   border-color: var(--brand-dark);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgb(26 158 118 / 0.3);
+  box-shadow: 0 4px 12px var(--brand-shadow-lg);
 }
 
 .btn-danger-custom {
@@ -292,7 +297,7 @@
   background: var(--brand-dark);
   border-color: var(--brand-dark);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(250, 96, 68, 0.3);
+  box-shadow: 0 4px 12px var(--color-danger-shadow);
 }
 
 .btn-secondary {
@@ -338,8 +343,8 @@
 }
 
 .result-badge--green {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--color-success-soft);
+  color: var(--color-success-strong);
 }
 
 .result-meta {
@@ -398,5 +403,5 @@
   padding: 24px;
   text-align: center;
   font-size: 13px;
-  color: #dc2626;
+  color: var(--color-danger);
 }

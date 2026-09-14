@@ -10,18 +10,23 @@
   gap: 8px;
 }
 
+/* untuk expection Medinfrash theme*/
+.ignore-his-theme {
+  filter: var(--theme-reinvert);
+}
+
 .sdk-fab-tooltip-wrapper {
   position: absolute;
-  bottom: 120%; /* muncul di atas tombol */
+  bottom: 120%;
   left: 50%;
-  transform: translateX(-50%) !important;
+  transform: translateX(-50%);
 }
 
 .sdk-fab-tooltip {
   animation: fab-label-bob 2.5s ease-in-out infinite;
   font-family: "DM Sans", system-ui, sans-serif;
-  background: var(--text-1);
-  color: white;
+  background: var(--text-1); /* pakai warna teks utama sebagai background */
+  color: var(--bg); /* pakai warna background utama untuk teks */
   padding: 4px 8px;
   border-radius: var(--radius-full);
   font-size: 12px;
@@ -32,28 +37,19 @@
   transition: opacity 0.2s;
 }
 
+/* Tooltip muncul saat hover */
 .sdk-fab-btn:hover .sdk-fab-tooltip {
   opacity: 1;
 }
 
-.sdk-fab-label {
-  padding: 5px 12px;
-
-  font-size: 12px;
-
-  box-shadow: var(--shadow-md);
-
-  pointer-events: none;
-  white-space: nowrap;
-}
-
+/* Animasi bobbing */
 @keyframes fab-label-bob {
   0%,
   100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
   }
 }
 
@@ -62,14 +58,14 @@
   height: 56px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  background: linear-gradient(135deg, var(--brand-light), var(--brand-dark));
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
-    0 6px 20px rgb(26 158 118/0.45),
-    0 2px 8px rgb(0 0 0/0.12);
+    0 6px 20px var(--brand-shadow-xl),
+    0 2px 8px rgb(0 0 0 / 0.12);
   transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   cursor: pointer;
@@ -88,7 +84,7 @@
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 1.5px solid rgba(26, 158, 118, 0.3);
+  border: 1.5px solid var(--brand-shadow-lg);
   animation: fab-ring 2s ease-in-out infinite;
 }
 
@@ -106,10 +102,10 @@
 
 .sdk-fab-btn:hover {
   transform: scale(1.06);
-  box-shadow: 0 8px 28px rgb(26 158 118/0.55);
+  box-shadow: 0 8px 28px var(--brand-shadow-xl-hover);
 }
 .sdk-fab-btn--open {
-  background: linear-gradient(135deg, #475569, #1e293b);
+  background: linear-gradient(135deg, var(--neutral-strong-2), var(--brand-dark));
 }
 
 .sdk-fab-icon-open,
@@ -158,4 +154,3 @@
   min-height: 100vh;
   padding: 32px 16px;
 }
-

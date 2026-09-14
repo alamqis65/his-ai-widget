@@ -22,6 +22,14 @@ import { SOAPProgressListener, generateSOAPRequestId } from './SOAPProgressListe
  *     }
  *   }
  */
+
+function getExtension(mimeType: string) {
+  if (mimeType.includes('mp4')) return 'm4a'
+  if (mimeType.includes('ogg')) return 'ogg'
+  if (mimeType.includes('wav')) return 'wav'
+  if (mimeType.includes('mp3')) return 'mp3'
+  return 'webm'
+}
 export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
   constructor(private readonly apiConfig: SDKApiConfig) {}
 
@@ -32,12 +40,22 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
   async process(
     audioBlob: Blob,
     onProgress?: (event: SOAPProgressEvent) => void,
+    userPrompt?: string,
   ): Promise<ServiceResponse<SpeechToSOAPResult>> {
     const endpoint = this.apiConfig.soapGeneratorEndpoint
-    const pretext = this.apiConfig.pretext
     const vitalSignList = this.apiConfig.vitalSignList
     const soapiTemplate = this.apiConfig.soapiTemplate
-    const TipeKunjungan = this.getFullConfig().departmentId
+    const fullConfig = this.getFullConfig()
+    const TipeKunjungan = fullConfig.departmentId
+
+    // "Tulis Teks" / User Prompt (aktif kalau isAbleUserPromptSoap: true di init):
+    // ditambahkan ke AKHIR pretext, tidak pernah menimpa pretext yang sudah
+    // diisi lewat init({ api: { pretext } }).
+    const basePretext = this.apiConfig.pretext
+    const pretext =
+      fullConfig.isAbleUserPromptSoap && userPrompt?.trim()
+        ? [basePretext, `userPromt: \`${userPrompt.trim()}\``].filter(Boolean).join('\n')
+        : basePretext
     if (!endpoint) {
       return {
         data: {} as SpeechToSOAPResult,
@@ -49,13 +67,17 @@ export class ProductionSpeechToSOAPService implements SpeechToSOAPService {
     const requestId = generateSOAPRequestId()
     const progressListener = new SOAPProgressListener()
     if (this.apiConfig.soapProgressEndpoint) {
-      const progressUrl = `${this.apiConfig.soapProgressEndpoint}?request_id=${encodeURIComponent(requestId)}`
+      const separator = this.apiConfig.soapProgressEndpoint.includes('?') ? '&' : '?'
+      const progressUrl = `${this.apiConfig.soapProgressEndpoint}${separator}request_id=${encodeURIComponent(requestId)}`
       progressListener.start(progressUrl, event => onProgress?.(event))
     }
 
+    const extension = getExtension(audioBlob.type)
+
     try {
       const form = new FormData()
-      form.append('audio_file', audioBlob, 'recording.webm')
+      //form.append('audio', audioBlob, `recording-${Date.now()}.${extension}`)
+      form.append('audio_file', audioBlob, `recording.${extension}`)
       form.append('raw_text', pretext || '')
       form.append('vital_sign_list', vitalSignList || '')
       form.append('soapi_template', soapiTemplate || '')

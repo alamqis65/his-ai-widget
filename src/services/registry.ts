@@ -15,16 +15,19 @@ import type { SDKApiConfig } from '@/types'
 
 import type { AIService } from './ai/AIService'
 import type { SpeechToSOAPService } from './speech-to-soap/SpeechToSOAPService'
+import type { SpeechToSOAPLiveService } from './speech-to-soap-live/SpeechToSOAPLiveService'
 import type { ClinicalPathwayService } from './clinical-pathway/ClinicalPathwayService'
 import type { EClaimService } from './eclaim/EClaimService'
 
 import { MockAIService } from './ai/MockAIService'
 import { MockSpeechToSOAPService } from './speech-to-soap/MockSpeechToSOAPService'
+import { MockSpeechToSOAPLiveService } from './speech-to-soap-live/MockSpeechToSOAPLiveService'
 import { MockClinicalPathwayService } from './clinical-pathway/MockClinicalPathwayService'
 import { MockEClaimService } from './eclaim/MockEClaimService'
 
 import { ProductionAIService } from './ai/ProductionAIService'
 import { ProductionSpeechToSOAPService } from './speech-to-soap/ProductionSpeechToSOAPService'
+import { ProductionSpeechToSOAPLiveService } from './speech-to-soap-live/ProductionSpeechToSOAPLiveService'
 import { ProductionClinicalPathwayService } from './clinical-pathway/ProductionClinicalPathwayService'
 import { ProductionEClaimService } from './eclaim/ProductionEClaimService'
 
@@ -48,6 +51,19 @@ export function getAIService(): AIService {
 export function getSpeechToSOAPService(): SpeechToSOAPService {
   const cfg = getApiConfig()
   return cfg.soapGeneratorEndpoint ? new ProductionSpeechToSOAPService(cfg) : new MockSpeechToSOAPService()
+}
+
+/**
+ * SpeechToSOAPLive service — fitur "Speech to SOAP Live" (SOAP yang update
+ * live selagi masih merekam, lewat SSE + chunked upload). Fungsi baru,
+ * terpisah dari getSpeechToSOAPService() di atas — fitur lama tidak disentuh.
+ *
+ * Production: butuh soapLiveEventsEndpoint di init({ api: {...} })
+ * Mock: aktif kalau endpoint itu tidak dikonfigurasi
+ */
+export function getSpeechToSOAPLiveService(): SpeechToSOAPLiveService {
+  const cfg = getApiConfig()
+  return cfg.soapLiveEventsEndpoint ? new ProductionSpeechToSOAPLiveService(cfg) : new MockSpeechToSOAPLiveService()
 }
 
 export function getClinicalPathwayService(): ClinicalPathwayService {

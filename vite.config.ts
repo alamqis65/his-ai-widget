@@ -12,7 +12,12 @@ export default defineConfig(({ mode }) => {
       alias: { '@': resolve(__dirname, './src') },
     },
 
-    server: { port: 3000, open: true },
+    server: {
+      host: '0.0.0.0',
+      port: 3000,
+      open: true,
+      allowedHosts: ['.trycloudflare.com'],
+    },
 
     build: isLib
       ? {

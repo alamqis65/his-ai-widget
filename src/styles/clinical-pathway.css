@@ -42,10 +42,10 @@
 }
 
 .pathway-group-label--blue {
-  color: #1d4ed8;
+  color: var(--color-info-strong);
 }
 .pathway-group-label--purple {
-  color: #7e22ce;
+  color: var(--color-purple-strong);
 }
 
 .pathway-item {
@@ -77,13 +77,13 @@
 
 .pathway-diagnoses-loading {
   padding: 8px;
-  color: #64748b;
+  color: var(--text-2);
   font-size: 13px;
 }
 
 .pathway-diagnoses-error {
   padding: 8px;
-  color: #ef4444;
+  color: var(--color-danger);
   font-size: 13px;
 }
 
@@ -109,7 +109,7 @@
 .context-settings-title {
   margin: 0 0 10px 0;
   font-size: 14px;
-  color: #334155;
+  color: var(--text-1);
 }
 
 .context-settings-grid {
@@ -121,7 +121,7 @@
 .context-settings-label {
   display: block;
   margin-bottom: 4px;
-  color: #64748b;
+  color: var(--text-2);
 }
 
 .context-settings-input {

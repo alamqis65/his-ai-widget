@@ -1,6 +1,6 @@
-import { useState } from 'preact/hooks'
+import { useRef, useState } from 'preact/hooks'
 import type { RecorderState } from '@/types'
-import { RecorderVisualizer } from './WaveRecordView'
+import { RecorderVisualizer } from '../common/WaveRecordView'
 
 interface Props {
   state: RecorderState
@@ -10,6 +10,10 @@ interface Props {
   onPause: () => void
   onResume: () => void
   onCancel: () => void
+  canUploadAudio?: boolean
+  canUseUserPrompt?: boolean
+  onUploadAudio?: (file: File) => void
+  onSubmitTextPrompt?: (text: string) => void
 }
 
 function fmt(s: number) {
@@ -18,15 +22,52 @@ function fmt(s: number) {
     .padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`
 }
 
-export function RecorderView({ state, duration, onStart, onStop, onPause, onResume, onCancel }: Props) {
+export function RecorderView({
+  state,
+  duration,
+  onStart,
+  onStop,
+  onPause,
+  onResume,
+  onCancel,
+  canUploadAudio,
+  canUseUserPrompt,
+  onUploadAudio,
+  onSubmitTextPrompt,
+}: Props) {
   const isRecording = state === 'RECORDING'
   const isPaused = state === 'PAUSED'
   const isActive = isRecording || isPaused
   const isProcessing = state === 'PROCESSING_STT'
+  const isIdle = state === 'IDLE'
 
   // Konfirmasi pembatalan rekaman: audio dijeda selama dialog terbuka dan
   // menunggu keputusan user (batalkan atau lanjutkan merekam).
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
+
+  // Input alternatif: upload file audio.
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const handleFileChange = (e: Event) => {
+    const target = e.target as HTMLInputElement
+    const file = target.files?.[0]
+    if (file) onUploadAudio?.(file)
+    target.value = '' // reset supaya file yang sama bisa dipilih lagi
+  }
+
+  // Input alternatif: tulis teks/catatan sebagai pengganti audio.
+  const [showTextPrompt, setShowTextPrompt] = useState(false)
+  const [textPromptValue, setTextPromptValue] = useState('')
+  const handleSubmitTextPrompt = () => {
+    const trimmed = textPromptValue.trim()
+    if (!trimmed) return
+    onSubmitTextPrompt?.(trimmed)
+    setShowTextPrompt(false)
+    setTextPromptValue('')
+  }
+  const handleCloseTextPrompt = () => {
+    setShowTextPrompt(false)
+    setTextPromptValue('')
+  }
 
   const handleCancelClick = () => {
     if (isRecording) onPause()
@@ -129,6 +170,43 @@ export function RecorderView({ state, duration, onStart, onStop, onPause, onResu
         </div>
       )}
 
+      {/* Input alternatif: upload audio / tulis teks — hanya tampil saat IDLE,
+          dan hanya kalau diaktifkan lewat init (canUploadAudioSoap / isAbleUserPromptSoap) */}
+      {isIdle && (canUploadAudio || canUseUserPrompt) && (
+        <div class="recorder-alt-row">
+          {canUploadAudio && (
+            <>
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm recorder-alt-btn"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Upload Suara
+              </button>
+              <input ref={fileInputRef} type="file" accept="audio/*" style="display:none" onChange={handleFileChange} />
+            </>
+          )}
+          {canUseUserPrompt && (
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm recorder-alt-btn"
+              onClick={() => setShowTextPrompt(true)}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 20h4l10.5-10.5a2.1 2.1 0 00-3-3L5 17v3z" />
+                <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+              </svg>
+              Tulis Teks
+            </button>
+          )}
+        </div>
+      )}
+
       <div style="display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center">
         {isProcessing ? (
           <div class="recorder-processing">
@@ -157,6 +235,35 @@ export function RecorderView({ state, duration, onStart, onStop, onPause, onResu
           </>
         )}
       </div>
+
+      {showTextPrompt && (
+        <div class="confirm-overlay" role="dialog" aria-modal="true">
+          <div class="confirm-dialog confirm-dialog--wide">
+            <p class="confirm-dialog-title">Tulis Teks</p>
+            <p class="confirm-dialog-body">Masukkan catatan atau percakapan pasien sebagai pengganti rekaman suara.</p>
+            <textarea
+              class="recorder-textarea"
+              rows={6}
+              value={textPromptValue}
+              onInput={e => setTextPromptValue((e.target as HTMLTextAreaElement).value)}
+              placeholder="Contoh: Pasien mengeluh batuk berdahak sejak 3 hari, disertai demam ringan..."
+            />
+            <div class="confirm-dialog-actions">
+              <button type="button" class="btn btn-sm btn-secondary" onClick={handleCloseTextPrompt}>
+                Batal
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-primary-custom"
+                onClick={handleSubmitTextPrompt}
+                disabled={!textPromptValue.trim()}
+              >
+                Proses
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showCancelConfirm && (
         <div class="confirm-overlay" role="dialog" aria-modal="true">

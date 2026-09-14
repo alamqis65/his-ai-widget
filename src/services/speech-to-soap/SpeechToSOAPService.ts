@@ -17,8 +17,14 @@ export interface SpeechToSOAPResult {
  *   }
  */
 export interface SpeechToSOAPService {
+  /**
+   * @param userPrompt Teks tambahan dari dokter (fitur "Tulis Teks" / User Prompt,
+   * aktif kalau `isAbleUserPromptSoap: true` di init). Ditambahkan ke akhir
+   * `api.pretext` (tidak menimpa) — lihat ProductionSpeechToSOAPService.
+   */
   process(
     audioBlob: Blob,
     onProgress?: (event: SOAPProgressEvent) => void,
+    userPrompt?: string,
   ): Promise<ServiceResponse<SpeechToSOAPResult>>
 }

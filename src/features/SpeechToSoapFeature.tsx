@@ -8,13 +8,17 @@ interface Props {
   callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>
   /** Which SOAP result view to render. Set via SDK config's `soapViewMode`. Default: 'current'. */
   viewMode?: SoapViewMode
+  /** Aktifkan tombol "Upload Suara". Set via SDK config's `canUploadAudioSoap`. Default: false. */
+  canUploadAudio?: boolean
+  /** Aktifkan tombol "Tulis Teks" (User Prompt). Set via SDK config's `isAbleUserPromptSoap`. Default: false. */
+  canUseUserPrompt?: boolean
 }
 
 // Simplified state machine: IDLE → RECORDING → PROCESSING_LLM → DONE
 const STEPS = ['Mulai', 'Rekam', 'Proses', 'Selesai'] as const
 const STATES = ['IDLE', 'RECORDING', 'PROCESSING_LLM', 'DONE'] as const
 
-export function SpeechToSoapFeature({ callbacks, viewMode = 'current' }: Props) {
+export function SpeechToSoapFeature({ callbacks, viewMode = 'current', canUploadAudio, canUseUserPrompt }: Props) {
   const {
     state,
     soapResult,
@@ -26,6 +30,8 @@ export function SpeechToSoapFeature({ callbacks, viewMode = 'current' }: Props) 
     pauseRecording,
     resumeRecording,
     cancelRecording,
+    uploadAudio,
+    submitTextPrompt,
     saveSOAP,
     reset,
   } = useSpeechToSOAP(callbacks)
@@ -81,6 +87,10 @@ export function SpeechToSoapFeature({ callbacks, viewMode = 'current' }: Props) 
             onPause={pauseRecording}
             onResume={resumeRecording}
             onCancel={cancelRecording}
+            canUploadAudio={canUploadAudio}
+            canUseUserPrompt={canUseUserPrompt}
+            onUploadAudio={file => uploadAudio(file)}
+            onSubmitTextPrompt={text => submitTextPrompt(text)}
           />
         )}
 

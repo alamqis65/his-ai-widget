@@ -88,9 +88,66 @@ export interface SOAPResult {
   anamesa: any
   generatedAt: Date
   transcriptUsed: string
+  audio?: Blob
   sugest_diagnosis?: SuggestedDiagnosis[]
   sugest_procedures?: SuggestedProcedure[]
   sugest_VitalSign?: SuggestedTTV[]
   rekomendasi_resep?: SuggestedPrescription[]
   suggested_labs?: SuggestedLaboratory[]
 }
+
+// ─── Speech to SOAP Live Types ─────────────────────────────────────────────────
+// Tipe-tipe untuk fitur baru "Speech to SOAP Live" (SOAP yang update live
+// selagi masih merekam, lewat SSE terstruktur {type, id, value}). Ditambahkan
+// secara aditif di bawah sini — tidak mengubah tipe Speech to SOAP (non-live)
+// di atas, keduanya jalan berdampingan.
+
+/** 4 bagian SOAP klasik. `id` pada event section ini adalah key sub-field-nya
+ * (mis. "keluhan_utama"), bukan ID sebuah item seperti pada list type. */
+export type SoapLiveSectionType = 'S' | 'O' | 'A' | 'P'
+
+/** Tipe event yang isinya list item yang di-upsert berdasarkan `id` (bukan overwrite satu field). */
+export type SoapLiveListType = 'VITALSIGN' | 'DIAGNOSE' | 'PROCEDURE' | 'PRESCRIPTION' | 'LABORATORY'
+
+export type SoapLiveEventType = SoapLiveSectionType | SoapLiveListType | 'TRANSCRIPT' | 'STATUS' | 'ANAMESA'
+
+export type SoapLiveStatus = 'LISTENING' | 'DONE' | 'ERROR'
+
+/**
+ * Satu event mentah yang dikirim backend lewat SSE (soapLiveEventsEndpoint),
+ * format: `data: {"type": ..., "id": ..., "value": ...}`.
+ */
+export interface SoapLiveEvent {
+  type: SoapLiveEventType
+  /** Tidak dipakai untuk TRANSCRIPT dan STATUS. */
+  id?: string
+  value: any
+}
+
+/**
+ * State SOAP yang terus di-update live dari event SSE (dan dari hasil
+ * "Generate Recommendation", lewat fungsi upsert yang sama). Semua field di
+ * sini datang dari cache di backend (dikunci per session_id) — frontend
+ * tidak pernah menyusun ulang transkrip/SOAP sendiri, hanya menampilkan versi
+ * terbaru yang dikirim.
+ */
+export interface SoapLiveDraft {
+  S: Record<string, any>
+  O: Record<string, any>
+  A: Record<string, any>
+  P: Record<string, any>
+  VITALSIGN: SuggestedTTV[]
+  DIAGNOSE: SuggestedDiagnosis[]
+  PROCEDURE: SuggestedProcedure[]
+  PRESCRIPTION: SuggestedPrescription[]
+  LABORATORY: SuggestedLaboratory[]
+  transcript: string
+  anamesa: string
+  status: SoapLiveStatus
+}
+
+/** State machine untuk useSpeechToSOAPLive: IDLE -> LIVE -> REVIEW. */
+export type LiveRecorderState = 'IDLE' | 'LIVE' | 'REVIEW'
+
+/** Jenis rekomendasi yang bisa diminta lewat tombol "Generate Recommendation" di tiap panel. */
+export type SoapRecommendationType = 'VITALSIGN' | 'DIAGNOSE' | 'PRESCRIPTION' | 'LABORATORY'

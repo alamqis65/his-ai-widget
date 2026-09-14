@@ -93,6 +93,48 @@ export interface SDKApiConfig {
    * @example { 'Authorization': 'Bearer xxx', 'X-Hospital-Id': 'RS-001' }
    */
   headers?: Record<string, string>
+
+  // ── Speech to SOAP Live ─────────────────────────────────────────────────
+  // Endpoint untuk fitur "Speech to SOAP Live" — terpisah dari
+  // soapGeneratorEndpoint di atas. Kalau salah satu/ketiganya tidak diisi,
+  // widget pakai MockSpeechToSOAPLiveService (mode dev/demo). Lihat
+  // services/speech-to-soap/SpeechToSOAPLiveService.ts untuk detail kontrak.
+
+  /**
+   * Endpoint POST untuk tiap potongan (chunk) audio selagi masih merekam.
+   * Request: multipart/form-data { audio_file: Blob }, dengan
+   * `X-Session-Id` dan `X-Chunk-Index` dikirim sebagai header (bukan field).
+   * @example 'https://api.rs-nusantara.com/ai/speech-to-soap-live/chunk'
+   */
+  soapLiveChunkEndpoint?: string
+
+  /**
+   * Endpoint SSE untuk menerima update SOAP live selagi merekam. Widget buka
+   * `EventSource` ke `${soapLiveEventsEndpoint}?session_id=xxx` dan menerima
+   * event berformat `{type, id, value}` — lihat SoapLiveEvent di
+   * types/speech-to-soap.ts.
+   * @example 'https://api.rs-nusantara.com/ai/speech-to-soap-live/events'
+   */
+  soapLiveEventsEndpoint?: string
+
+  /**
+   * Endpoint POST tunggal untuk semua jenis "Generate Recommendation"
+   * (tanda vital, diagnosa, resep, lab), dibedakan lewat field
+   * `recommendation_type` di body request.
+   * Request : POST { session_id, recommendation_type }
+   * Response: array item sesuai recommendation_type-nya.
+   * @example 'https://api.rs-nusantara.com/ai/speech-to-soap-live/recommendation'
+   */
+  soapRecommendationEndpoint?: string
+
+  /**
+   * Endpoint POST untuk trigger finalisasi SOAPI setelah rekaman berhenti.
+   * Request : POST { session_id }
+   * Dipanggil sebelum menunggu STATUS=DONE dari SSE — supaya ekstraksi final
+   * tidak bergantung hanya pada flag is_final di chunk terakhir.
+   * @example 'https://api.rs-nusantara.com/ai/speech-to-soap-live/finalize'
+   */
+  soapLiveFinalizeEndpoint?: string
 }
 
 // ─── SDK Feature Visibility ───────────────────────────────────────────────────
@@ -122,6 +164,11 @@ export interface SDKFeatureFlags {
    * @example features: { eclaim: false }
    */
   eclaim?: boolean
+  /**
+   * Speech to SOAP Live. Default: true
+   * @example features: { soapLive: false }
+   */
+  soapLive?: boolean
 }
 
 // ─── SDK Callbacks ────────────────────────────────────────────────────────────
@@ -170,8 +217,18 @@ export interface SDKCallbacks {
 
 // ─── SDK Config (full) ────────────────────────────────────────────────────────
 
-export type WidgetTheme = 'light' | 'dark'
-export type ActiveFeature = 'chat' | 'speech-to-soap' | 'clinical-pathway' | 'eclaim'
+/**
+ * Widget theme. Controls a `data-theme` attribute on the widget's shadow
+ * host, which every color token in src/styles/tokens.css is scoped to
+ * (`:host([data-theme='...'])`) — switching this value re-colors the whole
+ * widget purely via CSS, no re-render needed.
+ *
+ * To add a new theme: add its name here, then add a matching
+ * `:host([data-theme='your-name'])` block in src/styles/tokens.css. See the
+ * comment at the top of that file for the full walkthrough.
+ */
+export type WidgetTheme = 'theme-green' | 'theme-dark' | 'theme-blue' | 'theme-midnight-purple' | 'theme-midnight-green'
+export type ActiveFeature = 'chat' | 'speech-to-soap' | 'clinical-pathway' | 'eclaim' | 'speech-to-soap-live'
 
 // ─── Speech to SOAP view modes ────────────────────────────────────────────────
 // Different embedding menus can want different result views for the exact
@@ -224,6 +281,32 @@ export interface SDKConfig extends SDKCallbacks {
    * @example soapViewMode: 'native'
    */
   soapViewMode?: SoapViewMode
+
+  // ── Speech to SOAP — input tambahan ──────────────────────────────────────
+  /**
+   * Mengaktifkan opsi upload file audio (selain rekam langsung) di fitur
+   * Speech to SOAP. Kalau `true`, tombol "Upload Suara" akan tampil di layar
+   * "Mulai" dan dokter bisa pilih file audio dari perangkat sebagai pengganti
+   * rekam langsung. Default: `false`.
+   * @example canUploadAudioSoap: true
+   */
+  canUploadAudioSoap?: boolean
+
+  /**
+   * Mengaktifkan opsi input teks (User Prompt) di fitur Speech to SOAP.
+   * Kalau `true`, tombol "Tulis Teks" akan tampil di layar "Mulai" dan dokter
+   * bisa mengetik catatan/konteks tambahan sebagai pengganti rekam/upload
+   * audio.
+   *
+   * Teks yang diketik TIDAK menimpa `api.pretext` — kalau `api.pretext` sudah
+   * diisi saat init(), teks user akan ditambahkan setelahnya dengan format:
+   *   `${api.pretext}\nuserPromt: \`${userPromt}\``
+   * (kalau `api.pretext` kosong, hasil akhirnya cukup `userPromt: \`${userPromt}\``).
+   *
+   * Default: `false`.
+   * @example isAbleUserPromptSoap: true
+   */
+  isAbleUserPromptSoap?: boolean
 }
 
 // ─── Legacy compat ────────────────────────────────────────────────────────────

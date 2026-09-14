@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap");
 
-/* ─── Tokens ──────────────────────────────────────────────────────────────── *
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Design tokens — theme system
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
  * Defined on :host (not :root) because this stylesheet is injected inside
  * the widget's shadow root — `:root` only ever matches the top-level
  * document's <html>, never a shadow root, so it would silently match
@@ -13,34 +16,45 @@
  *   #his-ai-widget-host { --brand: #7c3aed; --widget-w: 420px; }
  *
  * Custom properties inherit through the shadow boundary, and a selector in
- * the outer page targeting the host element takes precedence over this
- * :host default at equal specificity — so the parent project's values win.
- * ────────────────────────────────────────────────────────────────────────── */
+ * the outer page targeting the host element takes precedence over the
+ * `:host` rules below at equal specificity — so the parent project's values
+ * win.
+ *
+ * ─── How theme switching works ──────────────────────────────────────────
+ * `his_ai_widget.init({ theme: 'dark' })` / `.setConfig({ theme: 'dark' })`
+ * sets a `data-theme="dark"` attribute on the shadow host element (see
+ * src/sdk/index.tsx). Every rule below scoped to `:host([data-theme='dark'])`
+ * then wins over the `:host` defaults for that one host element — no JS
+ * re-render needed, it's pure CSS cascade.
+ *
+ * ─── Two layers of tokens ───────────────────────────────────────────────
+ * 1. STRUCTURAL tokens (radius, shadow shape, spacing, font, sizing) — these
+ *    describe shape/rhythm, not color, and are the same across every theme.
+ *    They live in the single `:host { ... }` block below.
+ * 2. COLOR tokens (semantic: brand, surface, text, status colors) — these
+ *    differ per theme, so each theme gets its own `:host([data-theme='X'])`
+ *    block. Every component file in this folder should reference *only*
+ *    these color tokens (never raw hex), so switching themes reliably
+ *    recolors the whole widget.
+ *
+ * ─── Adding a new theme ─────────────────────────────────────────────────
+ * 1. Add the theme name to `WidgetTheme` in src/types/sdk.ts, e.g.:
+ *      export type WidgetTheme = 'light' | 'dark' | 'midnight-blue'
+ * 2. Copy one of the `:host([data-theme='...'])` color blocks below, rename
+ *    the selector to your theme, and adjust the values. You only need to
+ *    override the tokens that should differ from `:host` (the light
+ *    defaults) — anything you omit falls back to the default block.
+ * 3. That's it — no component CSS needs to change, as long as it already
+ *    consumes the semantic tokens instead of hardcoded colors.
+ * ════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Structural tokens (theme-independent) ────────────────────────────── */
 :host {
-  --brand: #1a9e76;
-  --brand-dark: #0f7558;
-  --brand-light: #e6f7f2;
-
-  --bg: #ffffff;
-  --bg-2: #f8fafc;
-  --bg-3: #f1f5f9;
-  --border: #e2e8f0;
-  --border-2: #cbd5e1;
-
-  --text-1: #0f172a;
-  --text-2: #475569;
-  --text-3: #94a3b8;
-
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 18px;
   --radius-full: 9999px;
-
-  --shadow-sm: 0 1px 3px rgb(0 0 0/0.08);
-  --shadow-md: 0 4px 16px rgb(0 0 0/0.1);
-  --shadow-lg: 0 12px 40px rgb(0 0 0/0.14);
-  --shadow-widget: 0 24px 64px rgb(0 0 0/0.18), 0 0 0 1px rgb(0 0 0/0.06);
 
   --font: "DM Sans", system-ui, sans-serif;
   --mono: "DM Mono", monospace;
@@ -49,4 +63,355 @@
   --header-h: 56px;
   --widget-w: 410px;
   --widget-h: 620px;
+}
+
+/* ─── Theme: light (default) ──────────────────────────────────────────────
+ * Also the fallback for hosts without a `data-theme` attribute at all, so
+ * the widget still looks right if `init()` is ever called without a theme.
+ * ────────────────────────────────────────────────────────────────────── */
+:host,
+:host([data-theme="theme-green"]) {
+  /* Brand */
+  --brand: #1a9e76;
+  --brand-dark: #0f7558;
+  --brand-darker: #085041;
+  --brand-light: #e6f7f2;
+  --brand-light-border: #b2e8d8;
+  --brand-light-hover: #cff0e8;
+  --brand-tint-weak: rgba(29, 158, 117, 0.06);
+  --brand-glow-faint: rgba(15, 110, 86, 0.04);
+  --brand-glow-weak: rgba(15, 110, 86, 0.07);
+  --brand-glow-strong: rgba(15, 110, 86, 0.1);
+
+  /* Surfaces */
+  --bg: #ffffff;
+  --bg-2: #f8fafc;
+  --bg-3: #f1f5f9;
+  --surface-1: #ffffff;
+  --overlay: rgba(15, 23, 42, 0.22);
+
+  /* Borders */
+  --border: #e2e8f0;
+  --border-2: #cbd5e1;
+
+  /* Text */
+  --text-1: #0f172a;
+  --text-2: #475569;
+  --text-3: #94a3b8;
+
+  /* Status: success (green) */
+  --color-success: #22c55e;
+  --color-success-strong: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-soft: #dcfce7;
+  --color-success-border: #bbf7d0;
+
+  /* Status: danger (red) */
+  --color-danger: #dc2626;
+  --color-danger-strong: #dc2626;
+  --color-danger-bg: #fef2f2;
+  --color-danger-soft: #fecaca;
+  --color-danger-border: #fecaca;
+
+  /* Status: warning (amber) */
+  --color-warning: #d97706;
+  --color-warning-strong: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-soft: #fde68a;
+  --color-warning-border: rgba(217, 119, 6, 0.35);
+
+  /* Accent: info (blue) */
+  --color-info: #3b82f6;
+  --color-info-strong: #1d4ed8;
+  --color-info-bg: #eff6ff;
+  --color-info-soft: #dbeafe;
+
+  /* Accent: purple */
+  --color-purple: #a855f7;
+  --color-purple-strong: #7e22ce;
+  --color-purple-bg: #faf5ff;
+  --color-purple-soft: #f3e8ff;
+
+  /* Accent: teal */
+  --color-teal: #14b8a6;
+  --color-teal-strong: #0f766e;
+  --color-teal-bg: #f0fdfa;
+  --color-teal-soft: #ccfbf1;
+
+  /* Accent: orange */
+  --color-orange: #f97316;
+  --color-orange-strong: #c2410c;
+  --color-orange-bg: #fff7ed;
+  --color-orange-soft: #ffedd5;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.14);
+  --shadow-widget: 0 24px 64px rgb(0 0 0 / 0.18), 0 0 0 1px rgb(0 0 0 / 0.06);
+
+  /* Brand-tinted focus rings / glows (buttons, inputs, FAB) */
+  --brand-shadow-sm: rgba(26, 158, 118, 0.12);
+  --brand-shadow-md: rgba(26, 158, 118, 0.2);
+  --brand-shadow-lg: rgba(26, 158, 118, 0.3);
+  --brand-shadow-xl: rgba(26, 158, 118, 0.45);
+  --brand-shadow-xl-hover: rgba(26, 158, 118, 0.55);
+  --color-danger-shadow: rgba(220, 38, 38, 0.3);
+
+  /* Neutral "closed / inactive" state — used by the FAB when the panel is
+     open, intentionally brand-independent so it reads as neutral in every
+     theme */
+  --neutral-strong-1: #475569;
+  --neutral-strong-2: #1e293b;
+}
+
+/* ─── Theme: blue ─────────────────────────────────────────────────────── */
+:host,
+:host([data-theme="theme-blue"]) {
+  /* Brand */
+  --brand: #3bbef6; /* bright cyan-blue */
+  --brand-dark: #1a9eeb; /* deeper blue for contrast */
+  --brand-darker: #0f6fd1; /* accent depth */
+  --brand-light: #e6f7ff; /* soft background tint */
+  --brand-light-border: #c8e9ff; /* subtle border glow */
+  --brand-light-hover: #dff3ff; /* hover highlight */
+  --brand-tint-weak: rgba(59, 190, 246, 0.06);
+  --brand-glow-faint: rgba(26, 158, 235, 0.04);
+  --brand-glow-weak: rgba(26, 158, 235, 0.07);
+  --brand-glow-strong: rgba(26, 158, 235, 0.12);
+
+  /* Borders */
+  --border: #8ccdf9;
+  --border-2: #cbd5e1;
+
+  /* Text */
+  --text-1: #0f172a;
+  --text-2: #475569;
+  --text-3: #5b6e85;
+
+  /* Status: success (green) */
+  --color-success: #22c55e;
+  --color-success-strong: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-soft: #dcfce7;
+  --color-success-border: #bbf7d0;
+
+  /* Status: danger (red) */
+  --color-danger: #dc2626;
+  --color-danger-strong: #dc2626;
+  --color-danger-bg: #fef2f2;
+  --color-danger-soft: #fecaca;
+  --color-danger-border: #fecaca;
+
+  /* Status: warning (amber) */
+  --color-warning: #d97706;
+  --color-warning-strong: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-soft: #fde68a;
+  --color-warning-border: rgba(217, 119, 6, 0.35);
+
+  /* Accent: info (blue) */
+  --color-info: #3b82f6;
+  --color-info-strong: #1d4ed8;
+  --color-info-bg: #eff6ff;
+  --color-info-soft: #dbeafe;
+
+  /* Accent: purple */
+  --color-purple: #a855f7;
+  --color-purple-strong: #7e22ce;
+  --color-purple-bg: #faf5ff;
+  --color-purple-soft: #f3e8ff;
+
+  /* Accent: teal */
+  --color-teal: #0ea5e9;
+  --color-teal-strong: #0369a1;
+  --color-teal-bg: #f0f9ff;
+  --color-teal-soft: #bae6fd;
+
+  /* Accent: orange */
+  --color-orange: #f97316;
+  --color-orange-strong: #c2410c;
+  --color-orange-bg: #fff7ed;
+  --color-orange-soft: #ffedd5;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.14);
+  --shadow-widget: 0 24px 64px rgb(0 0 0 / 0.18), 0 0 0 1px rgb(0 0 0 / 0.06);
+
+  /* Brand-tinted focus rings / glows */
+  --brand-shadow-sm: rgba(59, 130, 246, 0.12);
+  --brand-shadow-md: rgba(59, 130, 246, 0.2);
+  --brand-shadow-lg: rgba(59, 130, 246, 0.3);
+  --brand-shadow-xl: rgba(59, 130, 246, 0.45);
+  --brand-shadow-xl-hover: rgba(59, 130, 246, 0.55);
+  --color-danger-shadow: rgba(220, 38, 38, 0.3);
+
+  /* Neutral inactive state */
+  --neutral-strong-1: #475569;
+  --neutral-strong-2: #1e293b;
+}
+
+/* ─── Theme: dark ─────────────────────────────────────────────────────── */
+:host([data-theme="theme-dark"]) {
+  /* ================================================================
+     Brand — Cyan Blue identity
+     Keep this close to theme-blue so logo / active / log UI
+     still feels like the same product.
+     ================================================================ */
+
+  --brand: #3bbef6;
+  --brand-dark: #1a9eeb;
+  --brand-darker: #0f6fd1;
+
+  /* Dark-mode tinted brand surfaces */
+  --brand-light: rgba(59, 190, 246, 0.14);
+  --brand-light-border: rgba(59, 190, 246, 0.32);
+  --brand-light-hover: rgba(59, 190, 246, 0.2);
+
+  /* Brand atmosphere */
+  --brand-tint-weak: rgba(59, 190, 246, 0.07);
+  --brand-glow-faint: rgba(26, 158, 235, 0.06);
+  --brand-glow-weak: rgba(26, 158, 235, 0.12);
+  --brand-glow-strong: rgba(26, 158, 235, 0.2);
+
+  /* ================================================================
+     Surfaces
+     Deep navy instead of neutral gray
+     ================================================================ */
+
+  --bg: #0b1220;
+  --bg-2: #101a2b;
+  --bg-3: #172338;
+  --surface-1: #121d2e;
+
+  --overlay: rgba(2, 8, 23, 0.58);
+
+  /* ================================================================
+     Borders
+     Slight blue tint to keep the UI cohesive
+     ================================================================ */
+
+  --border: #263b52;
+  --border-2: #344b63;
+
+  /* ================================================================
+     Text
+     ================================================================ */
+
+  --text-1: #f1f7fc;
+  --text-2: #aebdcd;
+  --text-3: #718399;
+
+  /* ================================================================
+     Status: success (green)
+     ================================================================ */
+
+  --color-success: #34d399;
+  --color-success-strong: #6ee7b7;
+
+  --color-success-bg: rgba(52, 211, 153, 0.1);
+  --color-success-soft: rgba(52, 211, 153, 0.18);
+  --color-success-border: rgba(52, 211, 153, 0.3);
+
+  /* ================================================================
+     Status: danger (red)
+     ================================================================ */
+
+  --color-danger: #f87171;
+  --color-danger-strong: #fca5a5;
+
+  --color-danger-bg: rgba(248, 113, 113, 0.1);
+  --color-danger-soft: rgba(248, 113, 113, 0.18);
+  --color-danger-border: rgba(248, 113, 113, 0.3);
+
+  /* ================================================================
+     Status: warning (amber)
+     ================================================================ */
+
+  --color-warning: #fbbf24;
+  --color-warning-strong: #fcd34d;
+
+  --color-warning-bg: rgba(251, 191, 36, 0.1);
+  --color-warning-soft: rgba(251, 191, 36, 0.18);
+  --color-warning-border: rgba(251, 191, 36, 0.32);
+
+  /* ================================================================
+     Accent: info (blue)
+     ================================================================ */
+
+  --color-info: #60c7ff;
+  --color-info-strong: #38bdf8;
+
+  --color-info-bg: rgba(56, 189, 248, 0.1);
+  --color-info-soft: rgba(56, 189, 248, 0.18);
+
+  /* ================================================================
+     Accent: purple
+     ================================================================ */
+
+  --color-purple: #c084fc;
+  --color-purple-strong: #d8b4fe;
+
+  --color-purple-bg: rgba(192, 132, 252, 0.1);
+  --color-purple-soft: rgba(192, 132, 252, 0.18);
+
+  /* ================================================================
+     Accent: teal
+     ================================================================ */
+
+  --color-teal: #38d5f8;
+  --color-teal-strong: #67e8f9;
+
+  --color-teal-bg: rgba(56, 213, 248, 0.1);
+  --color-teal-soft: rgba(56, 213, 248, 0.18);
+
+  /* ================================================================
+     Accent: orange
+     ================================================================ */
+
+  --color-orange: #fb923c;
+  --color-orange-strong: #fdba74;
+
+  --color-orange-bg: rgba(251, 146, 60, 0.1);
+  --color-orange-soft: rgba(251, 146, 60, 0.18);
+
+  /* ================================================================
+     Shadows
+     ================================================================ */
+
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.4);
+
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.48);
+
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.58);
+
+  --shadow-widget: 0 24px 64px rgb(0 0 0 / 0.68), 0 0 0 1px rgb(255 255 255 / 0.05);
+
+  /* ================================================================
+     Brand-tinted focus rings / glows
+     ================================================================ */
+
+  --brand-shadow-sm: rgba(59, 190, 246, 0.16);
+
+  --brand-shadow-md: rgba(59, 190, 246, 0.26);
+
+  --brand-shadow-lg: rgba(59, 190, 246, 0.36);
+
+  --brand-shadow-xl: rgba(59, 190, 246, 0.46);
+
+  --brand-shadow-xl-hover: rgba(59, 190, 246, 0.58);
+
+  /* Danger shadow */
+
+  --color-danger-shadow: rgba(248, 113, 113, 0.34);
+
+  /* ================================================================
+     Neutral inactive state
+     Keep intentionally neutral / dark
+     ================================================================ */
+
+  --neutral-strong-1: #475569;
+  --neutral-strong-2: #1e293b;
 }

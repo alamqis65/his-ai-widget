@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from 'preact/hooks'
 import type { ActiveFeature, SDKConfig, SDKFeatureFlags } from '@/types'
 import { ChatFeature } from '@/features/ChatFeature'
 import { SpeechToSoapFeature } from '@/features/SpeechToSoapFeature'
+import { SpeechToSoapLiveFeature } from '@/features/SpeechToSoapLiveFeature'
 import { ClinicalPathwayFeature } from '@/features/ClinicalPathwayFeature'
 import { EClaimFeature } from '@/features/EClaimFeature'
-import logo from '@/assets/MAIA_Head_Transparent.png'
+import logo from '@/assets/MAIA_Logo_reimagine2.png'
 
 // Helper: baca config SDK dari window
 function getSDKConfig(): SDKConfig {
@@ -18,6 +19,7 @@ function resolveFeatures(flags?: SDKFeatureFlags): Required<SDKFeatureFlags> {
     soap: flags?.soap !== false,
     pathway: flags?.pathway !== false,
     eclaim: flags?.eclaim !== false,
+    soapLive: flags?.soapLive !== false,
   }
 }
 
@@ -49,6 +51,22 @@ const ALL_NAV: NavItem[] = [
         <path d="M19 10v2a7 7 0 01-14 0v-2" />
         <line x1="12" y1="19" x2="12" y2="23" />
         <line x1="8" y1="23" x2="16" y2="23" />
+      </svg>
+    ),
+  },
+  {
+    id: 'speech-to-soap-live',
+    label: 'SOAP Live',
+    featureKey: 'soapLive',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+        <path d="M19 10v2a7 7 0 01-14 0v-2" />
+        <line x1="12" y1="19" x2="12" y2="23" />
+        <line x1="8" y1="23" x2="16" y2="23" />
+
+        <path d="M4 6a8 8 0 0116 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        <circle cx="20" cy="4" r="1.5" fill="red" />
       </svg>
     ),
   },
@@ -122,7 +140,7 @@ export function App() {
       <header class="widget-header">
         <div class="widget-header-left">
           <div class="widget-avatar">
-            <img src={logo} alt="AI Medis" width="32" height="32" />
+            <img src={logo} alt="AI Medis" style="transform: scale(0.019);" />
           </div>
           <div>
             <p class="widget-header-title">Tanya MAIA</p>
@@ -145,8 +163,16 @@ export function App() {
         {active === 'chat' && features.chat && (
           <ChatFeature callbacks={{ onResultChat: cfg.onResultChat, onResultChatMessage: cfg.onResultChatMessage }} />
         )}
+        {active === 'speech-to-soap-live' && features.soapLive && (
+          <SpeechToSoapLiveFeature callbacks={{ onResultSOAP: cfg.onResultSOAP }} />
+        )}
         {active === 'speech-to-soap' && features.soap && (
-          <SpeechToSoapFeature callbacks={{ onResultSOAP: cfg.onResultSOAP }} viewMode={cfg.soapViewMode} />
+          <SpeechToSoapFeature
+            callbacks={{ onResultSOAP: cfg.onResultSOAP }}
+            viewMode={cfg.soapViewMode}
+            canUploadAudio={cfg.canUploadAudioSoap}
+            canUseUserPrompt={cfg.isAbleUserPromptSoap}
+          />
         )}
         {active === 'clinical-pathway' && features.pathway && (
           <ClinicalPathwayFeature

@@ -4,7 +4,11 @@ import './sdk'
 window.his_ai_widget.init({
   // ── Identity ──────────────────────────────────────────────────────────
   userName: 'dr. Budi',
-  theme: 'light',
+  // 'light-green' | 'dark' | 'light-blue' | 'midnight-purple' | 'midnight-green' — bisa diganti runtime via window.his_ai_widget.setConfig({ theme: 'dark' }).
+  // Mau nambah tema baru (mis. 'midnight-blue')? Lihat src/styles/tokens.css
+  // (cari komentar "Adding a new theme") — cukup tambah 1 blok token warna
+  // di sana, tidak perlu ubah komponen manapun.
+  theme: 'theme-dark',
 
   // ── Konteks pasien awal (bisa di-update via setPatient()) ─────────────
   patientId: 'P-2024-001',
@@ -14,17 +18,24 @@ window.his_ai_widget.init({
   age: 32,
   isBPJS: false,
   soapViewMode: 'current', // 'current' | 'native'
+  canUploadAudioSoap: true,
+  isAbleUserPromptSoap: true,
   // ── API Endpoints (opsional — tanpa ini pakai Mock) ────────────────────
   // Uncomment dan isi URL sesuai backend HIS kamu:
   api: {
     //soapGeneratorEndpoint: 'http://192.168.90.10:8000/api/v1/rag/analyze', // Endpoint baru untuk STT & SOAP
-    chatEndpoint: 'http://192.168.90.10:8000/api/v1/ai-assistant/patient-ai-assistant',
-    pretext:
-      'meta:(PASIEN OUTPATIENT), transcript: Pasien seorang perempuan datang dengan keluhan sakit kepala sejak dua hari terakhir, disertai mual ringan. Ia menjelaskan bahwa rasa sakit kepala terasa seperti ditekan di bagian belakang kepala, tanpa riwayat trauma kepala maupun penyakit serius sebelumnya. Pasien juga tidak memiliki riwayat alergi obat atau makanan. Pemeriksaan tanda vital menunjukkan tekanan darah 130/80 mmHg, nadi 82 kali per menit reguler, respirasi 18 kali per menit, suhu tubuh 36,8°C, dan saturasi oksigen 98%. Kesadaran pasien baik, compos mentis, serta tidak ditemukan tanda neurologis yang mengkhawatirkan. Dokter menilai kondisi ini kemungkinan besar adalah sakit kepala tegang (tension headache) yang biasanya dipicu oleh stres atau kurang istirahat. Dokter kemudian memberikan edukasi agar pasien beristirahat cukup, mengurangi stres, menghindari terlalu lama menatap layar, memperbanyak minum air putih, serta melakukan relaksasi sederhana. Untuk terapi simptomatik, dokter meresepkan Paracetamol 500 mg bila nyeri dan Domperidone 10 mg bila mual bertambah. Dokter menutup konsultasi dengan pesan agar pasien segera kembali bila sakit kepala tidak membaik dalam beberapa hari atau muncul gejala lain seperti muntah hebat atau gangguan penglihatan. Pasien menerima anjuran tersebut dan mengucapkan terima kasih.',
-    // sttEndpoint dan soapEndpoint tidak lagi diperlukan terpisah karena di panggil oleh rag/analyze
+    //chatEndpoint: 'http://192.168.90.10:8000/api/v1/ai-assistant/patient-ai-assistant',
+    // pretext:
+    //   'meta:(PASIEN OUTPATIENT), transcript: Pasien seorang perempuan datang dengan keluhan sakit kepala sejak dua hari terakhir, disertai mual ringan. Ia menjelaskan bahwa rasa sakit kepala terasa seperti ditekan di bagian belakang kepala, tanpa riwayat trauma kepala maupun penyakit serius sebelumnya. Pasien juga tidak memiliki riwayat alergi obat atau makanan. Pemeriksaan tanda vital menunjukkan tekanan darah 130/80 mmHg, nadi 82 kali per menit reguler, respirasi 18 kali per menit, suhu tubuh 36,8°C, dan saturasi oksigen 98%. Kesadaran pasien baik, compos mentis, serta tidak ditemukan tanda neurologis yang mengkhawatirkan. Dokter menilai kondisi ini kemungkinan besar adalah sakit kepala tegang (tension headache) yang biasanya dipicu oleh stres atau kurang istirahat. Dokter kemudian memberikan edukasi agar pasien beristirahat cukup, mengurangi stres, menghindari terlalu lama menatap layar, memperbanyak minum air putih, serta melakukan relaksasi sederhana. Untuk terapi simptomatik, dokter meresepkan Paracetamol 500 mg bila nyeri dan Domperidone 10 mg bila mual bertambah. Dokter menutup konsultasi dengan pesan agar pasien segera kembali bila sakit kepala tidak membaik dalam beberapa hari atau muncul gejala lain seperti muntah hebat atau gangguan penglihatan. Pasien menerima anjuran tersebut dan mengucapkan terima kasih.',
+    // // sttEndpoint dan soapEndpoint tidak lagi diperlukan terpisah karena di panggil oleh rag/analyze
+    //soapProgressEndpoint
     pathwayEndpoint: 'http://192.168.90.10:8000/api/v1/clinical-pathway/generate',
     pathwayMasterDiagnosesEndpoint: 'http://192.168.90.10:8000/api/v1/clinical-pathway/master-diagnoses',
     eclaimEndpoint: 'http://192.168.90.10:8000/api/v1/bpjs/validate',
+    soapLiveChunkEndpoint: 'http://192.168.90.10:8000/api/v1/live-soap/chunk',
+    soapLiveEventsEndpoint: 'http://192.168.90.10:8000/api/v1/live-soap/events',
+    soapRecommendationEndpoint: 'http://192.168.90.10:8000/api/v1/live-soap/recommendation',
+    soapLiveFinalizeEndpoint: 'http://192.168.90.10:8000/api/v1/live-soap/finalize',
     //   headers: {
     //     'Authorization': 'Bearer <token>',
     //     'X-Hospital-Id': 'RS-NUSANTARA-001',
@@ -36,8 +47,9 @@ window.his_ai_widget.init({
   features: {
     chat: true,
     soap: true,
-    pathway: false,
-    eclaim: false, // ← sembunyikan E-Claim
+    pathway: true,
+    eclaim: true,
+    soapLive: true, // Fitur baru: Speech to SOAP Live
   },
 
   // ── Callbacks per fitur ────────────────────────────────────────────────

@@ -410,6 +410,7 @@ export class MockSpeechToSOAPService implements SpeechToSOAPService {
   async process(
     _audioBlob: Blob,
     onProgress?: (event: SOAPProgressEvent) => void,
+    _userPrompt?: string,
   ): Promise<ServiceResponse<SpeechToSOAPResult>> {
     const totalDelay = 2500 + Math.random() * 1000
     const stepDelay = totalDelay / MOCK_PROGRESS_STEPS.length

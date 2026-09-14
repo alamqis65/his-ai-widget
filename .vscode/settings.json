@@ -8,6 +8,8 @@
   "cSpell.words": [
     "AMBROXOL",
     "anamesa",
+    "beneran",
+    "dicek",
     "Dijeda",
     "dikonfigurasi",
     "eclaim",
@@ -19,13 +21,18 @@
     "medin",
     "Melitus",
     "normalised",
+    "nyangkut",
     "poli",
     "ronki",
     "simptomatik",
     "soapi",
+    "TIMESLICE",
     "vesikuler",
     "VITALSIGN"
   ],
   "python-envs.defaultEnvManager": "ms-python.python:system",
-  "typescript.suppressDeprecationWarnings": true
+  "typescript.suppressDeprecationWarnings": true,
+  "[csharp]": {
+    "editor.defaultFormatter": "csharpier.csharpier-vscode"
+  }
 }

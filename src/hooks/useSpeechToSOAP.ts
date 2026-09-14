@@ -52,8 +52,15 @@ export interface UseSpeechToSOAPReturn {
   pauseRecording: () => void
   resumeRecording: () => void
   cancelRecording: () => void
+  uploadAudio: (file: File, userPrompt?: string) => Promise<void>
+  submitTextPrompt: (userPrompt: string) => Promise<void>
   saveSOAP: (payload: BatchSOAPPayload) => void
   reset: () => void
+}
+
+function selectSupportedMimeType() {
+  const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus']
+  return candidates.find(type => MediaRecorder.isTypeSupported(type))
 }
 
 /**
@@ -73,6 +80,7 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
   const [error, setError] = useState<string | null>(null)
   const [recordingDuration, setRecordingDuration] = useState(0)
   const [progressMessage, setProgressMessage] = useState<string | null>(null)
+  const lastAudioBlobRef = useRef<Blob | undefined>()
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -81,8 +89,17 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
   const startRecording = useCallback(async () => {
     setError(null)
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mediaRecorder = new MediaRecorder(stream)
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+        video: false,
+      })
+      const mimeType = selectSupportedMimeType()
+
+      const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream)
       mediaRecorderRef.current = mediaRecorder
       chunksRef.current = []
 
@@ -90,7 +107,7 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
         if (e.data.size > 0) chunksRef.current.push(e.data)
       }
 
-      mediaRecorder.start(250)
+      mediaRecorder.start()
       setState('RECORDING')
       setRecordingDuration(0)
       timerRef.current = window.setInterval(() => {
@@ -101,6 +118,53 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
       setState('ERROR')
     }
   }, [])
+
+  // Shared oleh 3 jalur input (rekam langsung, upload audio, tulis teks):
+  // set state PROCESSING_LLM, panggil service, lalu pindah ke DONE/ERROR.
+  const processBlob = useCallback(async (audioBlob: Blob, userPrompt?: string) => {
+    lastAudioBlobRef.current = audioBlob
+
+    setState('PROCESSING_LLM')
+    setProgressMessage(null)
+
+    const result = await getSpeechToSOAPService().process(
+      audioBlob,
+      event => {
+        setProgressMessage(event.message)
+      },
+      userPrompt,
+    )
+
+    if (result.ok) {
+      setSoapResult(result.data.soapResult)
+      setState('DONE')
+    } else {
+      setError(result.error ?? 'Gagal memproses audio.')
+      setState('ERROR')
+    }
+  }, [])
+
+  // Input alternatif: upload file audio yang sudah ada (bukan rekam langsung).
+  const uploadAudio = useCallback(
+    async (file: File, userPrompt?: string) => {
+      setError(null)
+      await processBlob(file, userPrompt)
+    },
+    [processBlob],
+  )
+
+  // Input alternatif: tanpa audio sama sekali — teks yang diketik dokter
+  // dikirim sebagai userPrompt (ditambahkan ke pretext, lihat
+  // ProductionSpeechToSOAPService). Audio dikirim kosong karena endpoint
+  // saat ini selalu mengharapkan field audio_file.
+  const submitTextPrompt = useCallback(
+    async (userPrompt: string) => {
+      setError(null)
+      const emptyBlob = new Blob([], { type: 'audio/webm' })
+      await processBlob(emptyBlob, userPrompt)
+    },
+    [processBlob],
+  )
 
   const stopRecording = useCallback(() => {
     const mediaRecorder = mediaRecorderRef.current
@@ -118,22 +182,13 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
     mediaRecorder.onstop = async () => {
       mediaRecorder.stream.getTracks().forEach(t => t.stop())
 
-      const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
-      const result = await getSpeechToSOAPService().process(audioBlob, event => {
-        setProgressMessage(event.message)
-      })
+      const audioBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' })
 
-      if (result.ok) {
-        setSoapResult(result.data.soapResult)
-        setState('DONE')
-      } else {
-        setError(result.error ?? 'Gagal memproses audio.')
-        setState('ERROR')
-      }
+      await processBlob(audioBlob)
     }
 
     mediaRecorder.stop()
-  }, [])
+  }, [processBlob])
 
   const pauseRecording = useCallback(() => {
     const mediaRecorder = mediaRecorderRef.current
@@ -190,12 +245,17 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
       // fields the user checked, plus the raw `soap` itself every time — this
       // matters most for native mode, where there's nothing checked at all
       // and the SOAP note is the entire payload.
-      callbacks?.onResultSOAP?.({ type: 'ALL', soap: soapResult.soap, ...payload })
-      window.dispatchEvent(
-        new CustomEvent('his_ai:result', {
-          detail: { type: 'ALL', data: { soap: soapResult.soap, ...payload } },
-        }),
-      )
+      callbacks?.onResultSOAP?.({
+        type: 'ALL',
+        soap: soapResult.soap,
+        audio: lastAudioBlobRef.current,
+        ...payload,
+      })
+      // window.dispatchEvent(
+      //   new CustomEvent('his_ai:result', {
+      //     detail: { type: 'ALL', data: { soap: soapResult.soap, ...payload } },
+      //   }),
+      // )
     },
     [soapResult, callbacks],
   )
@@ -224,6 +284,8 @@ export function useSpeechToSOAP(callbacks?: Pick<SDKCallbacks, 'onResultSOAP'>):
     pauseRecording,
     resumeRecording,
     cancelRecording,
+    uploadAudio,
+    submitTextPrompt,
     saveSOAP,
     reset,
   }

@@ -83,14 +83,14 @@
 
 .chat-suggestion-card:hover {
   background: var(--brand-light);
-  border-color: #b2e8d8;
+  border-color: var(--brand-light-border);
 }
 
 .chat-suggestion-icon {
   width: 24px;
   height: 24px;
   border-radius: 6px;
-  background: white;
+  background: var(--surface-1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -214,11 +214,11 @@
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: var(--radius-md);
   font-size: 12px;
-  color: #dc2626;
+  color: var(--color-danger-strong);
   margin: 0 14px;
 }
 
@@ -289,7 +289,7 @@
 
 .chat-input-textarea:focus {
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgb(26 158 118/0.12);
+  box-shadow: 0 0 0 3px var(--brand-shadow-sm);
   background: var(--bg);
 }
 
@@ -302,23 +302,23 @@
   height: 34px;
   border-radius: var(--radius-md);
   border: none;
-  background: var(--brand);
+  background: var(--brand-dark); /* base: lebih solid dari brand-light */
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 120ms ease;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px var(--brand-glow-strong);
 }
 
 .chat-input-send:hover:not(:disabled) {
-  background: var(--brand-dark);
+  background: var(--brand-darker); /* hover: lebih tegas */
   transform: translateY(-1px);
 }
 
 .chat-input-send:disabled {
-  background: var(--border);
+  background: var(--brand-light-border);
   color: var(--text-3);
   cursor: not-allowed;
 }
-

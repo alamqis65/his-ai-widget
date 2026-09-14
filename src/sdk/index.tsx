@@ -2,7 +2,7 @@ import { render } from 'preact'
 import { mountShadowHost } from './shadowRoot'
 import type { SDKConfig, ActiveFeature } from '@/types'
 import { App } from '@/App'
-import logo from '@/assets/MAIA_Head_Transparent.png'
+import logo from '@/assets/MAIA_Logo_reimagine2.png'
 import merge from 'deepmerge'
 
 /**
@@ -37,13 +37,14 @@ function mountFAB(root: ShadowRoot): void {
 
   const fab = document.createElement('div')
   fab.id = 'his-ai-fab'
+  fab.className = 'ignoreColorChange'
   fab.innerHTML = `
     
-    <button id="his-ai-fab-btn" class="sdk-fab-btn" aria-label="Buka AI Medis Widget">
+    <button id="his-ai-fab-btn" class="sdk-fab-btn ignore-his-theme" aria-label="Buka AI Medis Widget">
     <div class="sdk-fab-tooltip-wrapper">
       <div id="his-ai-fab-label" class="sdk-fab-tooltip">Tanya MAIA</div>
       </div>
-      <img class="sdk-fab-icon-open" src="${logo}" alt="AI Medis" width="48" height="48" />
+      <img class="sdk-fab-icon-open" src="${logo}" alt="AI Medis" style="transform: scale(0.026);" />
       <svg class="sdk-fab-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
@@ -62,7 +63,7 @@ function mountWidget(root: ShadowRoot): void {
 
   _container = document.createElement('div')
   _container.id = 'his-ai-widget-container'
-  _container.className = 'sdk-widget-panel'
+  _container.className = 'sdk-widget-panel ignore-his-theme'
   root.appendChild(_container)
 
   render(<App />, _container)
@@ -73,7 +74,7 @@ function mountWidget(root: ShadowRoot): void {
 
 const HISWidget = {
   init(config: SDKConfig = {}): void {
-    _config = { theme: 'light', ...config }
+    _config = { theme: 'theme-blue', ...config }
 
     const doMount = () => {
       const { host, root } = mountShadowHost()
